@@ -40,7 +40,7 @@ const aboutCards = [
 ];
 
 const About = () => {
-  const [activeCard, setActiveCard] = useState(0);
+  const [activeCard, setActiveCard] = useState(null);
 
   const activateHoveredCard = (event, index) => {
     // Pointer movement also covers a cursor already over a card on page load.
@@ -52,6 +52,10 @@ const About = () => {
     }
   };
 
+  const closeCard = (index) => {
+    setActiveCard((current) => current === index ? null : current);
+  };
+
   return (
     <section
       id="about"
@@ -61,7 +65,7 @@ const About = () => {
       <div className="@container/about-layout max-w-8xl px-6 lg:mx-20 2xl:px-24">
         <h2
           id="about-heading"
-          className="mb-6 font-garamond text-[2.4rem] font-bold text-green-700 md:mb-8 md:text-[3rem]"
+          className="mb-6 font-garamond text-[2.4rem] font-bold text-[#173d2e] md:mb-8 md:text-[3rem]"
         >
           About Us:
         </h2>
@@ -77,11 +81,18 @@ const About = () => {
                   @min-[65rem]/about-layout:h-[40rem] @min-[65rem]/about-layout:min-h-[40rem] @min-[65rem]/about-layout:min-w-[21rem]
                   @min-[65rem]/about-layout:flex-[0_0_21rem]
                   motion-reduce:transition-none
-                  ${isActive ? "min-h-[26rem] @min-[65rem]/about-layout:grow" : "min-h-[12rem]"}`}
+                  ${activeCard === null || isActive ? "@min-[65rem]/about-layout:grow" : ""}
+                  ${isActive ? "min-h-[26rem]" : "min-h-[12rem]"}`}
                 data-expanded={isActive}
                 onPointerEnter={(event) => activateHoveredCard(event, index)}
                 onPointerMove={(event) => activateHoveredCard(event, index)}
+                onPointerLeave={(event) => {
+                  if (event.pointerType === "mouse" || event.pointerType === "pen") closeCard(index);
+                }}
                 onFocus={() => setActiveCard(index)}
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget)) closeCard(index);
+                }}
               >
                 <img
                   src={publicAsset(card.image)}
@@ -97,7 +108,7 @@ const About = () => {
 
                 {/* The label's width controls its font size as the card expands. */}
                 <p className="@container mb-8 flex min-h-12 w-[calc(100%_-_3.75rem)] items-center font-garamond leading-[1.25] font-semibold whitespace-nowrap [text-shadow:0_2px_6px_rgb(0_0_0_/_85%)]">
-                  <span className="mr-[0.4em] shrink-0 tabular-nums text-yellow-500 [font-size:min(2rem,13cqw)]">
+                  <span className="mr-[0.4em] shrink-0 tabular-nums text-[#E9AD5E] [font-size:min(2rem,13cqw)]">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <span className="shrink-0 [font-size:min(2rem,13cqw)]">
@@ -112,7 +123,7 @@ const About = () => {
                   aria-expanded={isActive}
                   aria-controls={`${card.id}-content`}
                   onClick={() => setActiveCard(index)}
-                  className="absolute top-8 right-8 flex size-11 cursor-pointer items-center justify-center rounded-full border border-white/70 text-white focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-6 focus-visible:outline-yellow-500 md:size-12 lg:top-9 lg:right-9 xl:top-12 xl:right-10"
+                  className="absolute top-8 right-8 flex size-11 cursor-pointer items-center justify-center rounded-full border border-white/70 text-white focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-6 focus-visible:outline-[#E9AD5E] md:size-12 lg:top-9 lg:right-9 xl:top-12 xl:right-10"
                 >
                   <svg
                     aria-hidden="true"
@@ -133,7 +144,7 @@ const About = () => {
 
                 <h3
                   id={`${card.id}-heading`}
-                  className={`mt-auto font-garamond text-[2rem] leading-tight font-semibold text-amber-400 wrap-break-word [text-shadow:0_2px_6px_rgb(0_0_0_/_85%)] ${isActive ? "lg:text-[2.6rem]" : "lg:text-[2.25rem]"}`}
+                  className={`mt-auto font-garamond text-[2rem] leading-tight font-semibold text-[#E9AD5E] wrap-break-word [text-shadow:0_2px_6px_rgb(0_0_0_/_85%)] ${isActive ? "lg:text-[2.6rem]" : "lg:text-[2.25rem]"}`}
                 >
                   {card.title}
                 </h3>
@@ -164,7 +175,7 @@ const About = () => {
                       </p>
                       <Link
                         to={card.link}
-                        className="mt-6 inline-flex max-w-full items-center gap-3 rounded-full bg-green-700 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-green-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-yellow-500 motion-reduce:transition-none lg:text-lg"
+                        className="mt-6 inline-flex max-w-full items-center gap-3 rounded-full bg-green-700 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-green-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E] motion-reduce:transition-none lg:text-lg"
                       >
                         {card.linkLabel}
                         <svg

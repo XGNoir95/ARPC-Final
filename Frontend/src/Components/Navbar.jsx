@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { publicAsset } from "../utils/publicAsset";
 
-const Navbar = () => {
+const Navbar = ({ blendWithHero = false }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
@@ -22,26 +22,26 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-[#0E291E] via-[#133729] to-green-700 text-white relative z-50">
+    <nav className={`text-white relative z-50 ${blendWithHero ? "bg-transparent" : "bg-gradient-to-r from-[#0E291E] via-[#133729] to-green-700"}`}>
       {/* ==== SMALL & MEDIUM DEVICES ==== */}
       <div className="block lg:hidden">
-        <div className="w-full py-4">
+        <div className={`w-full ${blendWithHero ? "px-6 py-6" : "py-4"}`}>
           <div className="flex items-center justify-between h-16">
             {/* Logo image */}
             <button
               type="button"
               onClick={() => handleNavigate("/")}
-              className="flex items-center cursor-pointer"
+              className={blendWithHero ? "relative flex h-16 w-[min(21rem,75vw)] shrink-0 cursor-pointer items-center overflow-hidden sm:w-[24rem] md:w-[22rem]" : "flex items-center cursor-pointer"}
             >
               <img
                 src={publicAsset("/logo1.png")}
                 alt="Logo"
-                className="h-80 w-auto sm:h-80 md:h-80"
+                className={blendWithHero ? "absolute top-1/2 left-1/2 h-auto w-[122%] max-w-none -translate-x-1/2 -translate-y-1/2" : "h-80 w-auto sm:h-80 md:h-80"}
               />
             </button>
 
             {/* Desktop links for md only */}
-            <div className="hidden md:flex space-x-8 text-2xl font-garamond font-semibold mr-8">
+            <div className={`hidden md:flex text-2xl font-garamond font-semibold ${blendWithHero ? "space-x-6" : "space-x-8 mr-8"}`}>
               <button
                 type="button"
                 onClick={() => handleNavigate("/")}
@@ -66,8 +66,9 @@ const Navbar = () => {
 
             {/* Mobile menu button */}
             <button
-              className="md:hidden pr-5 rounded focus:outline-none cursor-pointer"
+              className={blendWithHero ? "md:hidden rounded focus-visible:outline-2 focus-visible:outline-offset-4 cursor-pointer" : "md:hidden pr-5 rounded focus:outline-none cursor-pointer"}
               onClick={() => setIsMenuOpen((v) => !v)}
+              aria-expanded={blendWithHero ? isMenuOpen : undefined}
             >
               <span className="sr-only">Toggle menu</span>
               <svg
@@ -99,7 +100,7 @@ const Navbar = () => {
 
         {/* Mobile links */}
         {isMenuOpen && (
-          <div className="md:hidden bg-gradient-to-r from-[#0E291E] via-[#133729] to-green-700 px-5 pb-5 space-y-2 text-[1.5rem] font-garamond font-semibold relative z-50">
+          <div className={`md:hidden px-5 pb-5 space-y-2 text-[1.5rem] font-garamond font-semibold z-50 ${blendWithHero ? "absolute inset-x-6 top-24 rounded-xl bg-[#0b1d26]/95 pt-4 backdrop-blur-md sm:inset-x-10" : "relative bg-gradient-to-r from-[#0E291E] via-[#133729] to-green-700"}`}>
             <button
               type="button"
               onClick={() => handleNavigate("/")}
@@ -168,15 +169,15 @@ const Navbar = () => {
 
       {/* ==== LARGE DEVICES ==== */}
       <div className="hidden lg:block">
-        <div className="max-w-8xl mx-25 p-4 mr-37">
-          <div className="flex items-center justify-between h-16">
+        <div className={blendWithHero ? "px-6 py-8 lg:mx-20 2xl:px-24" : "max-w-8xl mx-25 p-4 mr-37"}>
+          <div className={`flex items-center justify-between ${blendWithHero ? "h-20" : "h-16"}`}>
             {/* Logo image */}
             <button
               type="button"
               onClick={() => handleNavigate("/")}
-              className="flex items-center cursor-pointer"
+              className={blendWithHero ? "relative flex h-20 w-[26rem] cursor-pointer items-center overflow-hidden xl:w-[32rem]" : "flex items-center cursor-pointer"}
             >
-              <img src={publicAsset("/logo1.png")} alt="Logo" className="h-80 w-auto" />
+              <img src={publicAsset("/logo1.png")} alt="Logo" className={blendWithHero ? "absolute top-1/2 left-1/2 h-auto w-[122%] max-w-none -translate-x-1/2 -translate-y-1/2" : "h-80 w-auto"} />
             </button>
 
             {/* Desktop links */}

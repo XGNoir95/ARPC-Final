@@ -1,163 +1,191 @@
-// src/components/Footer.jsx
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import Quote from "./Home/Quote";
 import { publicAsset } from "../utils/publicAsset";
 
-const Footer = () => {
-  const navigate = useNavigate();
+const campusMapLink =
+  "https://www.google.com/maps/dir/?api=1&destination=Ahsanullah+University+of+Science+and+Technology";
+const focusStyle =
+  "focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E]";
+const linkStyle = `inline-flex min-h-11 items-center text-white/80 transition-colors hover:text-[#E9AD5E] motion-reduce:transition-none ${focusStyle}`;
 
-  const handleJoinClick = () => {
-    // No flags; global logic decides if slide plays
-    navigate("/register");
-  };
+const Footer = ({ includeQuote = false }) => {
+  const [reflectionOpen, setReflectionOpen] = useState(false);
 
   return (
-    <footer className="bg-gradient-to-r from-[#0E291E] via-[#133729] to-green-700 text-white">
-      {/* Main footer content */}
-      <div className="max-w-8xl lg:mx-20 px-6 2xl:px-24 py-12">
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-stretch">
-          {/* LEFT: Logo + club texts (single column) */}
-          <div className="w-full lg:w-1/2 flex flex-col">
-            {/* Logo row – visually centered over the text block */}
-            <div className="mb-6 flex justify-center lg:justify-start">
-              <img
-                src={publicAsset("/newLogo.png")}
-                alt="Ahsanullah Roh. Peace Club Logo"
-                className="h-60 lg:h-60 w-auto"
-              />
-            </div>
+  <footer className="bg-[#0e291e] text-white">
+    <div>
+      <div
+        className={
+          includeQuote
+            ? "grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]"
+            : ""
+        }
+      >
+        {includeQuote && <Quote onReflectionToggle={setReflectionOpen} />}
 
-            {/* Club name + campus */}
-            <div className="mb-3">
-              <h3 className="text-[1.9rem] md:text-[2.35rem] font-garamond font-bold text-yellow-500">
+        {/* The open reflection sets the desktop row height; this panel fills it. */}
+        <div
+          className={`@container flex min-w-0 flex-col bg-[#0e291e] px-6 py-12 sm:py-14 lg:py-16 ${includeQuote ? "lg:pr-26 lg:pl-12 2xl:pr-44 2xl:pl-16" : "lg:px-26 2xl:px-44"} ${includeQuote && reflectionOpen ? "lg:min-h-0 lg:[contain:size]" : ""}`}
+        >
+          <Link
+            to="/"
+            className={`flex w-fit max-w-full items-center gap-4 ${focusStyle}`}
+          >
+            <img
+              src={publicAsset("/newLogo.png")}
+              alt=""
+              width="80"
+              height="80"
+              loading="lazy"
+              decoding="async"
+              className="size-18 shrink-0 object-contain sm:size-32"
+            />
+            <span className="min-w-0">
+              <span className="block font-garamond text-5xl leading-none font-semibold tracking-[-0.04em] sm:text-6xl">
+                ARPC
+              </span>
+              <span className="mt-2 block text-xs leading-relaxed text-white/75 sm:text-[1.1rem]">
                 Ahsanullah Roh. Peace Club
-              </h3>
-              <p className="text-[1.3rem] md:text-[1.45rem] font-garamond mt-1 text-white">
-                AUST Campus
-              </p>
-            </div>
+              </span>
+            </span>
+          </Link>
 
-            {/* Description */}
-            <p className="text-[1.29rem] md:text-[1.38rem] font-garamond leading-relaxed text-gray-100 text-justify mt-1">
-              A student-run club dedicated to cultivating peace, service, and
-              sincere connection with the Creator and creation through regular
-              events, study circles, and community projects.
+          <p className="mt-6 w-full font-garamond text-2xl leading-[1.35] text-balance text-white/85 sm:text-[clamp(1.5rem,6cqi,2.25rem)] lg:text-[clamp(1.25rem,6cqi,2.25rem)]">
+            A place at AUST to find your people, share your ideas and make a
+            difference together.
+          </p>
+
+          <nav
+            aria-label="Footer navigation"
+            className="my-7 flex flex-wrap items-center gap-x-6 gap-y-3 border-y border-white/15 py-4"
+          >
+            <ul className="grid w-full grid-cols-3 gap-x-5 gap-y-1 text-sm @min-[26rem]:flex @min-[26rem]:w-auto @min-[26rem]:flex-wrap sm:text-base">
+              <li>
+                <Link to="/" className={linkStyle}>
+                  Home
+                </Link>
+              </li>
+              <li>
+                <a href="#" className={linkStyle}>
+                  Catalogue
+                </a>
+              </li>
+              <li>
+                <Link to="/team" className={linkStyle}>
+                  Panel
+                </Link>
+              </li>
+              <li>
+                <Link to="/profile" state={{ fromNavbar: true }} className={linkStyle}>
+                  Profile
+                </Link>
+              </li>
+              <li><Link to="/login" state={{ fromNavbar: true }} className={linkStyle}>Login</Link></li>
+              <li><Link to="/register" state={{ fromNavbar: true }} className={linkStyle}>Register</Link></li>
+            </ul>
+            <a
+              href={campusMapLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`group inline-flex min-h-12 items-center gap-3 rounded-full border border-white/25 px-4 py-2.5 text-sm font-medium text-white/90 transition-colors hover:border-[#eef4ef] hover:bg-[#eef4ef] hover:text-[#0e291e] motion-reduce:transition-none ${focusStyle}`}
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="size-5 shrink-0">
+                <path d="m21 3-6 18-4-8-8-4 18-6Z" />
+                <path d="m11 13 5-5" />
+              </svg>
+              Campus directions
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="size-4 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none">
+                <path d="M7 17 17 7M7 7h10v10" />
+              </svg>
+            </a>
+          </nav>
+
+          <address className="text-base leading-relaxed not-italic">
+            <a
+              href="mailto:info@arpc.club"
+              className={`${linkStyle} font-garamond text-2xl sm:text-3xl`}
+            >
+              info@arpc.club
+            </a>
+            <p className="mt-1 text-sm text-white/70 sm:text-base">
+              AUST Campus, Tejgaon, Dhaka
             </p>
+          </address>
 
-            {/* Join us button */}
-            <div className="mt-6">
-              <button
-                onClick={handleJoinClick}
-                className="inline-flex items-center px-12 py-2 rounded-full hover:border border-white/60 bg-green-800 font-semibold hover:bg-green-900 transition text-[1rem] md:text-[1.2rem]"
+          {includeQuote && reflectionOpen && (
+            <section
+              aria-labelledby="reflection-action-heading"
+              className="mt-7 flex flex-1 flex-col justify-center border-t border-white/15 pt-6 pb-2 lg:min-h-0"
+            >
+              <div>
+                <h2
+                  id="reflection-action-heading"
+                  className="font-garamond text-3xl leading-tight font-medium text-balance sm:text-4xl"
+                >
+                  Put learning into practice.
+                </h2>
+                <p className="mt-3 w-full text-base leading-relaxed text-white/75 sm:text-lg">
+                  Knowledge becomes meaningful when it reaches someone else.
+                  Help a friend understand a difficult topic, listen to a
+                  classmate, or turn an idea into something useful.
+                </p>
+                <a
+                  href="mailto:info@arpc.club?subject=An%20idea%20for%20ARPC"
+                  className={`group mt-4 inline-flex min-h-12 items-center gap-3 border-b border-white/30 py-2 text-base font-medium transition-colors hover:border-[#E9AD5E] hover:text-[#E9AD5E] motion-reduce:transition-none ${focusStyle}`}
+                >
+                  Share an idea with ARPC
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="size-5 shrink-0">
+                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                    <path d="m3 6 9 7 9-7" />
+                  </svg>
+                </a>
+              </div>
+            </section>
+          )}
+
+          <div className="mt-auto pt-7">
+            <Link
+              to="/register"
+              className={`group flex min-h-14 items-center justify-between gap-4 rounded-xl bg-[#eef4ef] px-5 py-3 text-base font-semibold text-[#0e291e] transition-colors hover:bg-[#E9AD5E] motion-reduce:transition-none ${focusStyle}`}
+            >
+              Join ARPC
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-6 shrink-0 transition-transform group-hover:translate-x-1 motion-reduce:transition-none"
               >
-                Join us
-              </button>
-            </div>
-          </div>
-
-          {/* RIGHT: Map + contact & links */}
-          <div className="w-full lg:w-1/2 flex flex-col">
-            {/* Map – AUST campus with red marker */}
-            <div className="w-full mb-6 rounded-xl overflow-hidden shadow-lg border border-green-700/60">
-              <iframe
-                title="AUST Campus Map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.5395156655372!2d90.4042055111543!3d23.76379498817254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c790e6cf50a9%3A0xcae56c17297f85f8!2sAhsanullah%20University%20of%20Science%20and%20Technology!5e0!3m2!1sen!2sbd!4v1763760213679!5m2!1sen!2sbd"
-                width="100%"
-                height="260"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
-
-            {/* Contact section */}
-            <div>
-              <h4 className="text-[1.75rem] md:text-[2.1rem] font-garamond font-bold mb-4">
-                Contact &amp; Links
-              </h4>
-
-              <div className="space-y-2 text-[1.29rem] md:text-[1.5rem] font-garamond">
-                <p>
-                  <span className="font-semibold text-yellow-500">Email:</span>{" "}
-                  <a href="mailto:info@arpc.club" className="hover:underline">
-                    info@arpc.club
-                  </a>
-                </p>
-                <p>
-                  <span className="font-semibold text-yellow-500">Address:</span>{" "}
-                  AUST Campus, Tejgaon, Dhaka
-                </p>
-              </div>
-
-              {/* Social icons inside contact section */}
-              <div className="mt-6">
-                <p className="font-garamond text-[1.5rem] mb-4">
-                  Connect with us:
-                </p>
-                <div className="flex items-center gap-5">
-                  {/* Facebook */}
-                  <a
-                    href="#"
-                    aria-label="Facebook"
-                    className="w-12 h-12 rounded-full bg-green-700 flex items-center justify-center shadow-md hover:bg-white hover:text-green-800 transition transform hover:-translate-y-0.5"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="w-6 h-6 md:w-7 md:h-7"
-                      fill="currentColor"
-                    >
-                      <path d="M13.5 22v-7h2.3l.4-3h-2.7v-1.9c0-.9.3-1.5 1.6-1.5H16V5.1C15.7 5 14.8 5 13.8 5c-2.6 0-4.3 1.6-4.3 4.4V12H7.5v3h2v7h4z" />
-                    </svg>
-                  </a>
-
-                  {/* Gmail (email) */}
-                  <a
-                    href="mailto:info@arpc.club"
-                    aria-label="Email"
-                    className="w-12 h-12  rounded-full bg-green-700 flex items-center justify-center shadow-md hover:bg-white hover:text-green-800 transition transform hover:-translate-y-0.5"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="w-6 h-6 md:w-7 md:h-7"
-                      fill="currentColor"
-                    >
-                      <path d="M20 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 2v.2l-8 5-8-5V7h16zm0 10H4V9.5l8 5 8-5V17z" />
-                    </svg>
-                  </a>
-
-                  {/* YouTube */}
-                  <a
-                    href="#"
-                    aria-label="YouTube"
-                    className="w-12 h-12 rounded-full bg-green-700 flex items-center justify-center shadow-md hover:bg-white hover:text-green-800 transition transform hover:-translate-y-0.5"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="w-6 h-6 md:w-7 md:h-7"
-                      fill="currentColor"
-                    >
-                      <path d="M21.6 8.2a2.5 2.5 0 0 0-1.8-1.8C18.1 6 12 6 12 6s-6.1 0-7.8.4A2.5 2.5 0 0 0 2.4 8.2 26.4 26.4 0 0 0 2 12a26.4 26.4 0 0 0 .4 3.8 2.5 2.5 0 0 0 1.8 1.8C5.9 18 12 18 12 18s6.1 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26.4 26.4 0 0 0 22 12a26.4 26.4 0 0 0-.4-3.8zM10 15v-6l5 3-5 3z" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </div>
+                <path d="M5 12h14m-6-6 6 6-6 6" />
+              </svg>
+            </Link>
           </div>
         </div>
+      </div>
 
-        {/* Bottom partition + copyright row */}
-        <div className="mt-8 pt-4 border-t border-green-700 flex flex-col md:flex-row items-center justify-between gap-2 text-lg md:text-[1.2rem] text-green-100/80 font-garamond">
-          <p>© 2025 Ahsanullah Roh. Peace Club. All rights reserved.</p>
-          <p>
-            Designed for{" "}
-            <span className="font-semibold">
-              students, seekers &amp; community.
+      <div className="border-t border-white/15">
+        <div className="flex max-w-8xl flex-col gap-4 px-6 pt-6 pb-20 md:flex-row md:items-center md:justify-between md:gap-8 lg:mx-20 lg:pb-6 2xl:px-24">
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-2 sm:gap-x-4">
+            <span className="text-xs text-white/55 sm:text-sm">© {new Date().getFullYear()}</span>
+            <span className="font-garamond text-lg leading-none text-[#eef4ef] sm:border-l sm:border-white/20 sm:pl-4 sm:text-xl">
+              Ahsanullah Roh. Peace Club
             </span>
+          </p>
+          <p className="inline-flex items-center gap-2 text-sm text-white/65">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="size-4 shrink-0">
+              <path d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z" />
+              <circle cx="12" cy="10" r="2.5" />
+            </svg>
+            AUST, Tejgaon, Dhaka
           </p>
         </div>
       </div>
-    </footer>
+    </div>
+  </footer>
   );
 };
 

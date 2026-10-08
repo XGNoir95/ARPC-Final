@@ -46,15 +46,16 @@ function AppContent() {
   // Treat both login and register as auth pages (hide navbar/footer)
   const isAuthPage =
     location.pathname === "/login" || location.pathname === "/register";
+  const isHomePage = location.pathname === "/";
 
   return (
     <RouteTransitionProvider
       value={{ prevPathname, currentPathname: location.pathname }}
     >
-      <div className="min-h-screen flex flex-col text-white bg-white">
-        {/* NAVBAR with fixed positioning to avoid z-index issues */}
+      <div className="relative min-h-screen flex flex-col text-white bg-white">
+        {/* On the home page, navigation sits over the hero photograph. */}
         <div
-          className={`transition-all duration-500 ease-in-out relative z-50
+          className={`transition-all duration-500 ease-in-out z-50 ${isHomePage ? "absolute inset-x-0 top-0" : "relative"}
         ${
           isAuthPage
             ? "max-h-0 opacity-0 -translate-y-4"
@@ -62,7 +63,7 @@ function AppContent() {
         }`}
           style={{ overflow: isAuthPage ? "hidden" : "visible" }}
         >
-          <Navbar />
+          <Navbar blendWithHero={isHomePage} />
         </div>
 
         {/* MAIN CONTENT - add margin top to account for navbar space */}
@@ -76,16 +77,18 @@ function AppContent() {
           </Routes>
         </main>
 
-        {/* FOOTER with smooth hide/show */}
+        {/* The home footer also contains the founder's reflection. */}
         <div
+          aria-hidden={isAuthPage}
+          inert={isAuthPage}
           className={`transition-all duration-500 ease-in-out
         ${
           isAuthPage
             ? "max-h-0 opacity-0 translate-y-4 overflow-hidden"
-            : "max-h-[700px] opacity-100 translate-y-0"
+            : "opacity-100 translate-y-0"
         }`}
         >
-          <Footer />
+          <Footer includeQuote={isHomePage} />
         </div>
 
         {/* Global scroll-to-top button */}
