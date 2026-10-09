@@ -22,7 +22,7 @@ const Navbar = ({ blendWithHero = false }) => {
   };
 
   return (
-    <nav className={`text-white relative z-50 ${blendWithHero ? "bg-transparent" : "bg-gradient-to-r from-[#0E291E] via-[#133729] to-green-700"}`}>
+    <nav aria-label="Main navigation" className={`text-white relative z-50 ${blendWithHero ? "bg-transparent" : "bg-gradient-to-r from-[#0E291E] via-[#133729] to-green-700"}`}>
       {/* ==== SMALL & MEDIUM DEVICES ==== */}
       <div className="block lg:hidden">
         <div className={`w-full ${blendWithHero ? "px-6 py-6" : "py-4"}`}>
@@ -31,7 +31,7 @@ const Navbar = ({ blendWithHero = false }) => {
             <button
               type="button"
               onClick={() => handleNavigate("/")}
-              className={blendWithHero ? "relative flex h-16 w-[min(21rem,75vw)] shrink-0 cursor-pointer items-center overflow-hidden sm:w-[24rem] md:w-[22rem]" : "flex items-center cursor-pointer"}
+              className={blendWithHero ? "relative flex h-16 w-[min(21rem,calc(100%-3rem))] shrink-0 cursor-pointer items-center overflow-hidden sm:w-[24rem] md:w-[20rem]" : "flex items-center cursor-pointer"}
             >
               <img
                 src={publicAsset("/logo1.png")}
@@ -175,7 +175,7 @@ const Navbar = ({ blendWithHero = false }) => {
             <button
               type="button"
               onClick={() => handleNavigate("/")}
-              className={blendWithHero ? "relative flex h-20 w-[26rem] cursor-pointer items-center overflow-hidden xl:w-[32rem]" : "flex items-center cursor-pointer"}
+              className={blendWithHero ? "relative flex h-20 w-[24rem] cursor-pointer items-center overflow-hidden xl:w-[32rem]" : "flex items-center cursor-pointer"}
             >
               <img src={publicAsset("/logo1.png")} alt="Logo" className={blendWithHero ? "absolute top-1/2 left-1/2 h-auto w-[122%] max-w-none -translate-x-1/2 -translate-y-1/2" : "h-80 w-auto"} />
             </button>

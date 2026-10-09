@@ -43,19 +43,20 @@ function AppContent() {
     prevLocationRef.current = location;
   }, [location]);
 
-  // Treat both login and register as auth pages (hide navbar/footer)
+  // Auth pages keep their own navigation; the combined footer is shared by every route.
   const isAuthPage =
     location.pathname === "/login" || location.pathname === "/register";
   const isHomePage = location.pathname === "/";
+  const hasPhotoHero = isHomePage || location.pathname === "/team";
 
   return (
     <RouteTransitionProvider
       value={{ prevPathname, currentPathname: location.pathname }}
     >
       <div className="relative min-h-screen flex flex-col text-white bg-white">
-        {/* On the home page, navigation sits over the hero photograph. */}
+        {/* Photo hero pages share navigation that sits over the image. */}
         <div
-          className={`transition-all duration-500 ease-in-out z-50 ${isHomePage ? "absolute inset-x-0 top-0" : "relative"}
+          className={`transition-all duration-500 ease-in-out z-50 ${hasPhotoHero ? "absolute inset-x-0 top-0" : "relative"}
         ${
           isAuthPage
             ? "max-h-0 opacity-0 -translate-y-4"
@@ -63,7 +64,7 @@ function AppContent() {
         }`}
           style={{ overflow: isAuthPage ? "hidden" : "visible" }}
         >
-          <Navbar blendWithHero={isHomePage} />
+          <Navbar blendWithHero={hasPhotoHero} />
         </div>
 
         {/* MAIN CONTENT - add margin top to account for navbar space */}
@@ -77,19 +78,7 @@ function AppContent() {
           </Routes>
         </main>
 
-        {/* The home footer also contains the founder's reflection. */}
-        <div
-          aria-hidden={isAuthPage}
-          inert={isAuthPage}
-          className={`transition-all duration-500 ease-in-out
-        ${
-          isAuthPage
-            ? "max-h-0 opacity-0 translate-y-4 overflow-hidden"
-            : "opacity-100 translate-y-0"
-        }`}
-        >
-          <Footer includeQuote={isHomePage} />
-        </div>
+        <Footer />
 
         {/* Global scroll-to-top button */}
         <ScrollToTopButton />

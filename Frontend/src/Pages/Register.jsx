@@ -36,7 +36,7 @@ const Register = () => {
         return;
       }
 
-      const contentEl = pageRef.current || body;
+      const contentEl = root || pageRef.current || body;
       const contentHeight = contentEl.scrollHeight;
       const viewportHeight = window.innerHeight;
 

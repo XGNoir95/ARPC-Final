@@ -9,24 +9,18 @@ const focusStyle =
   "focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E]";
 const linkStyle = `inline-flex min-h-11 items-center text-white/80 transition-colors hover:text-[#E9AD5E] motion-reduce:transition-none ${focusStyle}`;
 
-const Footer = ({ includeQuote = false }) => {
+const Footer = () => {
   const [reflectionOpen, setReflectionOpen] = useState(false);
 
   return (
   <footer className="bg-[#0e291e] text-white">
     <div>
-      <div
-        className={
-          includeQuote
-            ? "grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]"
-            : ""
-        }
-      >
-        {includeQuote && <Quote onReflectionToggle={setReflectionOpen} />}
+      <div className="grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+        <Quote onReflectionToggle={setReflectionOpen} />
 
         {/* The open reflection sets the desktop row height; this panel fills it. */}
         <div
-          className={`@container flex min-w-0 flex-col bg-[#0e291e] px-6 py-12 sm:py-14 lg:py-16 ${includeQuote ? "lg:pr-26 lg:pl-12 2xl:pr-44 2xl:pl-16" : "lg:px-26 2xl:px-44"} ${includeQuote && reflectionOpen ? "lg:min-h-0 lg:[contain:size]" : ""}`}
+          className={`@container flex min-w-0 flex-col bg-[#0e291e] px-6 py-12 sm:py-14 lg:py-16 lg:pr-26 lg:pl-12 2xl:pr-44 2xl:pl-16 ${reflectionOpen ? "lg:min-h-0 lg:[contain:size]" : ""}`}
         >
           <Link
             to="/"
@@ -113,7 +107,7 @@ const Footer = ({ includeQuote = false }) => {
             </p>
           </address>
 
-          {includeQuote && reflectionOpen && (
+          {reflectionOpen && (
             <section
               aria-labelledby="reflection-action-heading"
               className="mt-7 flex flex-1 flex-col justify-center border-t border-white/15 pt-6 pb-2 lg:min-h-0"

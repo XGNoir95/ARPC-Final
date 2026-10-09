@@ -5,7 +5,7 @@ import Footer from './Footer'
 
 describe('Combined footer', () => {
   it('reveals a campus-life companion with the full reflection and removes it on collapse', async () => {
-    render(<MemoryRouter><Footer includeQuote /></MemoryRouter>)
+    render(<MemoryRouter><Footer /></MemoryRouter>)
     const footer = screen.getByRole('contentinfo')
     const reflection = within(footer).getByText(/^The education which caters/)
     expect(reflection).not.toBeVisible()
@@ -20,9 +20,9 @@ describe('Combined footer', () => {
     await waitFor(() => expect(screen.queryByRole('region', { name: 'Put learning into practice.' })).not.toBeInTheDocument())
   })
 
-  it('keeps the footer useful on other routes without repeating the founder section', () => {
-    render(<MemoryRouter><Footer /></MemoryRouter>)
-    expect(screen.queryByText('Read the full reflection')).not.toBeInTheDocument()
+  it('includes the founder reflection and navigation on other routes', () => {
+    render(<MemoryRouter initialEntries={['/team']}><Footer /></MemoryRouter>)
+    expect(screen.getByText('Read the full reflection')).toBeVisible()
     expect(screen.queryByRole('region', { name: 'Put learning into practice.' })).not.toBeInTheDocument()
     const navigation = screen.getByRole('navigation', { name: 'Footer navigation' })
     for (const [name, href] of [['Home', '/'], ['Catalogue', '#'], ['Panel', '/team'], ['Profile', '/profile'], ['Login', '/login'], ['Register', '/register']]) {
@@ -43,7 +43,7 @@ describe('Combined footer', () => {
     render(
       <MemoryRouter>
         <Routes>
-          <Route path="/" element={<Footer includeQuote />} />
+          <Route path="/" element={<Footer />} />
           <Route path="/register" element={<h1>Registration</h1>} />
         </Routes>
       </MemoryRouter>,
