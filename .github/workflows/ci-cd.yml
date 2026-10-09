@@ -45,7 +45,7 @@ jobs:
       - name: Component and deployment tests
         run: npm test
       - name: Dependency security audit
-        run: npm audit --audit-level=high
+        run: npm run audit
       - name: Production build
         run: npm run build
       - name: Verify deployment artifact
