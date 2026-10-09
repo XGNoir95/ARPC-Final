@@ -4,4 +4,4 @@ Report exploitable vulnerabilities through this repository's private vulnerabili
 
 Dependencies and Actions are reviewed through Dependabot, CodeQL, and CI dependency audits. Keep the lockfile committed and review update pull requests before merging. Environment variables prefixed with `VITE_` are public browser configuration, not a place for secrets.
 
-The current repository contains a frontend and a backend placeholder. Authentication and authorization must be implemented and validated in the backend before using the interface for real member accounts.
+The current repository contains a frontend application. Authentication and authorization must be implemented and validated in a backend before using the interface for real member accounts.
