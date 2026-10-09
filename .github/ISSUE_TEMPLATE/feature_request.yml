@@ -1,0 +1,23 @@
+name: Feature request
+description: Suggest an improvement to the ARPC website.
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What problem would this solve?
+      description: Explain who needs the improvement and why.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed improvement
+      description: Describe the behavior you would like to see.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Examples or context
+      description: Optional references, sketches or alternative approaches.

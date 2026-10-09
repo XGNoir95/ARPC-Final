@@ -1,6 +1,7 @@
 // src/Pages/Team.jsx
 import React, { useState, useEffect } from "react";
 import { FaFacebookF, FaLinkedinIn, FaGithub } from "react-icons/fa";
+import { publicAsset } from "../utils/publicAsset";
 
 const teams = [
   {
@@ -45,8 +46,7 @@ const teams = [
 const sampleMember = {
   name: "Sample Member",
   department: "Department of Computer Science & Engineering",
-  image:
-    "https://pbs.twimg.com/profile_images/1328353245408993280/xooFrrYm_400x400.jpg",
+  image: publicAsset("/images/team/member-placeholder.svg"),
   facebook: "#",
   linkedin: "#",
   github: "#",

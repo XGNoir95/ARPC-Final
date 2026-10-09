@@ -15,3 +15,8 @@ Thumbs.db
 !.vscode/extensions.json
 *.pem
 *.key
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
