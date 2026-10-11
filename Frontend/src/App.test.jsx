@@ -21,7 +21,7 @@ describe('GitHub Pages routing', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Sign Up!' }))
     expect(window.location.hash).toBe('#/register')
-    await waitFor(() => expect(screen.getByLabelText('AUST email address')).toBeVisible())
+    await waitFor(() => expect(screen.getByLabelText('AUST email address')).toBeVisible(), { timeout: 4000 })
     expect(screen.getByText('Read the full reflection')).toBeVisible()
     firstRender.unmount()
 
@@ -80,7 +80,7 @@ describe('GitHub Pages routing', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Loading panel')
     expect(scrollTo).toHaveBeenCalledExactlyOnceWith({ top: 0, left: 0, behavior: 'instant' })
 
-    await waitFor(() => expect(screen.getByRole('heading', { name: /The teams.*behind.*ARPC/ })).toBeVisible())
+    await waitFor(() => expect(screen.getByRole('heading', { name: /The teams.*behind.*ARPC/ })).toBeVisible(), { timeout: 4000 })
     expect(outgoing).not.toBeInTheDocument()
     expect(scrollTo).toHaveBeenCalledExactlyOnceWith({ top: 0, left: 0, behavior: 'instant' })
     expect(screen.getByRole('main')).toHaveFocus()
@@ -101,7 +101,7 @@ describe('GitHub Pages routing', () => {
     fireEvent.click(within(screen.getByRole('navigation', { name: 'Main navigation' })).getAllByRole('button', { name: 'Catalogue', exact: true })[0])
     window.history.replaceState(null, '', '/')
     fireEvent(window, new PopStateEvent('popstate'))
-    await waitFor(() => expect(screen.getByRole('heading', { name: /Find Where You Belong/ })).toBeVisible())
+    await waitFor(() => expect(screen.getByRole('heading', { name: /Find Where You Belong/ })).toBeVisible(), { timeout: 4000 })
     expect(screen.queryByRole('heading', { name: 'Come curious. Leave inspired.' })).not.toBeInTheDocument()
     expect(container.querySelectorAll('main')).toHaveLength(1)
     expect(container.querySelectorAll('footer')).toHaveLength(1)

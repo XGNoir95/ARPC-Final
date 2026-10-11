@@ -250,9 +250,9 @@ const Hero = () => {
                   className="absolute inset-x-0 top-0 h-[3px] bg-white/35 lg:inset-x-auto lg:inset-y-0 lg:right-0 lg:h-auto lg:w-[3px]"
                 >
                   <span
-                    className="absolute top-0 left-0 h-full w-1/3 bg-white transition-transform duration-500 ease-in-out motion-reduce:transition-none lg:h-1/3 lg:w-full"
+                    className="absolute top-0 left-0 h-full w-1/3 bg-white [transform:var(--rail-transform)] transition-transform duration-500 ease-in-out motion-reduce:transition-none lg:h-1/3 lg:w-full"
                     style={{
-                      transform: `translate${verticalRail ? "Y" : "X"}(${activePhoto * 100}%)`,
+                      "--rail-transform": `translate${verticalRail ? "Y" : "X"}(${activePhoto * 100}%)`,
                     }}
                   />
                 </div>

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint . --max-warnings=0",
+    "lint": "npm run verify:styles && eslint . --max-warnings=0",
+    "verify:styles": "node scripts/verify-styles.mjs",
     "audit": "npm audit --audit-level=high",
     "test": "vitest run",
     "test:watch": "vitest",

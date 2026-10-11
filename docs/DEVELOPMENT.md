@@ -17,6 +17,7 @@ Use the URL printed by Vite. Do not run a clean installation over an active Vite
 | --- | --- |
 | `npm run dev` | Start Vite with hot module replacement. |
 | `npm run lint` | Run ESLint with zero warnings allowed. |
+| `npm run verify:styles` | Enforce the Tailwind styling policy. Also included in lint and CI. |
 | `npm test` | Run component, interaction and deployment tests with Vitest. |
 | `npm run test:watch` | Rerun tests while developing. |
 | `npm run audit` | Check dependencies for high/critical security advisories. |
@@ -26,6 +27,14 @@ Use the URL printed by Vite. Do not run a clean installation over an active Vite
 | `npm run preview` | Serve the generated production build locally. |
 
 Run `npm run validate` before pushing. It mirrors CI's validation steps; the workflow supplies the Pages environment described below.
+
+## Styling
+
+Use Tailwind v4 utilities throughout the website. For complex book, folder and laptop states, complete utility strings live beside the component in `*.styles.js` modules. Semantic class names remain as interaction and test hooks; they do not define separate CSS rules.
+
+`Frontend/src/index.css` contains the Tailwind import, local font declarations, theme tokens, shared keyframes and document defaults. Do not add component stylesheets. Inline styles only supply CSS custom properties for runtime data or measured animation geometry; Tailwind utilities apply them. The ESLint rule and `verify:styles` check enforce this convention during local lint and CI.
+
+`verify:build` also checks that every utility in the style modules appears in the production CSS. Keep these modules as plain constants/functions. Use `String.raw` for selectors containing escaped underscores so the source scanner and runtime class name match.
 
 ## Public configuration
 
@@ -60,6 +69,30 @@ npm run preview
 ```
 
 Visit `/ARPC-Final/` on the preview server. Navigate to `#/team` and refresh to verify a production deep link.
+
+## Course cover presets
+
+Course records in `Frontend/src/data/catalogue.js` accept `coverTheme` and
+`coverImage`. The eleven bundled presets are `reflection`, `writing`, `history`,
+`learning`, `nature`, `science`, `community`, `leadership`, `language`,
+`creativity` and `technology`. All use the site's forest, sage and gold palette.
+
+```js
+coverTheme: "science",
+// Optional override: place this file in Frontend/public/images/courses/.
+coverImage: "/images/courses/my-course.jpg",
+```
+
+`courseCoverPresets` exported from `Frontend/src/utils/courseCovers.js` provides
+each preset's stable `id`, readable `label`, preview `cover`, folder `color` and
+`ink`. A future admin cover picker can display these previews and save the chosen
+`id` as `coverTheme` in its course record. No admin or backend is implemented yet.
+
+Without an explicit theme, the title and format select a subject illustration;
+unmatched subjects use the general learning cover. A custom image takes precedence
+and falls back to the selected illustration if it fails to load. Custom images may
+also use an HTTPS URL supplied by a future upload service. Bundled preset assets
+use Vite imports, so their URLs work under the GitHub Pages deployment base.
 
 ## CI and deployment
 

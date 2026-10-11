@@ -23,7 +23,7 @@ const AnimatedPage = ({ children, pathname, loading = false, focusOnEntry = fals
       <Motion.div
         inert={loading ? true : undefined}
         aria-hidden={loading ? true : undefined}
-        style={{ visibility: loading ? "hidden" : "visible" }}
+        className={loading ? "invisible" : "visible"}
         initial={{ opacity: loading ? 0 : 1 }}
         animate={{ opacity: loading ? 0 : 1 }}
         transition={transition}

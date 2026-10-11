@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { FiArrowDown, FiArrowUpRight, FiCalendar, FiClock, FiMapPin, FiSearch, FiX, FiBookOpen, FiCheck } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import { FiArrowDown, FiSearch } from "react-icons/fi";
 import { publicAsset } from "../utils/publicAsset";
-import { catalogue, filterCatalogue, formatCatalogueDate, getCatalogueDay, isFinished } from "../data/catalogue";
+import { catalogue, filterCatalogue, getCatalogueDay } from "../data/catalogue";
 import EventBookshelf from "../Components/EventBookshelf";
 import WebinarFolders from "../Components/WebinarFolders";
+import CourseLaptop from "../Components/CourseLaptop";
 
 const focus = "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E]";
 const frame = "mx-auto w-full max-w-[112rem] px-6 lg:w-[calc(100%_-_10rem)] 2xl:px-24";
@@ -20,82 +21,9 @@ function scrollToSection(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
 }
 
-function Status({ item, today, dark = false }) {
-  const course = item.fee !== undefined;
-  const finished = !course && isFinished(item, today);
-  return <span className={`inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold leading-5 ${dark ? "bg-white/10 text-[#eef4ef]" : finished ? "bg-[#173d2e]/8 text-[#173d2e]" : "bg-[#eef4ef] text-[#173d2e]"}`}>
-    <span aria-hidden="true" className={`size-1.5 rounded-full ${finished ? "bg-current opacity-45" : "bg-[#E9AD5E]"}`} />
-    {course ? item.fee === 0 ? "Free course" : "Paid course" : finished ? "Recently finished" : "Upcoming"}
-  </span>;
-}
-
-function DetailsButton({ item, onSelect, dark = false }) {
-  return <button type="button" onClick={() => onSelect(item)} aria-label={`View details: ${item.title}`} className={`group inline-flex min-h-12 cursor-pointer items-center justify-between gap-6 rounded-full px-5 py-2.5 text-base font-semibold transition-colors duration-200 motion-reduce:transition-none ${focus} ${dark ? "bg-[#eef4ef] text-[#102c21] hover:bg-[#E9AD5E]" : "bg-[#173d2e] text-white hover:bg-[#102c21]"}`}>
-    View details <FiArrowUpRight aria-hidden="true" className="size-5 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none" />
-  </button>;
-}
-
-function Metadata({ item, dark = false }) {
-  return <dl className={`flex flex-wrap gap-x-5 gap-y-3 text-sm leading-relaxed ${dark ? "text-[#eef4ef]/85" : "text-[#173d2e]/80"}`}>
-    <div className="flex items-start gap-2"><dt><FiCalendar aria-hidden="true" className="mt-0.5 size-4" /><span className="sr-only">Date</span></dt><dd><time dateTime={item.date}>{formatCatalogueDate(item.date)}</time></dd></div>
-    <div className="flex items-start gap-2"><dt><FiClock aria-hidden="true" className="mt-0.5 size-4" /><span className="sr-only">Time in Dhaka</span></dt><dd>{item.time} (Dhaka)</dd></div>
-    <div className="flex items-start gap-2"><dt><FiMapPin aria-hidden="true" className="mt-0.5 size-4" /><span className="sr-only">Location</span></dt><dd>{item.location}</dd></div>
-  </dl>;
-}
-
-function CourseCard({ item, today, onSelect, featured }) {
-  return <article aria-labelledby={`${item.id}-title`} className={`min-w-0 overflow-hidden rounded-2xl border border-[#173d2e]/15 bg-white ${featured ? "col-span-full grid md:grid-cols-2" : "flex flex-col"}`}>
-    <div className={`relative overflow-hidden ${featured ? "min-h-64 md:min-h-80" : "aspect-[16/10]"}`}>
-      <img src={publicAsset(item.image)} alt={item.imageAlt} width="800" height="500" loading="lazy" className={`size-full object-cover ${featured ? "absolute inset-0" : ""}`} />
-      <span className="absolute bottom-4 left-4 rounded-full bg-[#102c21]/90 px-3 py-1.5 text-xs font-medium text-white">{item.format}</span>
-    </div>
-    <div className="flex flex-1 flex-col items-start gap-5 p-6 sm:p-7">
-      <Status item={item} today={today} />
-      <h3 id={`${item.id}-title`} className="font-garamond text-[2rem] font-semibold leading-[1.1] tracking-[-0.02em]">{item.title}</h3>
-      <p className="w-full text-justify text-base leading-[1.75] text-[#173d2e]/80">{item.description}</p>
-      <dl className="mt-auto flex w-full flex-wrap gap-x-5 gap-y-3 text-sm text-[#173d2e]/80">
-        <div className="flex items-center gap-2"><dt><FiClock aria-hidden="true" className="size-4" /><span className="sr-only">Duration</span></dt><dd>{item.duration}</dd></div>
-        <div className="flex items-center gap-2"><dt><FiBookOpen aria-hidden="true" className="size-4" /><span className="sr-only">Learning format</span></dt><dd>{item.pace}</dd></div>
-      </dl>
-      <div className="flex w-full flex-wrap items-center justify-between gap-4 border-t border-[#173d2e]/15 pt-5">
-        <p className="font-garamond text-[1.8rem] font-semibold leading-none">{item.fee === 0 ? "Free" : <><span className="text-lg">৳</span> {item.fee.toLocaleString("en-BD")}</>}<span className="mt-1 block font-sans text-xs font-normal text-[#173d2e]/65">{item.fee === 0 ? "No course fee" : "Sample course fee"}</span></p>
-        <DetailsButton item={item} onSelect={onSelect} />
-      </div>
-    </div>
-  </article>;
-}
-
-function ListingDetails({ item, onClose, today }) {
-  const dialogRef = useRef(null);
-  useEffect(() => {
-    if (!item) return;
-    const dialog = dialogRef.current;
-    dialog.showModal();
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => { dialog.close(); document.body.style.overflow = previousOverflow; };
-  }, [item]);
-  return <dialog ref={dialogRef} aria-labelledby="catalogue-detail-title" onCancel={onClose} onClick={(event) => { if (event.target === event.currentTarget) { const r = event.currentTarget.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) onClose(); } }} className="fixed inset-0 m-auto max-h-[85dvh] w-[calc(100%_-_2rem)] max-w-3xl overflow-y-auto rounded-2xl bg-[#eef4ef] p-0 text-[#173d2e] shadow-2xl backdrop:bg-[#102c21]/70 backdrop:backdrop-blur-sm">
-    {item && <>
-      <div className="relative h-48 overflow-hidden sm:h-64"><img src={publicAsset(item.image)} alt={item.imageAlt} className="size-full object-cover" /><button autoFocus type="button" onClick={onClose} aria-label="Close listing details" className={`absolute top-4 right-4 flex size-12 cursor-pointer items-center justify-center rounded-full bg-[#eef4ef] text-[#173d2e] ${focus}`}><FiX className="size-6" /></button></div>
-      <div className="space-y-6 p-6 sm:p-9">
-        <Status item={item} today={today} />
-        <h2 id="catalogue-detail-title" className="font-garamond text-4xl font-semibold leading-[1.1] sm:text-5xl">{item.title}</h2>
-        {item.date ? <Metadata item={item} /> : <p className="font-semibold">{item.duration} · {item.pace} · {item.fee === 0 ? "Free" : `৳ ${item.fee.toLocaleString("en-BD")}`}</p>}
-        <p className="text-justify text-base leading-[1.8]">{item.details}</p>
-        <ul className="space-y-3">{item.takeaways.map((point) => <li key={point} className="flex items-start gap-3 text-base leading-relaxed"><FiCheck aria-hidden="true" className="mt-1 size-5 shrink-0" />{point}</li>)}</ul>
-        <p className="rounded-xl bg-white p-4 text-sm leading-relaxed text-[#173d2e]/80">This is a sample programme. Dates, fees and availability are illustrative; registration, recordings and enrolment will appear when confirmed.</p>
-        <button type="button" onClick={onClose} className={`min-h-12 cursor-pointer rounded-full bg-[#173d2e] px-6 py-3 font-semibold text-white ${focus}`}>Back to catalogue</button>
-      </div>
-    </>}
-  </dialog>;
-}
-
 export default function Catalogue() {
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({ events: "All", webinars: "All", courses: "All" });
-  const [selected, setSelected] = useState(null);
-  const closeListing = useCallback(() => setSelected(null), []);
   const [today, setToday] = useState(getCatalogueDay);
   useEffect(() => {
     const refresh = () => setToday(getCatalogueDay());
@@ -104,12 +32,12 @@ export default function Catalogue() {
     return () => { window.clearInterval(timer); window.removeEventListener("focus", refresh); };
   }, []);
   return <div lang="en" className="bg-white text-[#173d2e]">
-    <header aria-labelledby="catalogue-heading" className="relative isolate flex min-h-[28rem] items-end overflow-hidden bg-[#102c21] text-[#eef4ef] sm:min-h-[25rem] lg:min-h-[28rem]">
-      <img aria-hidden="true" src={publicAsset("/images/team/meeting-discussion.jpg")} alt="" width="1600" height="1067" fetchPriority="high" className="absolute inset-0 -z-20 size-full object-cover object-[center_40%] grayscale-[0.5]" />
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-linear-to-r from-[#102c21]/90 via-[#102c21]/65 to-[#102c21]/40" />
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-linear-to-b from-[#102c21]/80 via-transparent to-[#102c21]/50" />
+    <header aria-labelledby="catalogue-heading" className="relative isolate flex min-h-[28rem] items-end overflow-hidden bg-neutral-900 text-[#eef4ef] sm:min-h-[25rem] lg:min-h-[28rem]">
+      <img aria-hidden="true" src={publicAsset("/images/team/meeting-discussion.jpg")} alt="" width="1600" height="1067" fetchPriority="high" className="absolute inset-0 -z-20 size-full object-cover object-[center_40%]" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-linear-to-r from-black/90 via-black/65 to-black/40" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-linear-to-b from-black/80 via-transparent to-black/50" />
       <div className={`${frame} flex flex-col gap-6 pt-32 pb-9 sm:gap-7 sm:pt-36 sm:pb-10 lg:pt-40 lg:pb-12`}>
-        <h1 id="catalogue-heading" className="font-garamond text-[clamp(2.8rem,9vw,3.5rem)] font-semibold leading-[0.98] tracking-[-0.025em] sm:text-[clamp(3.75rem,7vw,6rem)]">Come curious.<br />Leave inspired.</h1>
+        <h1 id="catalogue-heading" className="font-garamond text-[clamp(2.8rem,9vw,3.5rem)] font-semibold leading-[0.98] tracking-[-0.025em] sm:text-[clamp(3.75rem,7vw,6rem)]">Come curious.<br /><span className="text-[#E9AD5E]">Leave inspired.</span></h1>
         <div className="flex w-full flex-col gap-6 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
           <p className="max-w-[66ch] flex-1 text-justify text-base leading-[1.75] lg:text-lg">Find your next gathering, join a conversation online or make time to learn. Explore events, webinars and courses from ARPC.</p>
           <button type="button" onClick={() => scrollToSection("catalogue-browse")} className={`group inline-flex min-h-14 shrink-0 cursor-pointer items-center justify-center self-end gap-6 rounded-full bg-[#eef4ef] px-6 py-3 text-base font-semibold text-[#102c21] transition-colors hover:bg-[#E9AD5E] motion-reduce:transition-none sm:text-lg ${focus}`}>Explore the catalogue <FiArrowDown aria-hidden="true" className="size-5" /></button>
@@ -136,12 +64,9 @@ export default function Catalogue() {
             </div>
           </div>
           <p role="status" className="sr-only">{items.length} {title.toLowerCase()} shown</p>
-          {items.length ? id === "events" ? <EventBookshelf key={items.map((item) => item.id).join("|")} items={items} today={today} /> : id === "webinars" ? <WebinarFolders key={items.map((item) => item.id).join("|")} items={items} today={today} /> : <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {items.map((item) => <CourseCard key={item.id} item={item} featured={items.length === 1} today={today} onSelect={setSelected} />)}
-          </div> : <div className="rounded-2xl bg-[#eef4ef] px-6 py-10"><h3 className="font-garamond text-3xl font-semibold">No {title.toLowerCase()} match this selection.</h3><p className="mt-3 text-base leading-relaxed">Try another search or show all {title.toLowerCase()}.</p><button type="button" onClick={() => { setSearch(""); setFilters((previous) => ({ ...previous, [id]: "All" })); }} className={`mt-5 min-h-11 cursor-pointer rounded-full border border-current px-5 py-2 font-medium ${focus}`}>Reset search and filter</button></div>}
+          {items.length ? id === "events" ? <EventBookshelf key={items.map((item) => item.id).join("|")} items={items} today={today} /> : id === "webinars" ? <WebinarFolders key={items.map((item) => item.id).join("|")} items={items} today={today} /> : <CourseLaptop key={items.map((item) => item.id).join("|")} items={items} /> : <div className="rounded-2xl bg-[#eef4ef] px-6 py-10"><h3 className="font-garamond text-3xl font-semibold">No {title.toLowerCase()} match this selection.</h3><p className="mt-3 text-base leading-relaxed">Try another search or show all {title.toLowerCase()}.</p><button type="button" onClick={() => { setSearch(""); setFilters((previous) => ({ ...previous, [id]: "All" })); }} className={`mt-5 min-h-11 cursor-pointer rounded-full border border-current px-5 py-2 font-medium ${focus}`}>Reset search and filter</button></div>}
         </div>
       </section>;
     })}
-    <ListingDetails item={selected} onClose={closeListing} today={today} />
   </div>;
 }

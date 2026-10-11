@@ -150,7 +150,7 @@ const FeaturedEvents = () => {
             onPointerCancel={releaseTouch}
             onLostPointerCapture={releaseTouch}
           >
-            <div className="flex items-start transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
+            <div className="flex items-start [transform:translateX(var(--event-offset))] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none" style={{ "--event-offset": `-${currentIndex * 100}%` }}>
               {events.map((event, index) => (
                 <article
                   key={event.id}

@@ -22,7 +22,7 @@ const Navbar = ({ blendWithHero = false, loading = false }) => {
   };
 
   return (
-    <nav aria-label="Main navigation" className={`text-white relative z-50 transition-colors duration-200 ease-out motion-reduce:transition-none ${loading && blendWithHero ? "route-nav-loading" : ""} ${blendWithHero ? "bg-transparent" : "bg-gradient-to-r from-[#0E291E] via-[#133729] to-green-700"}`}>
+    <nav aria-label="Main navigation" className={`text-white relative z-50 transition-colors duration-200 ease-out motion-reduce:transition-none [&_img[alt=Logo]]:transition-[filter] [&_img[alt=Logo]]:duration-200 [&_img[alt=Logo]]:ease-out motion-reduce:[&_img[alt=Logo]]:transition-none ${loading && blendWithHero ? "route-nav-loading text-[#173d2e]! bg-[#eef4ef]! transition-none! [&_img[alt=Logo]]:[filter:brightness(0)_saturate(100%)_invert(22%)_sepia(25%)_saturate(878%)_hue-rotate(98deg)_brightness(85%)_contrast(96%)] [&_img[alt=Logo]]:transition-none!" : ""} ${blendWithHero ? "bg-transparent" : "bg-gradient-to-r from-[#0E291E] via-[#133729] to-green-700"}`}>
       {/* ==== SMALL & MEDIUM DEVICES ==== */}
       <div className="block lg:hidden">
         <div className={`w-full ${blendWithHero ? "px-6 py-6" : "py-4"}`}>

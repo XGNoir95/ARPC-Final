@@ -18,7 +18,6 @@ import TeamPage from "./Pages/Team";
 import Catalogue from "./Pages/Catalogue";
 import Profile from "./Pages/Profile";
 import { RouteTransitionProvider } from "./RouteTransitionContext";
-import { useReducedMotion } from "framer-motion";
 import AnimatedPage from "./Components/AnimatedPage";
 import { prepareRoute } from "./utils/prepareRoute";
 
@@ -42,7 +41,6 @@ function App() {
 // This component can safely use hooks like useLocation
 function AppContent() {
   const location = useLocation();
-  const reducedMotion = useReducedMotion();
   const [readyPathname, setReadyPathname] = useState(location.pathname);
   const loading = readyPathname !== location.pathname;
 
@@ -51,13 +49,12 @@ function AppContent() {
     const controller = new AbortController();
     prepareRoute(location.pathname, {
       signal: controller.signal,
-      reducedMotion,
     }).then(() => {
       if (!controller.signal.aborted) setReadyPathname(location.pathname);
     });
     // A newer destination always wins, including Back/Forward navigation.
     return () => controller.abort();
-  }, [location.pathname, readyPathname, reducedMotion]);
+  }, [location.pathname, readyPathname]);
 
   // Track previous pathname globally
   const [prevPathname, setPrevPathname] = useState(null);

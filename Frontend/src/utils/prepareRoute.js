@@ -6,16 +6,16 @@ const heroImages = {
   "/catalogue": ["/images/team/meeting-discussion.jpg"],
 };
 
-// A short readable skeleton, followed by a 200 ms crossfade. Slow or failed
-// images cannot hold the page hostage; cached images still get a calm handoff.
-const MIN_SKELETON_MS = 280;
-const MAX_PREPARATION_MS = 900;
+// Keep the skeleton visible for 2.5 seconds, with a 3-second ceiling for
+// stalled images. Reduced motion changes the animation, not this display time.
+const MIN_SKELETON_MS = 2500;
+const MAX_PREPARATION_MS = 3000;
 
-export function prepareRoute(pathname, { signal, reducedMotion = false }) {
+export function prepareRoute(pathname, { signal }) {
   return new Promise((resolve) => {
     if (signal.aborted) { resolve(); return; }
     const images = [];
-    let minimumElapsed = reducedMotion;
+    let minimumElapsed = false;
     let pending = (heroImages[pathname] ?? []).length;
     let settled = false;
     let minimumTimer;
@@ -33,7 +33,7 @@ export function prepareRoute(pathname, { signal, reducedMotion = false }) {
     const maybeFinish = () => { if (minimumElapsed && pending === 0) finish(); };
     signal.addEventListener("abort", finish, { once: true });
     deadlineTimer = setTimeout(finish, MAX_PREPARATION_MS);
-    if (!reducedMotion) minimumTimer = setTimeout(() => {
+    minimumTimer = setTimeout(() => {
       minimumElapsed = true;
       maybeFinish();
     }, MIN_SKELETON_MS);

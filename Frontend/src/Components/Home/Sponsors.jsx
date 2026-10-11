@@ -184,10 +184,10 @@ const Sponsors = () => {
                       aria-posinset={index + 1}
                       aria-setsize={affiliations.length}
                       style={{
-                        transform: `translateY(calc(-50% + ${distance} * var(--name-step)))`,
-                        opacity: selected ? 1 : Math.abs(distance) === 1 ? 0.55 : outside ? 0 : 0.25,
+                        "--name-transform": `translateY(calc(-50% + ${distance} * var(--name-step)))`,
+                        "--name-opacity": selected ? 1 : Math.abs(distance) === 1 ? 0.55 : outside ? 0 : 0.25,
                       }}
-                      className={`absolute inset-x-0 top-1/2 pr-1 transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none @sm:pr-3 ${outside ? "pointer-events-none invisible" : ""}`}
+                      className={`absolute inset-x-0 top-1/2 pr-1 [transform:var(--name-transform)] opacity-[var(--name-opacity)] transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none @sm:pr-3 ${outside ? "pointer-events-none invisible" : ""}`}
                     >
                       <button
                         ref={(node) => { buttons.current[index] = node; }}
@@ -213,10 +213,10 @@ const Sponsors = () => {
                     <div
                       key={affiliation.src}
                       style={{
-                        transform: `translate(-50%, calc(-50% + ${distance} * var(--logo-step))) scale(${selected ? 1 : 0.9})`,
-                        opacity: selected ? 1 : outside ? 0 : 0.55,
+                        "--logo-transform": `translate(-50%, calc(-50% + ${distance} * var(--logo-step))) scale(${selected ? 1 : 0.9})`,
+                        "--logo-opacity": selected ? 1 : outside ? 0 : 0.55,
                       }}
-                      className={`absolute top-1/2 left-1/2 flex h-32 w-[90%] max-w-xs items-center justify-center rounded-xl border bg-white p-2 shadow-[0_12px_35px_-20px_rgba(14,41,30,0.25)] transition-[transform,opacity,border-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none @sm:h-40 @sm:w-[86%] @sm:p-5 @lg:h-52 @lg:p-7 ${selected ? "border-[#173d2e]/30" : "border-[#173d2e]/8"} ${outside ? "invisible" : ""}`}
+                      className={`absolute top-1/2 left-1/2 flex h-32 w-[90%] max-w-xs items-center justify-center rounded-xl border bg-white p-2 [transform:var(--logo-transform)] opacity-[var(--logo-opacity)] shadow-[0_12px_35px_-20px_rgba(14,41,30,0.25)] transition-[transform,opacity,border-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none @sm:h-40 @sm:w-[86%] @sm:p-5 @lg:h-52 @lg:p-7 ${selected ? "border-[#173d2e]/30" : "border-[#173d2e]/8"} ${outside ? "invisible" : ""}`}
                     >
                       <img
                         src={publicAsset(affiliation.src)}

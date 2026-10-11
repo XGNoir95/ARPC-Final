@@ -80,15 +80,14 @@ const ScholarQuotesPanel = () => {
 
         <div
           key={activeIndex}
-          className="max-w-2xl text-center space-y-6 scholar-fade"
+          className="max-w-2xl text-center space-y-6 animate-scholar-fade"
         >
           {/* Scholar avatar */}
           <div className="flex justify-center">
             <img
               src={activeScholar.imageUrl}
               alt={activeScholar.name}
-              className="rounded-full object-cover border-4 border-amber-400 shadow-md"
-              style={{ width: 140, height: 140 }}
+              className="size-35 rounded-full object-cover border-4 border-amber-400 shadow-md"
               loading="lazy"
             />
           </div>

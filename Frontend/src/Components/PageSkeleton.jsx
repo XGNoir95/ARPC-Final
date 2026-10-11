@@ -1,7 +1,9 @@
+import { skeletonFrame } from "./PageSkeleton.styles";
+
 const frame = "mx-auto w-full max-w-[112rem] px-6 lg:w-[calc(100%_-_10rem)] 2xl:px-24";
 
 function Block({ className = "" }) {
-  return <div className={`skeleton-block ${className}`} />;
+  return <div className={`bg-[#dbe6de] ${className}`} />;
 }
 
 function TextLines({ className = "" }) {
@@ -119,7 +121,7 @@ function ProfileSkeleton() {
 
 export default function PageSkeleton({ pathname }) {
   const auth = pathname === "/login" || pathname === "/register";
-  return <div data-page-skeleton={pathname} className="route-skeleton min-h-full bg-white" aria-hidden="true">
+  return <div data-page-skeleton={pathname} className={`${skeletonFrame} min-h-full bg-white`} aria-hidden="true">
     {auth ? <AccountSkeleton register={pathname === "/register"} /> : pathname === "/profile" ? <ProfileSkeleton /> : <>
       {pathname === "/" ? <HomeHeroSkeleton /> : <HeroSkeleton />}
       {pathname === "/team" ? <TeamRows /> : pathname === "/catalogue" ? <CatalogueCards /> : <div className={`${frame} py-12`}><Block className="h-10 w-52" /><TextLines className="mt-8 max-w-2xl" /></div>}

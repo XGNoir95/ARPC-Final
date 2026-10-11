@@ -70,8 +70,12 @@ export const catalogue = {
     },
   ],
   courses: [
+    // Optional coverTheme: preset id from courseCoverPresets in utils/courseCovers.js.
+    // Optional coverImage: e.g. /images/courses/my-course.jpg (file in public/).
+    // Without either field, artwork is chosen by the course title and format.
     {
       id: "quran-reflection", title: "An introduction to Qur’an reflection", fee: 0,
+      coverTheme: "reflection",
       duration: "4 weeks", pace: "Guided learning", location: "Online", image: "/images/about/nature.jpg",
       imageAlt: "Sunlight on a mountain above a forest", format: "Foundations",
       description: "Build a habit of attentive reading and explore practical lessons from selected ayat.",
@@ -80,6 +84,7 @@ export const catalogue = {
     },
     {
       id: "community-writing", title: "Content writing for community work", fee: 1200,
+      coverTheme: "writing",
       duration: "6 weeks", pace: "Weekly workshops", location: "Online", image: "/images/team/meeting-planning.jpg",
       imageAlt: "A collaborative planning workshop", format: "Communication",
       description: "Practise announcements, stories and campaigns that make good ideas easier to share.",
@@ -88,6 +93,7 @@ export const catalogue = {
     },
     {
       id: "seerah-foundations", title: "Lessons from the Seerah", fee: 0,
+      coverTheme: "history",
       duration: "5 weeks", pace: "Guided learning", location: "Online", image: "/images/about/learning.jpg",
       imageAlt: "Students listening during a learning session", format: "Islamic learning",
       description: "Explore character, compassion and responsibility through selected stories from the Seerah.",

@@ -2,20 +2,17 @@ import { act, cleanup, fireEvent, render, screen, within } from "@testing-librar
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import Catalogue from "./Catalogue";
+import { catalogue } from "../data/catalogue";
 
 beforeEach(() => {
   vi.useFakeTimers();
   vi.spyOn(window, "scrollTo").mockImplementation(() => {});
   vi.setSystemTime(new Date("2026-10-10T06:00:00Z"));
-  Object.defineProperty(HTMLDialogElement.prototype, "showModal", { configurable: true, value: function () { this.setAttribute("open", ""); } });
-  Object.defineProperty(HTMLDialogElement.prototype, "close", { configurable: true, value: function () { this.removeAttribute("open"); } });
 });
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
   vi.restoreAllMocks();
-  delete HTMLDialogElement.prototype.showModal;
-  delete HTMLDialogElement.prototype.close;
 });
 const section = (name) => screen.getByRole("region", { name, exact: true });
 const renderCatalogue = () => render(<MemoryRouter><Catalogue /></MemoryRouter>);
@@ -226,16 +223,61 @@ describe("Catalogue page", () => {
     expect(screen.getByRole("searchbox")).toHaveValue("");
     expect(within(section("Events")).getAllByRole("article")).toHaveLength(4);
   });
-  it("opens the correct details, supports Escape and restores page scrolling", () => {
-    const { container } = renderCatalogue();
-    fireEvent.click(screen.getByRole("button", { name: "View details: Content writing for community work" }));
-    const dialog = screen.getByRole("dialog", { name: "Content writing for community work" });
-    expect(within(dialog).getByText(/no payment or enrolment is currently being collected/)).toBeVisible();
-    expect(document.body.style.overflow).toBe("hidden");
-    fireEvent(dialog, new Event("cancel", { bubbles: true }));
+  it.each(catalogue.courses)("opens $title inside the laptop and restores focus with Escape", (item) => {
+    renderCatalogue();
+    const courses = within(section("Courses"));
+    const trigger = courses.getByRole("button", { name: `Open course folder: ${item.title}` });
+    expect(courses.queryByRole("region")).not.toBeInTheDocument();
+    fireEvent.click(trigger);
+    const details = courses.getByRole("region", { name: item.title });
+    expect(details.closest(".course-laptop-screen")).toBe(trigger.closest(".course-laptop-screen"));
+    expect(details).toHaveFocus();
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(within(details).getByRole("heading", { name: item.title })).toBeInTheDocument();
+    expect(within(details).getByText(item.details)).toBeVisible();
+    expect(within(details).getByText(item.duration, { selector: "dd" })).toBeInTheDocument();
+    expect(within(details).getByText(item.pace, { selector: "dd" })).toBeInTheDocument();
+    expect(within(details).getByText(item.fee === 0 ? "Free" : `৳ ${item.fee.toLocaleString("en-BD")}`, { selector: "dd" })).toBeInTheDocument();
+    for (const takeaway of item.takeaways) expect(within(details).getByText(takeaway)).toBeInTheDocument();
+    expect(within(details).getByRole("button", { name: "Enrolment coming soon" })).toBeDisabled();
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(document.body.style.overflow).toBe("");
-    expect(container.querySelector("dialog")).not.toHaveAttribute("open");
+    fireEvent.keyDown(details, { key: "Escape" });
+    expect(courses.queryByRole("region")).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+  });
+  it("switches courses independently and returns to the folder desktop", () => {
+    renderCatalogue();
+    const courses = within(section("Courses"));
+    const folders = courses.getAllByRole("button", { name: /Open course folder:/ });
+    for (const trigger of [folders[0], folders[1], folders[2], folders[0]]) {
+      fireEvent.click(trigger);
+      const details = courses.getByRole("region");
+      expect(courses.getAllByRole("region")).toHaveLength(1);
+      expect(details).toHaveFocus();
+      expect(trigger).toHaveAttribute("aria-expanded", "true");
+      expect(folders.filter((folder) => folder.getAttribute("aria-expanded") === "true")).toHaveLength(1);
+    }
+    fireEvent.click(courses.getByRole("button", { name: "All courses" }));
+    expect(courses.queryByRole("region")).not.toBeInTheDocument();
+    expect(folders[0]).toHaveFocus();
+    expect(courses.getByText("Open a folder to explore your next course.")).toBeVisible();
+  });
+  it("resets the open course when filtering or searching changes its folders", () => {
+    renderCatalogue();
+    const courses = within(section("Courses"));
+    fireEvent.click(courses.getAllByRole("button", { name: /Open course folder:/ })[0]);
+    fireEvent.click(courses.getByRole("button", { name: "Paid", exact: true }));
+    expect(courses.queryByRole("region")).not.toBeInTheDocument();
+    const paid = courses.getByRole("button", { name: "Open course folder: Content writing for community work" });
+    fireEvent.click(paid);
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "no such course" } });
+    expect(courses.queryByRole("region")).not.toBeInTheDocument();
+    expect(courses.getByRole("heading", { name: "No courses match this selection." })).toBeInTheDocument();
+    fireEvent.click(courses.getByRole("button", { name: "Reset search and filter" }));
+    expect(courses.getAllByRole("button", { name: /Open course folder:/ })).toHaveLength(3);
+    expect(courses.queryByRole("region")).not.toBeInTheDocument();
   });
   it("switches webinar folders inline and shows only the selected session's actions", () => {
     renderCatalogue();

@@ -14,7 +14,7 @@ beforeEach(() => {
 afterEach(() => vi.useRealTimers());
 
 describe("Route preparation", () => {
-  it("waits briefly for cached assets so the skeleton does not flash", async () => {
+  it("keeps the skeleton visible for 2.5 seconds even when assets are ready", async () => {
     const ready = vi.fn();
     const preparation = prepareRoute("/team", { signal: new AbortController().signal }).then(ready);
     expect(images.map((image) => image.src)).toEqual([
@@ -22,7 +22,7 @@ describe("Route preparation", () => {
       "/ARPC-Final/images/team/meeting-discussion.jpg",
     ]);
     images.forEach((image) => image.onload());
-    await vi.advanceTimersByTimeAsync(279);
+    await vi.advanceTimersByTimeAsync(2499);
     expect(ready).not.toHaveBeenCalled();
     await vi.advanceTimersByTimeAsync(1);
     await preparation;
@@ -36,7 +36,7 @@ describe("Route preparation", () => {
     let finishDecoding;
     images[0].decode = () => new Promise((resolve) => { finishDecoding = resolve; });
     images[0].onload();
-    await vi.advanceTimersByTimeAsync(350);
+    await vi.advanceTimersByTimeAsync(2600);
     expect(ready).not.toHaveBeenCalled();
     finishDecoding();
     await preparation;
@@ -44,16 +44,22 @@ describe("Route preparation", () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
-  it("does not make reduced-motion visitors wait on cached images", async () => {
+  it("keeps the same minimum display for routes without hero images", async () => {
     vi.stubGlobal("Image", class { complete = true; });
-    await prepareRoute("/team", { signal: new AbortController().signal, reducedMotion: true });
+    const ready = vi.fn();
+    const preparation = prepareRoute("/register", { signal: new AbortController().signal }).then(ready);
+    await vi.advanceTimersByTimeAsync(2499);
+    expect(ready).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(1);
+    await preparation;
+    expect(ready).toHaveBeenCalledOnce();
     expect(vi.getTimerCount()).toBe(0);
   });
 
   it("continues after failed images without extending the minimum display", async () => {
     const preparation = prepareRoute("/team", { signal: new AbortController().signal });
     images.forEach((image) => image.onerror());
-    await vi.advanceTimersByTimeAsync(280);
+    await vi.advanceTimersByTimeAsync(2500);
     await preparation;
     expect(vi.getTimerCount()).toBe(0);
   });
@@ -61,7 +67,7 @@ describe("Route preparation", () => {
   it("never traps navigation when an image request stalls", async () => {
     const ready = vi.fn();
     const preparation = prepareRoute("/", { signal: new AbortController().signal }).then(ready);
-    await vi.advanceTimersByTimeAsync(899);
+    await vi.advanceTimersByTimeAsync(2999);
     expect(ready).not.toHaveBeenCalled();
     await vi.advanceTimersByTimeAsync(1);
     await preparation;

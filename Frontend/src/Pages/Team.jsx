@@ -267,7 +267,7 @@ export default function TeamPage() {
 
   return (
     <section aria-labelledby="team-page-heading" className="bg-white pb-12 text-[#173d2e] md:pb-16">
-      <header className="relative isolate flex min-h-[28rem] items-end overflow-hidden bg-[#102c21] text-white sm:min-h-[25rem] lg:min-h-[28rem]">
+      <header className="relative isolate flex min-h-[28rem] items-end overflow-hidden bg-neutral-900 text-white sm:min-h-[25rem] lg:min-h-[28rem]">
         {/* Stock meeting placeholders, not club portraits. Replace with ARPC photography.
             Walls.io: https://unsplash.com/photos/O0jOMufR1_g
             Vlada Karpovich: https://www.pexels.com/photo/people-having-a-meeting-7433823/ */}
@@ -279,7 +279,7 @@ export default function TeamPage() {
             width="1200"
             height="703"
             fetchPriority="high"
-            className="size-full object-cover object-[55%_45%] grayscale-[0.65] sm:object-[center_45%]"
+            className="size-full object-cover object-[55%_45%] filter-none sm:object-[center_45%]"
           />
         </picture>
         {/* A second view of collaboration forms a diagonal photographic spread. */}
@@ -289,11 +289,10 @@ export default function TeamPage() {
             alt=""
             width="1600"
             height="1067"
-            className="size-full object-cover object-[65%_42%] grayscale-[0.65]"
+            className="size-full object-cover object-[65%_42%] filter-none"
           />
         </div>
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-linear-to-r from-[#102c21]/85 via-[#102c21]/65 to-[#102c21]/30" />
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-linear-to-b from-[#102c21]/85 via-transparent to-[#102c21]/35" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-black/65" />
         <div className="flex w-full flex-col items-start gap-6 px-6 pt-28 pb-8 sm:gap-7 sm:pt-32 sm:pb-10 lg:mx-20 lg:w-auto lg:flex-1 lg:pb-12 2xl:px-24">
           <h1 id="team-page-heading" className="font-garamond text-[clamp(2.5rem,9vw,3.5rem)] font-semibold leading-[0.98] tracking-[-0.025em] text-[#eef4ef] sm:text-[clamp(3.75rem,7vw,6rem)]">
             <span className="block">The teams</span>{" "}

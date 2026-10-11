@@ -1,84 +1,10 @@
 @import "tailwindcss";
 
-html {
-  /* Keep navigation aligned when the incoming page changes the scroll height. */
-  scrollbar-gutter: stable;
-}
-
-/* Route placeholders share the site's paper/forest palette. One quiet sweep
-   moves across the layout, rather than making individual blocks flash. */
-.route-skeleton {
-  position: relative;
-  overflow: hidden;
-}
-
-.skeleton-block {
-  background-color: #dbe6de;
-}
-
-.route-skeleton::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 35%) 50%, transparent 65%);
-  transform: translateX(-100%);
-  animation: skeleton-sweep 1.6s ease-in-out infinite;
-}
-
-@keyframes skeleton-sweep {
-  to { transform: translateX(100%); }
-}
-
-/* Preserve navigation geometry and contrast while the hero is a light skeleton. */
-.route-nav-loading {
-  color: #173d2e;
-  background: #eef4ef;
-  transition: none;
-}
-
-nav[aria-label="Main navigation"] img[alt="Logo"] {
-  transition: filter 200ms ease-out;
-}
-
-.route-nav-loading img[alt="Logo"] {
-  filter: brightness(0) saturate(100%) invert(22%) sepia(25%) saturate(878%) hue-rotate(98deg) brightness(85%) contrast(96%);
-  transition: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .route-skeleton::after { animation: none; display: none; }
-  nav[aria-label="Main navigation"] img[alt="Logo"] { transition: none; }
-}
-
-/* Generic line clamp helpers */
-.line-clamp-1,
-.line-clamp-2,
-.line-clamp-4,
-.line-clamp-5 {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* 1 line */
-.line-clamp-1 {
-  -webkit-line-clamp: 1;
-}
-
-/* 2 lines */
-.line-clamp-2 {
-  -webkit-line-clamp: 2;
-}
-
-/* 4 lines */
-.line-clamp-4 {
-  -webkit-line-clamp: 4;
-}
-
-/* 5 lines */
-.line-clamp-5 {
-  -webkit-line-clamp: 5;
+/* Global document behavior; component styling lives in Tailwind utilities. */
+@layer base {
+  html {
+    @apply [scrollbar-gutter:stable];
+  }
 }
 
 /* EB Garamond */
@@ -164,54 +90,23 @@ nav[aria-label="Main navigation"] img[alt="Logo"] {
 }
 
 @theme {
+  --font-editorial: "EB Garamond", serif;
   --font-garamond: "EB Garamond", "Times New Roman", serif;
 }
 
-/* Hero slide-up animation */
-@keyframes heroSlideUp {
-  0% {
-    opacity: 0;
-    transform: translateY(60px);
-  }
+@theme {
+  --animate-skeleton-sweep: skeleton-sweep 1.6s ease-in-out infinite;
+  --animate-scholar-fade: scholarFadeSlide 0.9s ease-out;
 
-  100% {
-    opacity: 1;
-    transform: translateY(0);
+  @keyframes skeleton-sweep {
+    to { transform: translateX(100%); }
   }
-}
-
-/* Event card slide animation */
-@keyframes eventSlideIn {
-  0% {
-    opacity: 0;
-    transform: translateX(40px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateX(0);
+  @keyframes scholarFadeSlide {
+    0% { opacity: 0; transform: translateY(12px); }
+    40%, 100% { opacity: 1; transform: translateY(0); }
   }
 }
 
-/* Slideshow animation for scholars */
-
-@keyframes scholarFadeSlide {
-  0% {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-
-  40% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.scholar-fade {
-  animation: scholarFadeSlide 0.9s ease-out;
-}
+/* Custom geometry is retained for the existing book/folder animations. */
+@keyframes course-window-open { from { opacity: 0; transform: scale(0.985); } to { opacity: 1; transform: scale(1); } }
+@keyframes webinar-folder-reveal { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }

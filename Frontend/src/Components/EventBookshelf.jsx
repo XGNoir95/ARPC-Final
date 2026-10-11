@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { FiArrowUpRight, FiBookOpen, FiCalendar, FiCheck, FiClock, FiMapPin, FiX } from "react-icons/fi";
 import { formatCatalogueDate, isFinished } from "../data/catalogue";
 import { publicAsset } from "../utils/publicAsset";
-import "./EventBookshelf.css";
+import { bookStyles, bookStylesClasses } from "./EventBookshelf.styles";
 
 const bindings = [
   { cloth: "#28523e", ink: "#eef4ef", height: 0.92 },
@@ -102,18 +102,18 @@ export default function EventBookshelf({ items, today }) {
     buttons[target].scrollIntoView?.({ block: "nearest", inline: "nearest", behavior: "auto" });
   };
 
-  return <div className={`event-shelf ${activeId ? "event-shelf--reading" : ""}`}>
-    <div className="event-shelf__scroll">
-      <div ref={shelfRef} className="event-shelf__row">
+  return <div className={bookStylesClasses(`event-shelf ${activeId ? "event-shelf--reading" : ""}`)}>
+    <div className={bookStyles["event-shelf__scroll"]}>
+      <div ref={shelfRef} className={bookStyles["event-shelf__row"]}>
         {items.map((item) => {
           const expanded = activeId === item.id;
           const finished = isFinished(item, today);
-          return <article key={item.id} ref={expanded ? activeArticleRef : null} aria-labelledby={`${item.id}-spine-title`} data-book-phase={expanded ? phase : "closed"} className={`event-volume ${expanded ? "event-volume--open" : ""} ${expanded && phase === "collapsing" ? "event-volume--collapsing" : ""}`} style={bindingFor(item)}
+          return <article key={item.id} ref={expanded ? activeArticleRef : null} aria-labelledby={`${item.id}-spine-title`} data-book-phase={expanded ? phase : "closed"} className={bookStylesClasses(`event-volume ${expanded ? "event-volume--open" : ""} ${expanded && phase === "collapsing" ? "event-volume--collapsing" : ""}`)} style={bindingFor(item)}
             onTransitionEnd={(event) => { if (event.target === event.currentTarget && event.propertyName === "width" && expanded && !closing) revealBook(event.currentTarget); }}>
-          <h3 className="event-volume__heading" aria-label={item.title} aria-hidden={expanded ? true : undefined} inert={expanded ? true : undefined}>
+          <h3 className={bookStyles["event-volume__heading"]} aria-label={item.title} aria-hidden={expanded ? true : undefined} inert={expanded ? true : undefined}>
           <button
             type="button"
-            className="event-spine"
+            className={bookStyles["event-spine"]}
             aria-label={`Open event book: ${item.title}`}
             data-event-spine=""
             disabled={expanded}
@@ -122,19 +122,19 @@ export default function EventBookshelf({ items, today }) {
             onClick={(event) => openBook(item.id, event.currentTarget)}
             onKeyDown={moveAlongShelf}
           >
-            <span className="event-spine__date"><time dateTime={item.date}>{shortDate(item.date)}</time><span>{item.date.slice(0, 4)}</span></span>
-            <span id={`${item.id}-spine-title`} className="event-spine__title">{item.title}</span>
-            <span className="event-spine__status" data-status={finished ? "finished" : "upcoming"}><span aria-hidden="true" />{finished ? "Finished" : "Upcoming"}</span>
-            <span className="event-spine__publisher" aria-hidden="true">
-              <span className="event-spine__wordmark">
+            <span className={bookStyles["event-spine__date"]}><time dateTime={item.date}>{shortDate(item.date)}</time><span>{item.date.slice(0, 4)}</span></span>
+            <span id={`${item.id}-spine-title`} className={bookStyles["event-spine__title"]}>{item.title}</span>
+            <span className={bookStyles["event-spine__status"]} data-status={finished ? "finished" : "upcoming"}><span aria-hidden="true" />{finished ? "Finished" : "Upcoming"}</span>
+            <span className={bookStyles["event-spine__publisher"]} aria-hidden="true">
+              <span className={bookStyles["event-spine__wordmark"]}>
                 <img src={publicAsset("/logo1.png")} alt="" width="8000" height="4500" />
                 <img className="event-spine__wordmark-letters" src={publicAsset("/logo1.png")} alt="" width="8000" height="4500" />
               </span>
-              <img className="event-spine__round-logo" src={publicAsset("/newLogo.png")} alt="" width="36" height="36" />
+              <img className={bookStyles["event-spine__round-logo"]} src={publicAsset("/newLogo.png")} alt="" width="36" height="36" />
             </span>
           </button>
           </h3>
-          {expanded && <Motion.div key={`${item.id}-${book.opening}`} className="event-book-holder"
+          {expanded && <Motion.div key={`${item.id}-${book.opening}`} className={bookStyles["event-book-holder"]}
             initial={{ height: reducedMotion ? "auto" : book.entryHeight, opacity: reducedMotion ? 1 : 0 }}
             animate={{ height: phase === "collapsing" ? book.entryHeight : "auto", opacity: phase === "collapsing" ? 0 : 1 }}
             transition={{ duration: reducedMotion ? 0 : bookTiming.expanding / 1000, ease: bookEase, opacity: { duration: reducedMotion ? 0 : 0.18 } }}
@@ -145,7 +145,7 @@ export default function EventBookshelf({ items, today }) {
         })}
       </div>
     </div>
-    <p className="event-shelf__hint"><FiBookOpen aria-hidden="true" /><span>Choose a book to explore an event.</span></p>
+    <p className={bookStyles["event-shelf__hint"]}><FiBookOpen aria-hidden="true" /><span>Choose a book to explore an event.</span></p>
   </div>;
 }
 
@@ -165,46 +165,46 @@ function EventBookPages({ item, today, onClose, phase, reducedMotion }) {
     id={`${item.id}-pages`}
     tabIndex={-1}
     aria-labelledby={`${item.id}-open-title`}
-    className={`event-book-pages event-book-pages--${phase}`}
+    className={bookStylesClasses(`event-book-pages event-book-pages--${phase}`)}
     onKeyDown={(event) => { if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); onClose(); } }}
   >
-    <button type="button" onClick={onClose} aria-label="Close event book" className="event-book-close"><FiX aria-hidden="true" /></button>
-      <div className="event-book-spread">
-        <div className="event-book-left">
-          <p className="event-book-format">{item.format}</p>
-          <img src={publicAsset(item.image)} alt={item.imageAlt} width="800" height="600" className="event-book-image" />
-          <p className="event-book-introduction">{item.description}</p>
-          <span className="event-book-imprint">Ahsanullah Roh. Peace Club</span>
+    <button type="button" onClick={onClose} aria-label="Close event book" className={bookStyles["event-book-close"]}><FiX aria-hidden="true" /></button>
+      <div className={bookStyles["event-book-spread"]}>
+        <div className={bookStyles["event-book-left"]}>
+          <p className={bookStyles["event-book-format"]}>{item.format}</p>
+          <img src={publicAsset(item.image)} alt={item.imageAlt} width="800" height="600" className={bookStyles["event-book-image"]} />
+          <p className={bookStyles["event-book-introduction"]}>{item.description}</p>
+          <span className={bookStyles["event-book-imprint"]}>Ahsanullah Roh. Peace Club</span>
         </div>
-        <div className="event-book-details">
-          <span className="event-book-status" data-status={finished ? "finished" : "upcoming"}><span aria-hidden="true" />{finished ? "Recently finished" : "Upcoming event"}</span>
-          <h3 id={`${item.id}-open-title`} className="event-book-title">{item.title}</h3>
-          <dl className="event-book-metadata">
-            <div><dt><FiCalendar aria-hidden="true" />Date</dt><dd><time dateTime={item.date}>{dayAndMonth}{" "}<span className="event-book-metadata__year">{year}</span></time></dd></div>
+        <div className={bookStyles["event-book-details"]}>
+          <span className={bookStyles["event-book-status"]} data-status={finished ? "finished" : "upcoming"}><span aria-hidden="true" />{finished ? "Recently finished" : "Upcoming event"}</span>
+          <h3 id={`${item.id}-open-title`} className={bookStyles["event-book-title"]}>{item.title}</h3>
+          <dl className={bookStyles["event-book-metadata"]}>
+            <div><dt><FiCalendar aria-hidden="true" />Date</dt><dd><time dateTime={item.date}>{dayAndMonth}{" "}<span className={bookStyles["event-book-metadata__year"]}>{year}</span></time></dd></div>
             <div><dt><FiClock aria-hidden="true" />Time</dt><dd>{item.time}</dd></div>
             <div><dt><FiMapPin aria-hidden="true" />Place</dt><dd>{item.location}</dd></div>
           </dl>
-          <p className="event-book-description">{item.details}</p>
-          <ul className="event-book-takeaways">{item.takeaways.map((point) => <li key={point}><FiCheck aria-hidden="true" /><span>{point}</span></li>)}</ul>
-          <p className="event-book-preview">Sample programme. Dates and availability are illustrative.</p>
-          <div className="event-book-actions">
-            {finished ? <button type="button" disabled className="event-book-register">Registration closed</button>
-              : <Link to="/register" className="event-book-register">Register <span className="event-book-register__arrow"><FiArrowUpRight aria-hidden="true" /></span></Link>}
+          <p className={bookStyles["event-book-description"]}>{item.details}</p>
+          <ul className={bookStyles["event-book-takeaways"]}>{item.takeaways.map((point) => <li key={point}><FiCheck aria-hidden="true" /><span>{point}</span></li>)}</ul>
+          <p className={bookStyles["event-book-preview"]}>Sample programme. Dates and availability are illustrative.</p>
+          <div className={bookStyles["event-book-actions"]}>
+            {finished ? <button type="button" disabled className={bookStyles["event-book-register"]}>Registration closed</button>
+              : <Link to="/register" className={bookStyles["event-book-register"]}>Register <span className={bookStyles["event-book-register__arrow"]}><FiArrowUpRight aria-hidden="true" /></span></Link>}
           </div>
         </div>
         {!reducedMotion && <Motion.div
           aria-hidden="true"
-          className="event-book-cover"
+          className={bookStyles["event-book-cover"]}
           initial={{ rotateY: 0 }}
           animate={{ rotateY: phase === "opening" || phase === "open" ? -179 : 0 }}
           transition={{ duration: (phase === "closing" ? bookTiming.closing : bookTiming.opening) / 1000, ease: bookEase }}
         >
-          <div className="event-book-cover__front">
-          <span className="event-book-cover__publisher">ARPC</span>
-          <span className="event-book-cover__title">{item.title}</span>
-          <span className="event-book-cover__date">{formatCatalogueDate(item.date)}</span>
+          <div className={bookStyles["event-book-cover__front"]}>
+          <span className={bookStyles["event-book-cover__publisher"]}>ARPC</span>
+          <span className={bookStyles["event-book-cover__title"]}>{item.title}</span>
+          <span className={bookStyles["event-book-cover__date"]}>{formatCatalogueDate(item.date)}</span>
           </div>
-          <div className="event-book-cover__back">
+          <div className={bookStyles["event-book-cover__back"]}>
             <img src={publicAsset("/newLogo.png")} alt="" width="96" height="96" />
             <span>Ahsanullah Roh. Peace Club</span>
           </div>
