@@ -15,8 +15,17 @@ import ScrollToTopButton from "./Components/ScrollToTopButton";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import TeamPage from "./Pages/Team";
+import Catalogue from "./Pages/Catalogue";
 import Profile from "./Pages/Profile";
 import { RouteTransitionProvider } from "./RouteTransitionContext";
+import { useReducedMotion } from "framer-motion";
+import AnimatedPage from "./Components/AnimatedPage";
+import { prepareRoute } from "./utils/prepareRoute";
+
+const pageNames = {
+  "/": "home page", "/team": "panel", "/catalogue": "catalogue",
+  "/profile": "profile", "/login": "sign in", "/register": "registration",
+};
 
 function App() {
   // Pages cannot rewrite SPA routes. Hash routing makes direct links reload safely.
@@ -33,6 +42,22 @@ function App() {
 // This component can safely use hooks like useLocation
 function AppContent() {
   const location = useLocation();
+  const reducedMotion = useReducedMotion();
+  const [readyPathname, setReadyPathname] = useState(location.pathname);
+  const loading = readyPathname !== location.pathname;
+
+  useEffect(() => {
+    if (readyPathname === location.pathname) return;
+    const controller = new AbortController();
+    prepareRoute(location.pathname, {
+      signal: controller.signal,
+      reducedMotion,
+    }).then(() => {
+      if (!controller.signal.aborted) setReadyPathname(location.pathname);
+    });
+    // A newer destination always wins, including Back/Forward navigation.
+    return () => controller.abort();
+  }, [location.pathname, readyPathname, reducedMotion]);
 
   // Track previous pathname globally
   const [prevPathname, setPrevPathname] = useState(null);
@@ -47,38 +72,33 @@ function AppContent() {
   const isAuthPage =
     location.pathname === "/login" || location.pathname === "/register";
   const isHomePage = location.pathname === "/";
-  const hasPhotoHero = isHomePage || location.pathname === "/team";
+  const hasPhotoHero = isHomePage || location.pathname === "/team" || location.pathname === "/catalogue";
 
   return (
     <RouteTransitionProvider
       value={{ prevPathname, currentPathname: location.pathname }}
     >
-      <div className="relative min-h-screen flex flex-col text-white bg-white">
-        {/* Photo hero pages share navigation that sits over the image. */}
-        <div
-          className={`transition-all duration-500 ease-in-out z-50 ${hasPhotoHero ? "absolute inset-x-0 top-0" : "relative"}
-        ${
-          isAuthPage
-            ? "max-h-0 opacity-0 -translate-y-4"
-            : "max-h-[140px] opacity-100 translate-y-0"
-        }`}
-          style={{ overflow: isAuthPage ? "hidden" : "visible" }}
-        >
-          <Navbar blendWithHero={hasPhotoHero} />
+      <div className="relative flex min-h-screen flex-col bg-white text-[#173d2e]">
+        <div className={`z-50 ${hasPhotoHero ? "absolute inset-x-0 top-0" : "relative"} ${isAuthPage ? "hidden" : ""}`}>
+          <Navbar blendWithHero={hasPhotoHero} loading={loading} />
         </div>
 
-        {/* MAIN CONTENT - add margin top to account for navbar space */}
-        <main className={`flex-1 ${isAuthPage ? "" : "lg:mt-0"}`}>
-          <Routes>
+        <AnimatedPage key={location.pathname} pathname={location.pathname} loading={loading} focusOnEntry={prevPathname !== null}>
+          <Routes location={location}>
             <Route path="/" element={<Home />} />
             <Route path="/team" element={<TeamPage />} />
+            <Route path="/catalogue" element={<Catalogue />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
-        </main>
+        </AnimatedPage>
 
         <Footer />
+        {/* Keep the live announcement mounted and outside the busy main region. */}
+        <span role="status" aria-live="polite" className="sr-only">
+          {loading ? `Loading ${pageNames[location.pathname] ?? "page"}…` : ""}
+        </span>
 
         {/* Global scroll-to-top button */}
         <ScrollToTopButton />

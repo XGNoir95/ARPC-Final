@@ -1,10 +1,8 @@
 // src/Components/ScrollToTopButton.jsx
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 
 const ScrollToTopButton = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const location = useLocation();
 
   // Disable browser's automatic scroll restoration (so Back button doesn't restore old position)
   useEffect(() => {
@@ -19,15 +17,6 @@ const ScrollToTopButton = () => {
     }
   }, []);
 
-  // Scroll to top on every route change (including back/forward)
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "auto", // you can change to "smooth" if you want
-    });
-  }, [location.pathname]);
-
   // Show/hide button based on scroll position
   useEffect(() => {
     const handleScroll = () => {
@@ -41,7 +30,7 @@ const ScrollToTopButton = () => {
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ? "instant" : "smooth",
     });
   };
 
@@ -57,7 +46,7 @@ const ScrollToTopButton = () => {
         shadow-lg p-3 md:p-4 flex items-center justify-center
         text-white
         transform transition-transform duration-200
-        hover:scale-110
+        hover:scale-110 motion-reduce:transform-none motion-reduce:transition-none
       "
     >
       <svg

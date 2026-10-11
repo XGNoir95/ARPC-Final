@@ -2,19 +2,11 @@
 import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ScholarQuotesPanel from "../Components/ScholarQuotesPanel";
-import AnimatedPage from "../Components/AnimatedPage";
-import { useRouteTransition } from "../contexts/routeTransition";
 import { publicAsset } from "../utils/publicAsset";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { prevPathname } = useRouteTransition();
   const pageRef = useRef(null);
-
-  // Slide animation only when coming from an auth page (login/register)
-  const cameFromAuth =
-    prevPathname === "/login" || prevPathname === "/register";
-  const useAnimation = cameFromAuth;
 
   // scroll behaviour (same as your latest version)
   useEffect(() => {
@@ -201,7 +193,7 @@ const Login = () => {
     </section>
   );
 
-  return useAnimation ? <AnimatedPage>{content}</AnimatedPage> : content;
+  return content;
 };
 
 export default Login;

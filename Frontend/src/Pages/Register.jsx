@@ -2,18 +2,11 @@
 import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ScholarQuotesPanel from "../Components/ScholarQuotesPanel";
-import AnimatedPage from "../Components/AnimatedPage";
-import { useRouteTransition } from "../contexts/routeTransition";
 import { publicAsset } from "../utils/publicAsset";
 
 const Register = () => {
   const navigate = useNavigate();
-  const { prevPathname } = useRouteTransition();
   const pageRef = useRef(null);
-
-  const cameFromAuth =
-    prevPathname === "/login" || prevPathname === "/register";
-  const useAnimation = cameFromAuth;
 
   useEffect(() => {
     const html = document.documentElement;
@@ -301,7 +294,7 @@ const Register = () => {
     </section>
   );
 
-  return useAnimation ? <AnimatedPage>{content}</AnimatedPage> : content;
+  return content;
 };
 
 export default Register;

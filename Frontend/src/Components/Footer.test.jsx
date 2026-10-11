@@ -25,7 +25,7 @@ describe('Combined footer', () => {
     expect(screen.getByText('Read the full reflection')).toBeVisible()
     expect(screen.queryByRole('region', { name: 'Put learning into practice.' })).not.toBeInTheDocument()
     const navigation = screen.getByRole('navigation', { name: 'Footer navigation' })
-    for (const [name, href] of [['Home', '/'], ['Catalogue', '#'], ['Panel', '/team'], ['Profile', '/profile'], ['Login', '/login'], ['Register', '/register']]) {
+    for (const [name, href] of [['Home', '/'], ['Catalogue', '/catalogue'], ['Panel', '/team'], ['Profile', '/profile'], ['Login', '/login'], ['Register', '/register']]) {
       expect(within(navigation).getByRole('link', { name, exact: true })).toHaveAttribute('href', href)
     }
     expect(screen.getByRole('link', { name: 'info@arpc.club' })).toHaveAttribute('href', 'mailto:info@arpc.club')

@@ -61,9 +61,9 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="#" className={linkStyle}>
+                <Link to="/catalogue" className={linkStyle}>
                   Catalogue
-                </a>
+                </Link>
               </li>
               <li>
                 <Link to="/team" className={linkStyle}>

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { publicAsset } from "../utils/publicAsset";
 
-const Navbar = ({ blendWithHero = false }) => {
+const Navbar = ({ blendWithHero = false, loading = false }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const Navbar = ({ blendWithHero = false }) => {
     setIsMenuOpen(false);
   };
 
-  // Generic navigation for logo, Home, Panel
+  // Close navigation panels as the shared page transition starts.
   const handleNavigate = (route) => {
     navigate(route);
     setIsDropdownOpen(false);
@@ -22,7 +22,7 @@ const Navbar = ({ blendWithHero = false }) => {
   };
 
   return (
-    <nav aria-label="Main navigation" className={`text-white relative z-50 ${blendWithHero ? "bg-transparent" : "bg-gradient-to-r from-[#0E291E] via-[#133729] to-green-700"}`}>
+    <nav aria-label="Main navigation" className={`text-white relative z-50 transition-colors duration-200 ease-out motion-reduce:transition-none ${loading && blendWithHero ? "route-nav-loading" : ""} ${blendWithHero ? "bg-transparent" : "bg-gradient-to-r from-[#0E291E] via-[#133729] to-green-700"}`}>
       {/* ==== SMALL & MEDIUM DEVICES ==== */}
       <div className="block lg:hidden">
         <div className={`w-full ${blendWithHero ? "px-6 py-6" : "py-4"}`}>
@@ -49,9 +49,9 @@ const Navbar = ({ blendWithHero = false }) => {
               >
                 Home
               </button>
-              <a href="#" className="hover:underline cursor-pointer">
+              <button type="button" onClick={() => handleNavigate("/catalogue")} className="hover:underline cursor-pointer">
                 Catalogue
-              </a>
+              </button>
               <button
                 type="button"
                 onClick={() => handleNavigate("/team")}
@@ -59,9 +59,9 @@ const Navbar = ({ blendWithHero = false }) => {
               >
                 Panel
               </button>
-              <a href="#" className="hover:underline cursor-pointer">
+              <button type="button" onClick={() => handleAuthAction("/profile")} className="hover:underline cursor-pointer">
                 Profile
-              </a>
+              </button>
             </div>
 
             {/* Mobile menu button */}
@@ -100,7 +100,7 @@ const Navbar = ({ blendWithHero = false }) => {
 
         {/* Mobile links */}
         {isMenuOpen && (
-          <div className={`md:hidden px-5 pb-5 space-y-2 text-[1.5rem] font-garamond font-semibold z-50 ${blendWithHero ? "absolute inset-x-6 top-24 rounded-xl bg-[#0b1d26]/95 pt-4 backdrop-blur-md sm:inset-x-10" : "relative bg-gradient-to-r from-[#0E291E] via-[#133729] to-green-700"}`}>
+          <div className={`md:hidden px-5 pb-5 space-y-2 text-white text-[1.5rem] font-garamond font-semibold z-50 ${blendWithHero ? "absolute inset-x-6 top-24 rounded-xl bg-[#0b1d26]/95 pt-4 backdrop-blur-md sm:inset-x-10" : "relative bg-gradient-to-r from-[#0E291E] via-[#133729] to-green-700"}`}>
             <button
               type="button"
               onClick={() => handleNavigate("/")}
@@ -108,9 +108,9 @@ const Navbar = ({ blendWithHero = false }) => {
             >
               Home
             </button>
-            <a href="#" className="block py-1 hover:underline cursor-pointer">
+            <button type="button" onClick={() => handleNavigate("/catalogue")} className="block w-full py-1 text-left hover:underline cursor-pointer">
               Catalogue
-            </a>
+            </button>
             <button
               type="button"
               onClick={() => handleNavigate("/team")}
@@ -118,9 +118,9 @@ const Navbar = ({ blendWithHero = false }) => {
             >
               Panel
             </button>
-            <a href="#" className="block py-1 hover:underline cursor-pointer">
+            <button type="button" onClick={() => handleAuthAction("/profile")} className="block w-full py-1 text-left hover:underline cursor-pointer">
               Profile
-            </a>
+            </button>
 
             {/* Mobile Auth Dropdown */}
             <div>
@@ -189,9 +189,9 @@ const Navbar = ({ blendWithHero = false }) => {
               >
                 Home
               </button>
-              <a href="#" className="hover:underline cursor-pointer">
+              <button type="button" onClick={() => handleNavigate("/catalogue")} className="hover:underline cursor-pointer">
                 Catalogue
-              </a>
+              </button>
               <button
                 type="button"
                 onClick={() => handleNavigate("/team")}
@@ -225,7 +225,7 @@ const Navbar = ({ blendWithHero = false }) => {
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-68 bg-gradient-to-r from-[#133729] to-green-700 rounded-lg shadow-xl py-4 px-2 z-[100] text-[1.3rem]">
+                  <div className="absolute right-0 mt-2 w-68 bg-gradient-to-r from-[#133729] to-green-700 text-white rounded-lg shadow-xl py-4 px-2 z-[100] text-[1.3rem]">
                     <button
                       onClick={() => handleAuthAction("/profile")}
                       className="block w-full text-left px-4 py-2 hover:bg-green-700 transition-colors cursor-pointer"

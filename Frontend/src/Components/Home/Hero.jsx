@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { publicAsset } from "../../utils/publicAsset";
+import HijriDate from "./HijriDate";
 
 // Replace these existing photos with club photography whenever it is available.
 const heroPhotos = [
@@ -130,16 +131,15 @@ const Hero = () => {
       />
 
       <div className="relative flex flex-1 flex-col justify-center px-6 pt-36 pb-28 sm:pt-40 sm:pb-36 lg:mx-20 lg:pt-48 lg:pb-48 2xl:px-24">
-        <div className="grid flex-1 grid-rows-[1fr_auto] items-center gap-12 lg:flex-initial lg:grid-cols-[minmax(0,1fr)_5rem] lg:grid-rows-1 lg:gap-16">
-          <div className="mx-auto w-full min-w-0 max-w-3xl text-center lg:mx-0 lg:max-w-[59.375rem] lg:text-left">
-            <p className="mb-6 flex items-center justify-center gap-3 text-[0.65rem] leading-relaxed font-semibold tracking-[0.18em] text-[#E9AD5E] uppercase sm:gap-6 sm:text-xs lg:mb-8 lg:justify-start lg:text-lg lg:tracking-[0.3em]">
-              <span
-                aria-hidden="true"
-                className="h-px w-10 shrink-0 bg-current sm:w-16 lg:w-[4.5rem]"
-              />
-              Ahsanullah Roh. Peace Club
-            </p>
-
+        <div className="grid flex-1 grid-rows-[auto_1fr_auto_auto] items-center gap-y-6 lg:flex-initial lg:grid-cols-[minmax(0,1fr)_5rem] lg:grid-rows-[auto_1fr] lg:gap-x-16 lg:gap-y-8">
+          <p className="row-start-1 flex items-center justify-center gap-3 text-[0.65rem] leading-relaxed font-semibold tracking-[0.18em] text-[#E9AD5E] uppercase sm:gap-6 sm:text-xs lg:col-start-1 lg:justify-start lg:text-lg lg:tracking-[0.3em]">
+            <span
+              aria-hidden="true"
+              className="h-px w-10 shrink-0 bg-current sm:w-16 lg:w-[4.5rem]"
+            />
+            Ahsanullah Roh. Peace Club
+          </p>
+          <div className="row-start-2 mx-auto w-full min-w-0 max-w-3xl text-center lg:col-start-1 lg:mx-0 lg:max-w-[59.375rem] lg:text-left">
             <h1
               id="hero-heading"
               className="mx-auto max-w-[16em] font-garamond text-[clamp(2.3rem,6.4vw,5rem)] leading-[1.08] font-medium tracking-[-0.02em] text-balance lg:mx-0"
@@ -182,10 +182,11 @@ const Hero = () => {
               </button>
             </div>
           </div>
+          <HijriDate className="row-start-3 mt-6 justify-self-center lg:col-start-2 lg:row-start-1 lg:mt-0 lg:justify-self-end" />
           <div
             role="group"
             aria-label="Hero photos"
-            className="relative z-20 w-fit justify-self-center lg:justify-self-end"
+            className="relative z-20 row-start-4 w-fit justify-self-center lg:col-start-2 lg:row-start-2 lg:justify-self-end"
           >
             <div
               onKeyDown={handlePhotoKeys}
