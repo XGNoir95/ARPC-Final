@@ -60,6 +60,14 @@ export const catalogue = {
       details: "A finished sample session about making reading part of student life. Recording and resource links will appear here when verified material is available.",
       takeaways: ["Choose a manageable reading goal", "Keep useful notes", "Share what you learn"],
     },
+    {
+      id: "community-ideas", title: "Turning ideas into community action", date: "2026-09-18",
+      time: "8:00 PM", location: "Online", image: "/images/about/community.jpg",
+      imageAlt: "Friends spending time together outdoors", format: "Community dialogue",
+      description: "Explore how a shared idea becomes a useful project, through listening, planning and working together.",
+      details: "A finished sample conversation about starting a small community project. The session explores listening to people, agreeing on a practical goal and sharing responsibilities. Recording and resources will appear when verified material is available.",
+      takeaways: ["Listen to what your community needs", "Turn an idea into a practical first step", "Share responsibilities with your team"],
+    },
   ],
   courses: [
     {

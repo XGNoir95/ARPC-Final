@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FiArrowDown, FiArrowUpRight, FiCalendar, FiClock, FiMapPin, FiSearch, FiVideo, FiX, FiBookOpen, FiCheck } from "react-icons/fi";
+import { FiArrowDown, FiArrowUpRight, FiCalendar, FiClock, FiMapPin, FiSearch, FiX, FiBookOpen, FiCheck } from "react-icons/fi";
 import { publicAsset } from "../utils/publicAsset";
 import { catalogue, filterCatalogue, formatCatalogueDate, getCatalogueDay, isFinished } from "../data/catalogue";
 import EventBookshelf from "../Components/EventBookshelf";
+import WebinarFolders from "../Components/WebinarFolders";
 
 const focus = "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E]";
 const frame = "mx-auto w-full max-w-[112rem] px-6 lg:w-[calc(100%_-_10rem)] 2xl:px-24";
@@ -40,22 +41,6 @@ function Metadata({ item, dark = false }) {
     <div className="flex items-start gap-2"><dt><FiClock aria-hidden="true" className="mt-0.5 size-4" /><span className="sr-only">Time in Dhaka</span></dt><dd>{item.time} (Dhaka)</dd></div>
     <div className="flex items-start gap-2"><dt><FiMapPin aria-hidden="true" className="mt-0.5 size-4" /><span className="sr-only">Location</span></dt><dd>{item.location}</dd></div>
   </dl>;
-}
-
-function WebinarCard({ item, today, onSelect }) {
-  return <article aria-labelledby={`${item.id}-title`} className="grid items-center gap-6 border-t border-white/20 py-7 first:border-t-0 first:pt-0 sm:grid-cols-[10rem_minmax(0,1fr)] lg:grid-cols-[15rem_minmax(0,1fr)_auto] lg:gap-8 lg:py-8">
-    <div className="relative aspect-[4/3] overflow-hidden rounded-xl sm:aspect-square">
-      <img src={publicAsset(item.image)} alt={item.imageAlt} width="600" height="600" loading="lazy" className="size-full object-cover" />
-      <span aria-hidden="true" className="absolute bottom-3 left-3 flex size-10 items-center justify-center rounded-full bg-[#102c21]/85 text-white"><FiVideo className="size-5" /></span>
-    </div>
-    <div className="flex min-w-0 flex-col items-start gap-4">
-      <Status item={item} today={today} dark />
-      <h3 id={`${item.id}-title`} className="font-garamond text-[2rem] font-semibold leading-[1.1] tracking-[-0.015em] lg:text-[2.5rem]">{item.title}</h3>
-      <p className="max-w-[65ch] text-justify text-base leading-[1.75] text-[#eef4ef]/85">{item.description}</p>
-      <Metadata item={item} dark />
-    </div>
-    <div className="sm:col-start-2 lg:col-auto"><DetailsButton item={item} onSelect={onSelect} dark /></div>
-  </article>;
 }
 
 function CourseCard({ item, today, onSelect, featured }) {
@@ -141,20 +126,19 @@ export default function Catalogue() {
     <p className={`${frame} pt-5 text-sm leading-relaxed text-[#173d2e]/65`}>Preview catalogue. The programmes, dates and course fees below are samples.</p>
 
     {sections.map(({ id, title, filters: choices }) => {
-      const dark = id === "webinars";
       const items = filterCatalogue(catalogue[id], id, filters[id], search, today);
-      return <section key={id} id={`catalogue-${id}`} aria-labelledby={`catalogue-${id}-heading`} className={`scroll-mt-6 py-12 sm:py-16 lg:py-20 ${dark ? "bg-[#102c21] text-[#eef4ef]" : "bg-white"}`}>
+      return <section key={id} id={`catalogue-${id}`} aria-labelledby={`catalogue-${id}-heading`} className="scroll-mt-6 bg-white py-12 sm:py-16 lg:py-20">
         <div className={frame}>
           <div className="mb-8 flex flex-col gap-6 sm:mb-10 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
             <h2 id={`catalogue-${id}-heading`} className={heading}>{title}</h2>
-            <div role="group" aria-label={`${title} filters`} className={`flex w-fit max-w-full flex-wrap gap-1 rounded-[1.5rem] p-1 ${dark ? "bg-white/10" : "bg-[#eef4ef]"}`}>
-              {choices.map((choice) => <button key={choice} type="button" aria-pressed={filters[id] === choice} onClick={() => setFilters((previous) => ({ ...previous, [id]: choice }))} className={`min-h-11 cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition-colors motion-reduce:transition-none ${focus} ${filters[id] === choice ? dark ? "bg-[#eef4ef] text-[#102c21]" : "bg-[#173d2e] text-white" : dark ? "text-[#eef4ef] hover:bg-white/10" : "text-[#173d2e] hover:bg-[#173d2e]/10"}`}>{choice}</button>)}
+            <div role="group" aria-label={`${title} filters`} className="flex w-fit max-w-full flex-wrap gap-1 rounded-[1.5rem] bg-[#eef4ef] p-1">
+              {choices.map((choice) => <button key={choice} type="button" aria-pressed={filters[id] === choice} onClick={() => setFilters((previous) => ({ ...previous, [id]: choice }))} className={`min-h-11 cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition-colors motion-reduce:transition-none ${focus} ${filters[id] === choice ? "bg-[#173d2e] text-white" : "text-[#173d2e] hover:bg-[#173d2e]/10"}`}>{choice}</button>)}
             </div>
           </div>
           <p role="status" className="sr-only">{items.length} {title.toLowerCase()} shown</p>
-          {items.length ? id === "events" ? <EventBookshelf key={items.map((item) => item.id).join("|")} items={items} today={today} /> : <div className={id === "courses" ? "grid gap-6 md:grid-cols-2 xl:grid-cols-3" : ""}>
-            {items.map((item) => id === "webinars" ? <WebinarCard key={item.id} item={item} today={today} onSelect={setSelected} /> : <CourseCard key={item.id} item={item} featured={items.length === 1} today={today} onSelect={setSelected} />)}
-          </div> : <div className={`rounded-2xl px-6 py-10 ${dark ? "bg-white/5" : "bg-[#eef4ef]"}`}><h3 className="font-garamond text-3xl font-semibold">No {title.toLowerCase()} match this selection.</h3><p className="mt-3 text-base leading-relaxed">Try another search or show all {title.toLowerCase()}.</p><button type="button" onClick={() => { setSearch(""); setFilters((previous) => ({ ...previous, [id]: "All" })); }} className={`mt-5 min-h-11 cursor-pointer rounded-full border border-current px-5 py-2 font-medium ${focus}`}>Reset search and filter</button></div>}
+          {items.length ? id === "events" ? <EventBookshelf key={items.map((item) => item.id).join("|")} items={items} today={today} /> : id === "webinars" ? <WebinarFolders key={items.map((item) => item.id).join("|")} items={items} today={today} /> : <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {items.map((item) => <CourseCard key={item.id} item={item} featured={items.length === 1} today={today} onSelect={setSelected} />)}
+          </div> : <div className="rounded-2xl bg-[#eef4ef] px-6 py-10"><h3 className="font-garamond text-3xl font-semibold">No {title.toLowerCase()} match this selection.</h3><p className="mt-3 text-base leading-relaxed">Try another search or show all {title.toLowerCase()}.</p><button type="button" onClick={() => { setSearch(""); setFilters((previous) => ({ ...previous, [id]: "All" })); }} className={`mt-5 min-h-11 cursor-pointer rounded-full border border-current px-5 py-2 font-medium ${focus}`}>Reset search and filter</button></div>}
         </div>
       </section>;
     })}

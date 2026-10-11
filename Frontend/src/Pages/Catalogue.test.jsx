@@ -215,7 +215,7 @@ describe("Catalogue page", () => {
     renderCatalogue();
     fireEvent.click(within(section("Events")).getByRole("button", { name: "Upcoming", exact: true }));
     expect(within(section("Events")).getAllByRole("article")).toHaveLength(2);
-    expect(within(section("Webinars")).getAllByRole("article")).toHaveLength(3);
+    expect(within(section("Webinars")).getAllByRole("button", { name: /Open webinar folder:/ })).toHaveLength(4);
     fireEvent.click(within(section("Courses")).getByRole("button", { name: "Paid", exact: true }));
     expect(within(section("Courses")).getAllByRole("article")).toHaveLength(1);
     fireEvent.change(screen.getByRole("searchbox"), { target: { value: "writing" } });
@@ -236,6 +236,124 @@ describe("Catalogue page", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(document.body.style.overflow).toBe("");
     expect(container.querySelector("dialog")).not.toHaveAttribute("open");
+  });
+  it("switches webinar folders inline and shows only the selected session's actions", () => {
+    renderCatalogue();
+    const webinars = within(section("Webinars"));
+    const covers = webinars.getAllByRole("button", { name: /Open webinar folder:/ });
+    expect(webinars.queryByRole("region")).not.toBeInTheDocument();
+    expect(webinars.queryByRole("link", { name: "Register" })).not.toBeInTheDocument();
+    for (const cover of covers) {
+      fireEvent.click(cover);
+      const panel = webinars.getByRole("region");
+      expect(panel).toHaveAttribute("id", cover.getAttribute("aria-controls"));
+      expect(cover).toHaveAttribute("aria-expanded", "true");
+      expect(cover).toBeDisabled();
+      expect(panel).toHaveFocus();
+      expect(within(panel).getByRole("heading")).toBeInTheDocument();
+      expect(within(panel).getByText("Time", { selector: "dt" })).toBeInTheDocument();
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      expect(document.body.style.overflow).toBe("");
+      if (cover.textContent.includes("Finished")) {
+        expect(within(panel).getByRole("button", { name: "Recording coming soon" })).toBeDisabled();
+        expect(within(panel).queryByRole("link", { name: "Register" })).not.toBeInTheDocument();
+      } else {
+        expect(within(panel).getByRole("link", { name: "Register" })).toHaveAttribute("href", "/register");
+      }
+    }
+    fireEvent.click(covers[0]);
+    fireEvent.click(covers[1]);
+    fireEvent.click(covers[0]);
+    expect(webinars.getAllByRole("region")).toHaveLength(1);
+    const panel = within(webinars.getByRole("region"));
+    expect(panel.getByRole("heading", { name: "Faith in everyday campus life" })).toBeInTheDocument();
+    expect(panel.queryByRole("heading", { name: "Writing with purpose" })).not.toBeInTheDocument();
+    fireEvent.keyDown(webinars.getByRole("region"), { key: "Escape" });
+    expect(webinars.queryByRole("region")).not.toBeInTheDocument();
+    expect(covers[0]).toHaveFocus();
+    expect(covers[0]).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(covers[1]);
+    fireEvent.click(webinars.getByRole("button", { name: "Close webinar folder" }));
+    expect(covers[1]).toHaveFocus();
+    expect(webinars.queryByRole("region")).not.toBeInTheDocument();
+  });
+  it("supports keyboard navigation and selects a valid webinar after filtering", () => {
+    renderCatalogue();
+    const webinars = within(section("Webinars"));
+    const covers = webinars.getAllByRole("button", { name: /Open webinar folder:/ });
+    covers[0].focus();
+    for (const [key, target] of [["ArrowDown", 1], ["End", 3], ["ArrowLeft", 2], ["Home", 0], ["ArrowUp", 3]]) {
+      fireEvent.keyDown(document.activeElement, { key });
+      expect(covers[target]).toHaveFocus();
+      expect(covers[target]).toHaveAttribute("aria-expanded", "false");
+    }
+    fireEvent.click(covers[2]);
+    fireEvent.click(webinars.getByRole("button", { name: "Upcoming", exact: true }));
+    expect(webinars.getAllByRole("button", { name: /Open webinar folder:/ })).toHaveLength(2);
+    expect(webinars.queryByRole("region")).not.toBeInTheDocument();
+    expect(webinars.queryByRole("heading", { name: "Making room for reading" })).not.toBeInTheDocument();
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "no such session" } });
+    expect(webinars.queryByRole("button", { name: /Open webinar folder:/ })).not.toBeInTheDocument();
+    expect(webinars.getByRole("heading", { name: "No webinars match this selection." })).toBeInTheDocument();
+    fireEvent.click(webinars.getByRole("button", { name: "Reset search and filter" }));
+    expect(webinars.getAllByRole("button", { name: /Open webinar folder:/ })).toHaveLength(4);
+    expect(webinars.queryByRole("region")).not.toBeInTheDocument();
+  });
+  it("cycles the webinar covers forward one at a time and wraps to the first", () => {
+    renderCatalogue();
+    const webinars = within(section("Webinars"));
+    const covers = webinars.getAllByRole("button", { name: /Open webinar folder:/ });
+    expect(covers[0]).toHaveAttribute("aria-current", "true");
+    for (const next of [1, 2, 3, 0]) {
+      act(() => vi.advanceTimersByTime(5000));
+      expect(webinars.getByRole("button", { name: "Next webinar folder" })).toBeDisabled();
+      act(() => vi.advanceTimersByTime(350));
+      expect(covers[next]).toHaveAttribute("aria-current", "true");
+      expect(covers.filter((cover) => cover.hasAttribute("aria-current"))).toHaveLength(1);
+      act(() => vi.advanceTimersByTime(700));
+      expect(webinars.getByRole("button", { name: "Next webinar folder" })).not.toBeDisabled();
+    }
+    expect(webinars.queryByRole("region")).not.toBeInTheDocument();
+  });
+  it("pauses rotation for hover, focus and an open folder without a pause button", () => {
+    renderCatalogue();
+    const webinars = within(section("Webinars"));
+    const covers = webinars.getAllByRole("button", { name: /Open webinar folder:/ });
+    const frame = covers[0].closest(".webinar-folders");
+    expect(webinars.queryByRole("button", { name: /Pause|Resume/ })).not.toBeInTheDocument();
+    fireEvent.mouseEnter(frame);
+    act(() => vi.advanceTimersByTime(10000));
+    expect(covers[0]).toHaveAttribute("aria-current", "true");
+    fireEvent.mouseLeave(frame);
+    act(() => { covers[0].focus(); });
+    act(() => vi.advanceTimersByTime(10000));
+    expect(covers[0]).toHaveAttribute("aria-current", "true");
+    act(() => { screen.getByRole("searchbox").focus(); });
+    act(() => vi.advanceTimersByTime(5000));
+    // Opening cancels the pending handoff, so a timer cannot replace its details.
+    fireEvent.click(covers[2]);
+    act(() => vi.advanceTimersByTime(10000));
+    expect(webinars.getByRole("region", { name: "Making room for reading" })).toBeInTheDocument();
+    expect(covers[2]).toHaveAttribute("aria-current", "true");
+    expect(webinars.getByRole("button", { name: "Next webinar folder" })).toBeDisabled();
+  });
+  it("allows manual folder rotation and cleans up pending transitions when leaving", () => {
+    const { unmount } = renderCatalogue();
+    const webinars = within(section("Webinars"));
+    const covers = webinars.getAllByRole("button", { name: /Open webinar folder:/ });
+    fireEvent.click(webinars.getByRole("button", { name: "Next webinar folder" }));
+    act(() => vi.advanceTimersByTime(350));
+    act(() => vi.advanceTimersByTime(700));
+    expect(covers[1]).toHaveAttribute("aria-current", "true");
+    act(() => vi.advanceTimersByTime(10000));
+    expect(covers[1]).toHaveAttribute("aria-current", "true");
+    fireEvent.click(webinars.getByRole("button", { name: "Previous webinar folder" }));
+    act(() => vi.advanceTimersByTime(350));
+    act(() => vi.advanceTimersByTime(700));
+    expect(covers[0]).toHaveAttribute("aria-current", "true");
+    fireEvent.click(webinars.getByRole("button", { name: "Next webinar folder" }));
+    unmount();
+    expect(vi.getTimerCount()).toBe(0);
   });
   it("updates finished listings when the Dhaka day changes and cleans up the timer", () => {
     vi.setSystemTime(new Date("2026-10-24T17:59:30Z"));

@@ -1,10 +1,29 @@
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import Catalogue from "../Pages/Catalogue";
 
 afterEach(() => {
   cleanup();
+  vi.useRealTimers();
+  vi.unstubAllGlobals();
+});
+
+it("keeps webinar rotation manual and immediate when reduced motion is requested", () => {
+  vi.useFakeTimers();
+  vi.stubGlobal("matchMedia", vi.fn(() => ({
+    matches: true, addListener: vi.fn(), removeListener: vi.fn(),
+    addEventListener: vi.fn(), removeEventListener: vi.fn(),
+  })));
+  render(<MemoryRouter><Catalogue /></MemoryRouter>);
+  const webinars = within(screen.getByRole("region", { name: "Webinars", exact: true }));
+  const covers = webinars.getAllByRole("button", { name: /Open webinar folder:/ });
+  act(() => vi.advanceTimersByTime(15000));
+  expect(covers[0]).toHaveAttribute("aria-current", "true");
+  expect(webinars.queryByRole("button", { name: "Pause folder rotation" })).not.toBeInTheDocument();
+  fireEvent.click(webinars.getByRole("button", { name: "Next webinar folder" }));
+  expect(covers[1]).toHaveAttribute("aria-current", "true");
+  expect(webinars.getByRole("button", { name: "Next webinar folder" })).not.toBeDisabled();
 });
 
 it("opens and closes readable book pages without a 3D flip when reduced motion is requested", () => {
