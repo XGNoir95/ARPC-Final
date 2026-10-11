@@ -119,10 +119,33 @@ function ProfileSkeleton() {
   </div>;
 }
 
+function JoinSkeleton() {
+  return <div className="bg-[#eef4ef]">
+    <div className="flex min-h-[28rem] items-end bg-[#eef4ef] sm:min-h-[25rem] lg:min-h-[28rem]">
+      <div className={`${frame} pt-36 pb-10 lg:pt-40 lg:pb-12`}>
+        <div className="px-5 sm:px-8 lg:px-10">
+          <div className="flex max-w-4xl flex-col gap-4"><Block className="h-[clamp(3rem,6.5vw,6.5rem)] w-[45%]" /><Block className="h-[clamp(3rem,6.5vw,6.5rem)] w-[85%]" /></div>
+          <TextLines className="mt-6 max-w-xl" />
+        </div>
+      </div>
+    </div>
+    <div className={`${frame} py-10 sm:py-14 lg:py-16`}>
+      <div className="w-full rounded-2xl bg-white p-5 shadow-[0_12px_40px_-24px_rgba(23,61,46,0.28)] ring-1 ring-[#173d2e]/15 ring-inset sm:rounded-3xl sm:p-8 lg:p-10">
+        <div className="mb-8 space-y-4 border-b border-[#173d2e]/15 pb-6 sm:mb-10"><Block className="h-10 w-[75%] max-w-lg sm:h-12" /><Block className="h-4 w-full max-w-4xl" /></div>
+        <div className="grid items-stretch gap-9 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12">
+          <div><Block className="mb-6 h-8 w-36" /><div className="grid gap-x-6 gap-y-6 sm:grid-cols-2">{Array.from({ length: 7 }, (_, index) => <div key={index} className={`space-y-2 ${index === 0 ? "sm:col-span-2" : ""}`}><Block className="h-5 w-28" /><Block className="h-12 rounded-lg" /></div>)}</div></div>
+          <div className="flex flex-col overflow-hidden rounded-2xl bg-[#eef4ef]"><Block className="h-26 shrink-0" /><div className="flex min-h-[24rem] flex-1 flex-col p-5 lg:min-h-0"><Block className="mb-3 h-6 w-36" /><div className="grid grid-cols-2 gap-2">{Array.from({ length: 5 }, (_, index) => <Block key={index} className={`h-14 rounded-lg ${index === 4 ? "col-span-2" : ""}`} />)}</div><TextLines className="mt-auto pt-4" /></div></div>
+        </div>
+        <div className="mt-9 border-t border-[#173d2e]/15 pt-6 sm:mt-10"><Block className="h-5 w-[85%] max-w-xl" /><div className="mt-7 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between"><Block className="h-4 w-full max-w-md" /><Block className="h-13 w-full rounded-full sm:w-60" /></div></div>
+      </div>
+    </div>
+  </div>;
+}
+
 export default function PageSkeleton({ pathname }) {
   const auth = pathname === "/login" || pathname === "/register";
   return <div data-page-skeleton={pathname} className={`${skeletonFrame} min-h-full bg-white`} aria-hidden="true">
-    {auth ? <AccountSkeleton register={pathname === "/register"} /> : pathname === "/profile" ? <ProfileSkeleton /> : <>
+    {pathname === "/join" ? <JoinSkeleton /> : auth ? <AccountSkeleton register={pathname === "/register"} /> : pathname === "/profile" ? <ProfileSkeleton /> : <>
       {pathname === "/" ? <HomeHeroSkeleton /> : <HeroSkeleton />}
       {pathname === "/team" ? <TeamRows /> : pathname === "/catalogue" ? <CatalogueCards /> : <div className={`${frame} py-12`}><Block className="h-10 w-52" /><TextLines className="mt-8 max-w-2xl" /></div>}
     </>}

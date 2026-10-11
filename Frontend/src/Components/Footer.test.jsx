@@ -25,9 +25,10 @@ describe('Combined footer', () => {
     expect(screen.getByText('Read the full reflection')).toBeVisible()
     expect(screen.queryByRole('region', { name: 'Put learning into practice.' })).not.toBeInTheDocument()
     const navigation = screen.getByRole('navigation', { name: 'Footer navigation' })
-    for (const [name, href] of [['Home', '/'], ['Catalogue', '/catalogue'], ['Panel', '/team'], ['Profile', '/profile'], ['Login', '/login'], ['Register', '/register']]) {
+    for (const [name, href] of [['Home', '/'], ['Catalogue', '/catalogue'], ['Panel', '/team'], ['Join Us', '/join']]) {
       expect(within(navigation).getByRole('link', { name, exact: true })).toHaveAttribute('href', href)
     }
+    expect(within(navigation).queryByRole('link', { name: /Login|Register|Profile/ })).not.toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'info@arpc.club' })).toHaveAttribute('href', 'mailto:info@arpc.club')
     const directions = within(navigation).getByRole('link', { name: 'Campus directions' })
     const mapUrl = new URL(directions.href)
@@ -39,16 +40,16 @@ describe('Combined footer', () => {
     expect(screen.queryByTitle('AUST Campus Map')).not.toBeInTheDocument()
   })
 
-  it('opens registration from the join action', () => {
+  it('opens the membership application from the join action', () => {
     render(
       <MemoryRouter>
         <Routes>
           <Route path="/" element={<Footer />} />
-          <Route path="/register" element={<h1>Registration</h1>} />
+          <Route path="/join" element={<h1>Membership application</h1>} />
         </Routes>
       </MemoryRouter>,
     )
     fireEvent.click(screen.getByRole('link', { name: 'Join ARPC' }))
-    expect(screen.getByRole('heading', { name: 'Registration' })).toBeVisible()
+    expect(screen.getByRole('heading', { name: 'Membership application' })).toBeVisible()
   })
 })

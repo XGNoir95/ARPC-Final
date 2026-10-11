@@ -35,7 +35,7 @@ flowchart LR
 | Component | Responsibility |
 | --- | --- |
 | `Frontend/src/App.jsx` | Chooses the router, declares routes and coordinates shared navigation/footer visibility. |
-| `Frontend/src/Pages/` | Composes route-level screens: home, team, login, registration and profile. |
+| `Frontend/src/Pages/` | Composes route-level screens, including the public membership application and unlisted account prototypes. |
 | `Frontend/src/Components/` | Implements reusable UI, carousels, the founder reflection and profile tabs. |
 | Route transition context | Shares the previous/current route for transition behavior. |
 | `Frontend/src/utils/publicAsset.js` | Prefixes static asset URLs with Vite's deployment base. |
@@ -49,10 +49,17 @@ flowchart LR
 | `/` | Home | Content and event/affiliation arrays in React components. |
 | `/team` | Panel | Local sample committee and team member data. |
 | `/profile` | Member profile | Sample user, event and certificate data held in component state. |
-| `/login` | Login interface | Interface prototype; no authenticated session is established. |
-| `/register` | Registration interface | Interface prototype; no member record is created. |
+| `/join` | Membership application | Validated details held in memory, reviewed before an email draft or text download. |
+| `/login` | Unlisted admin login interface | Interface prototype; no authenticated session is established. |
+| `/register` | Unlisted admin registration interface | Interface prototype; no account record is created. |
 
 User input and carousel selections update React state. Public assets load from the same static deployment. There is no implemented server-side persistence or API contract to document.
+
+Public navigation and join actions lead to `/join`, with a photo hero and transparent navbar. The hero and application use the same content alignment. Applications collect name, student ID, one of eight departments, semester (1.1–5.2), gender, email, mobile number, and transaction information for the BDT 100 registration fee. The payment panel matches the member fields' desktop height and switches between method selection and transaction details without resizing. bKash, Nagad and Rocket applicants provide a sender number and transaction ID; bank transfers include the sender bank and transfer reference; cash applicants identify the collecting representative and optionally provide a receipt reference. Switching methods preserves drafts but validates and exports only the chosen method. All payment details remain pending club verification. Confirmed receiving/payment instructions belong in `Frontend/src/data/recruitment.js`; no receiving number is invented or inferred.
+
+Applicants review their entries before opening a draft addressed to the existing club contact (`info@arpc.club`); they must send that email themselves. A text download supports applicants without a configured email app. No application is stored in browser storage, no real payment is initiated, and nothing is claimed to be submitted or paid automatically.
+
+Account routes are intentionally absent from public navigation. They remain directly reachable until backend admin authorization and restricted account provisioning are implemented; unlisted routes are not access controls.
 
 ## Deployment flow
 

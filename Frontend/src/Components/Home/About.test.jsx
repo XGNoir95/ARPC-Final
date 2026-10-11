@@ -81,6 +81,6 @@ describe('About card interactions', () => {
     pointer(article('About Us'), 'pointerover')
     expect(screen.getByRole('link', { name: 'Meet our team' })).toHaveAttribute('href', '/team')
     fireEvent.click(screen.getByRole('button', { name: 'Our Mission' }))
-    expect(screen.getByRole('link', { name: 'Be part of our mission' })).toHaveAttribute('href', '/register')
+    expect(screen.getByRole('link', { name: 'Be part of our mission' })).toHaveAttribute('href', '/join')
   })
 })

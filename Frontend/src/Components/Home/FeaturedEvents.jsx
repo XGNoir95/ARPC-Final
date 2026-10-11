@@ -45,7 +45,7 @@ const events = [
 ];
 
 const wrap = (index) => (index + events.length) % events.length;
-const focusStyle = "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-green-700";
+const focusStyle = "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E]";
 
 const EventIcon = ({ type, className = "size-5 shrink-0" }) => (
   <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -190,9 +190,9 @@ const FeaturedEvents = () => {
                       <p className="mt-2 text-justify text-base leading-relaxed text-[#173d2e]/80 @min-[38rem]:text-lg">{event.exploration}</p>
                     </div>
                     <div>
-                      <Link to="/register" className={`group flex min-h-15 w-full items-center justify-between gap-4 rounded-full bg-[#173d2e] px-6 py-3 text-lg leading-tight font-semibold text-white transition-colors hover:bg-green-700 motion-reduce:transition-none sm:text-xl ${focusStyle}`}>
+                      <Link to="/join" className={`group flex min-h-15 w-full items-center justify-between gap-4 rounded-full bg-[#173d2e] px-6 py-3 text-lg leading-tight font-semibold text-white transition-colors duration-200 hover:bg-[#E9AD5E] hover:text-[#173d2e] motion-reduce:transition-none sm:text-xl ${focusStyle}`}>
                         Register now
-                        <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none"><EventIcon type="next" className="size-5" /></span>
+                        <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/10 transition-[transform,background-color,border-color] duration-200 group-hover:translate-x-0.5 group-hover:border-[#173d2e]/30 group-hover:bg-[#173d2e]/10 motion-reduce:transition-none"><EventIcon type="next" className="size-5" /></span>
                       </Link>
                     </div>
                   </div>

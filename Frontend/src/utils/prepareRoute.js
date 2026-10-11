@@ -4,6 +4,7 @@ const heroImages = {
   "/": ["/heroBanner.jpg"],
   "/team": ["/images/team/meeting-planning.jpg", "/images/team/meeting-discussion.jpg"],
   "/catalogue": ["/images/team/meeting-discussion.jpg"],
+  "/join": ["/images/about/community.jpg"],
 };
 
 // Keep the skeleton visible for 2.5 seconds, with a 3-second ceiling for

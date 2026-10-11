@@ -303,7 +303,7 @@ export default function TeamPage() {
               Meet the people behind our events, ideas and campus community. Explore their teams and find where you can contribute.
             </p>
             <Link
-              to="/register"
+              to="/join"
               className="group inline-flex min-h-14 shrink-0 items-center justify-center self-end gap-7 rounded-full border border-[#eef4ef]/30 bg-[#eef4ef] px-6 py-3 text-base font-semibold leading-normal text-[#102c21] transition-colors duration-200 hover:border-[#E9AD5E] hover:bg-[#E9AD5E] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E] motion-reduce:transition-none sm:px-7 sm:text-lg"
             >
               Join ARPC

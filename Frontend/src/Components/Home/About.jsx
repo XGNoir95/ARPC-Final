@@ -23,7 +23,7 @@ const aboutCards = [
     summary: "Turning knowledge into kindness and shared purpose into action.",
     description:
       "Our mission is to turn learning into practice. Through thoughtful discussions, shared study, and acts of service, we encourage students to deepen their understanding of Islam, strengthen their character, and bring compassion into everyday campus life.",
-    link: "/register",
+    link: "/join",
     linkLabel: "Be part of our mission",
   },
   {
@@ -34,7 +34,7 @@ const aboutCards = [
     summary: "A campus shaped by peace, compassion, and a sense of belonging.",
     description:
       "We envision a campus where faith inspires kindness, knowledge leads to service, and every student finds a place to belong. Together, we hope to nurture a community that carries the values of peace and compassion beyond university life.",
-    link: "/register",
+    link: "/join",
     linkLabel: "Grow with us",
   },
 ];
@@ -175,7 +175,7 @@ const About = () => {
                       </p>
                       <Link
                         to={card.link}
-                        className="mt-6 inline-flex max-w-full items-center gap-3 rounded-full bg-green-700 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-green-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E] motion-reduce:transition-none lg:text-lg"
+                        className="mt-6 inline-flex max-w-full items-center gap-3 rounded-full bg-[#eef4ef] px-6 py-3 text-base font-semibold text-[#173d2e] transition-colors duration-200 hover:bg-[#E9AD5E] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E] motion-reduce:transition-none lg:text-lg"
                       >
                         {card.linkLabel}
                         <svg

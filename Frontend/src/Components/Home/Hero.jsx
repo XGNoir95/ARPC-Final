@@ -164,20 +164,18 @@ const Hero = () => {
               <button
                 type="button"
                 onClick={scrollToAbout}
-                className="group inline-flex min-h-14 cursor-pointer items-center gap-5 rounded-full border border-white/15 bg-green-700 py-2.5 pr-3 pl-6 text-base font-semibold text-white shadow-lg shadow-black/15 transition-colors hover:bg-green-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E] active:bg-green-900 motion-reduce:transition-none sm:gap-6 sm:pl-7 sm:text-lg"
+                className="group inline-flex min-h-14 cursor-pointer items-center gap-5 rounded-full border border-[#eef4ef]/30 bg-[#eef4ef] py-2.5 pr-3 pl-6 text-base font-semibold text-[#102c21] shadow-lg shadow-black/15 transition-colors duration-200 hover:border-[#E9AD5E] hover:bg-[#E9AD5E] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E] active:border-[#E9AD5E] active:bg-[#E9AD5E] motion-reduce:transition-none sm:gap-6 sm:pl-7 sm:text-lg"
               >
                 Discover ARPC
                 <span
                   aria-hidden="true"
-                  className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/25 bg-white/10"
+                  className="flex size-9 shrink-0 items-center justify-center rounded-full border border-[#102c21]/25 bg-[#102c21]/5"
                 >
-                  <img
-                    src={publicAsset("/images/hero/scroll-down.svg")}
-                    alt=""
-                    width="16"
-                    height="24"
+                  <svg
+                    viewBox="0 0 16 24"
+                    fill="currentColor"
                     className="h-5 w-3.5 -rotate-90 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none"
-                  />
+                  ><path d="M16 16L14.59 14.59L9 20.17V0H7V20.17L1.42 14.58L0 16L8 24L16 16Z" /></svg>
                 </span>
               </button>
             </div>

@@ -30,7 +30,7 @@ describe('GitHub Pages routing', () => {
     expect(screen.queryByRole('heading', { name: 'Sign in to your ARPC account' })).not.toBeInTheDocument()
   })
 
-  it.each(['/team', '/catalogue', '/profile', '/'])('includes one combined quote and footer on %s', async (path) => {
+  it.each(['/team', '/catalogue', '/profile', '/join', '/'])('includes one combined quote and footer on %s', async (path) => {
     vi.stubEnv('VITE_GITHUB_PAGES', 'false')
     vi.stubEnv('BASE_URL', '/')
     vi.stubGlobal('scrollTo', vi.fn())
@@ -39,6 +39,21 @@ describe('GitHub Pages routing', () => {
     expect(screen.getAllByRole('contentinfo')).toHaveLength(1)
     expect(screen.getByText('Read the full reflection')).toBeVisible()
     expect(screen.getByRole('img', { name: 'Portrait of Khan Bahadur Ahsanullah (R.)' })).toBeVisible()
+  })
+
+  it.each([false, true])('opens the membership form from Join Us (hash routing: %s)', async (hashRouting) => {
+    vi.stubEnv('VITE_GITHUB_PAGES', String(hashRouting))
+    vi.stubEnv('BASE_URL', hashRouting ? '/ARPC-Final/' : '/')
+    vi.stubGlobal('scrollTo', vi.fn())
+    window.history.replaceState(null, '', hashRouting ? '/ARPC-Final/#/team' : '/team')
+    const { container } = render(<App />)
+    fireEvent.click(within(screen.getByRole('navigation', { name: 'Main navigation' })).getByRole('button', { name: 'Join Us' }))
+    expect(container.querySelector('[data-page-skeleton="/join"]')).toBeVisible()
+    await waitFor(() => expect(screen.getByRole('heading', { name: 'Membership application' })).toBeVisible(), { timeout: 4000 })
+    expect(hashRouting ? window.location.hash : window.location.pathname).toBe(hashRouting ? '#/join' : '/join')
+    expect(screen.getByRole('textbox', { name: 'Full name' })).toBeVisible()
+    expect(screen.getByRole('main')).toHaveFocus()
+    expect(screen.getByRole('contentinfo')).toBeVisible()
   })
 
   it('keeps the GitHub Pages catalogue route intact when jumping to a section', () => {
@@ -126,6 +141,7 @@ describe('GitHub Pages routing', () => {
   it.each([
     ['/team', true],
     ['/catalogue', true],
+    ['/join', true],
     ['/', true],
     ['/profile', false],
   ])('uses transparent overlay navigation only on photo hero routes: %s', (path, overlay) => {

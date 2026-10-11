@@ -36,7 +36,7 @@ const Footer = () => {
               className="size-18 shrink-0 object-contain sm:size-32"
             />
             <span className="min-w-0">
-              <span className="block font-garamond text-5xl leading-none font-semibold tracking-[-0.04em] sm:text-6xl">
+              <span className="block font-garamond text-5xl leading-none font-semibold tracking-[-0.04em] text-[#E9AD5E] sm:text-6xl">
                 ARPC
               </span>
               <span className="mt-2 block text-xs leading-relaxed text-white/75 sm:text-[1.1rem]">
@@ -71,12 +71,10 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/profile" state={{ fromNavbar: true }} className={linkStyle}>
-                  Profile
+                <Link to="/join" className={linkStyle}>
+                  Join Us
                 </Link>
               </li>
-              <li><Link to="/login" state={{ fromNavbar: true }} className={linkStyle}>Login</Link></li>
-              <li><Link to="/register" state={{ fromNavbar: true }} className={linkStyle}>Register</Link></li>
             </ul>
             <a
               href={campusMapLink}
@@ -140,7 +138,7 @@ const Footer = () => {
 
           <div className="mt-auto pt-7">
             <Link
-              to="/register"
+              to="/join"
               className={`group flex min-h-14 items-center justify-between gap-4 rounded-xl bg-[#eef4ef] px-5 py-3 text-base font-semibold text-[#0e291e] transition-colors hover:bg-[#E9AD5E] motion-reduce:transition-none ${focusStyle}`}
             >
               Join ARPC

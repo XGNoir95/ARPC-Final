@@ -48,7 +48,7 @@ describe("Catalogue page", () => {
     expect(within(book).queryByText("Time in Dhaka")).not.toBeInTheDocument();
     expect(within(book).queryByRole("button", { name: "Close book", exact: true })).not.toBeInTheDocument();
     if (status === "Upcoming event") {
-      expect(within(book).getByRole("link", { name: "Register", exact: true })).toHaveAttribute("href", "/register");
+      expect(within(book).getByRole("link", { name: "Register", exact: true })).toHaveAttribute("href", "/join");
     } else {
       expect(within(book).getByRole("button", { name: "Registration closed" })).toBeDisabled();
       expect(within(book).queryByRole("link", { name: "Register" })).not.toBeInTheDocument();
@@ -300,7 +300,7 @@ describe("Catalogue page", () => {
         expect(within(panel).getByRole("button", { name: "Recording coming soon" })).toBeDisabled();
         expect(within(panel).queryByRole("link", { name: "Register" })).not.toBeInTheDocument();
       } else {
-        expect(within(panel).getByRole("link", { name: "Register" })).toHaveAttribute("href", "/register");
+        expect(within(panel).getByRole("link", { name: "Register" })).toHaveAttribute("href", "/join");
       }
     }
     fireEvent.click(covers[0]);

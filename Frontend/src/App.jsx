@@ -17,6 +17,7 @@ import Register from "./Pages/Register";
 import TeamPage from "./Pages/Team";
 import Catalogue from "./Pages/Catalogue";
 import Profile from "./Pages/Profile";
+import Join from "./Pages/Join";
 import { RouteTransitionProvider } from "./RouteTransitionContext";
 import AnimatedPage from "./Components/AnimatedPage";
 import { prepareRoute } from "./utils/prepareRoute";
@@ -24,6 +25,7 @@ import { prepareRoute } from "./utils/prepareRoute";
 const pageNames = {
   "/": "home page", "/team": "panel", "/catalogue": "catalogue",
   "/profile": "profile", "/login": "sign in", "/register": "registration",
+  "/join": "membership application",
 };
 
 function App() {
@@ -69,7 +71,7 @@ function AppContent() {
   const isAuthPage =
     location.pathname === "/login" || location.pathname === "/register";
   const isHomePage = location.pathname === "/";
-  const hasPhotoHero = isHomePage || location.pathname === "/team" || location.pathname === "/catalogue";
+  const hasPhotoHero = isHomePage || location.pathname === "/team" || location.pathname === "/catalogue" || location.pathname === "/join";
 
   return (
     <RouteTransitionProvider
@@ -86,6 +88,7 @@ function AppContent() {
             <Route path="/team" element={<TeamPage />} />
             <Route path="/catalogue" element={<Catalogue />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/join" element={<Join />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
