@@ -76,7 +76,7 @@ const ScholarQuotesPanel = () => {
   return (
     <>
       {/* Panel – same *look* as your original, with improved height handling */}
-      <div className="hidden lg:flex w-full lg:w-1/2 min-h-screen bg-gradient-to-b from-[#133729] to-green-700 text-white items-center justify-center px-6 py-12">
+      <div className="hidden lg:flex w-full lg:w-2/5 min-w-0 min-h-screen bg-gradient-to-b from-[#133729] to-green-700 text-white items-center justify-center px-6 py-12">
 
         <div
           key={activeIndex}

@@ -46,14 +46,20 @@ flowchart LR
 
 | Route | Screen | Data source |
 | --- | --- | --- |
-| `/` | Home | Content and event/affiliation arrays in React components. |
+| `/` | Home | Component content, shared featured events in `src/data/featuredEvents.js`, and the local affiliation array. |
+| `/catalogue` | Events, webinars and courses | Sample programmes in `src/data/catalogue.js`. |
 | `/team` | Panel | Local sample committee and team member data. |
 | `/profile` | Member profile | Sample user, event and certificate data held in component state. |
 | `/join` | Membership application | Validated details held in memory, reviewed before an email draft or text download. |
+| `/enroll/:kind/:id` | Individual programme enrollment | Selected catalogue or featured event data; validated student details held in memory. |
 | `/login` | Unlisted admin login interface | Interface prototype; no authenticated session is established. |
 | `/register` | Unlisted admin registration interface | Interface prototype; no account record is created. |
 
 User input and carousel selections update React state. Public assets load from the same static deployment. There is no implemented server-side persistence or API contract to document.
+
+Each programme has an enrollment URL (`kind` is `events`, `webinars` or `courses`). Event and webinar forms require name, student ID, department, semester, gender and email; courses also require mobile number. Shared field definitions and validation live in `src/utils/studentDetails.js`. On desktop, form and programme columns stretch to the same height. Field spacing and the programme image adapt to available space; review uses a compact programme summary. Changing programme IDs resets the form; invalid IDs show a recovery link instead of a form. Review exports identify the selected programme and contain only its required fields. Applicants send an email draft or download a text copy; no place, payment or successful submission is claimed automatically. Archived catalogue entries retain their closed registration actions.
+
+Route changes show the skeleton for at least 1.6 seconds, with a 1.8-second image preparation deadline. The shared 200ms fade-out keeps the entire loader within a two-second maximum, including failed or stalled images. Silhouettes cover every primary section on Home, all panel team rows, the catalogue shelf/basket/laptop, membership and enrollment forms, account/profile layouts, and the combined quote/footer. Skeleton and real content share a grid area so the full silhouette remains in page flow rather than being clipped to a short overlay. Loading content is inert and hidden from assistive technology; navbar navigation remains available. Reduced-motion preferences disable shimmer and shorten transitions.
 
 Public navigation and join actions lead to `/join`, with a photo hero and transparent navbar. The hero and application use the same content alignment. Applications collect name, student ID, one of eight departments, semester (1.1–5.2), gender, email, mobile number, and transaction information for the BDT 100 registration fee. The payment panel matches the member fields' desktop height and switches between method selection and transaction details without resizing. bKash, Nagad and Rocket applicants provide a sender number and transaction ID; bank transfers include the sender bank and transfer reference; cash applicants identify the collecting representative and optionally provide a receipt reference. Switching methods preserves drafts but validates and exports only the chosen method. All payment details remain pending club verification. Confirmed receiving/payment instructions belong in `Frontend/src/data/recruitment.js`; no receiving number is invented or inferred.
 

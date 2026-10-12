@@ -164,12 +164,12 @@ const Hero = () => {
               <button
                 type="button"
                 onClick={scrollToAbout}
-                className="group inline-flex min-h-14 cursor-pointer items-center gap-5 rounded-full border border-[#eef4ef]/30 bg-[#eef4ef] py-2.5 pr-3 pl-6 text-base font-semibold text-[#102c21] shadow-lg shadow-black/15 transition-colors duration-200 hover:border-[#E9AD5E] hover:bg-[#E9AD5E] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E] active:border-[#E9AD5E] active:bg-[#E9AD5E] motion-reduce:transition-none sm:gap-6 sm:pl-7 sm:text-lg"
+                className="group inline-flex min-h-14 cursor-pointer items-center gap-5 rounded-full border border-white/20 bg-[#173d2e] py-2.5 pr-3 pl-6 text-base font-semibold text-white shadow-lg shadow-black/15 transition-colors duration-200 hover:border-[#E9AD5E] hover:bg-[#E9AD5E] hover:text-[#173d2e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E] active:border-[#E9AD5E] active:bg-[#E9AD5E] active:text-[#173d2e] motion-reduce:transition-none sm:gap-6 sm:pl-7 sm:text-lg"
               >
                 Discover ARPC
                 <span
                   aria-hidden="true"
-                  className="flex size-9 shrink-0 items-center justify-center rounded-full border border-[#102c21]/25 bg-[#102c21]/5"
+                  className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/10 transition-colors duration-200 group-hover:border-[#173d2e]/30 group-hover:bg-[#173d2e]/10 motion-reduce:transition-none"
                 >
                   <svg
                     viewBox="0 0 16 24"

@@ -1,3 +1,4 @@
+import { MemoryRouter } from "react-router-dom";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import CourseLaptop from "./CourseLaptop";
@@ -28,7 +29,7 @@ const newCourse = (id, title, extra = {}) => ({
 });
 
 it("opens a course from the library dock and returns keyboard focus to the dock", () => {
-  render(<CourseLaptop items={catalogue.courses} />);
+  renderLaptop(<CourseLaptop items={catalogue.courses} />);
   expect(screen.getByText("3 courses")).toBeInTheDocument();
   expect(screen.getByText(/2 free/)).toHaveTextContent("2 free · 1 paid");
   const open = screen.getByRole("button", { name: "Explore a course" });
@@ -49,7 +50,7 @@ it("gives new courses subject artwork and supports browsing beyond the original 
     newCourse("new-topic", "A new subject", { coverTheme: "not-a-theme" }),
     newCourse("new-explicit", "A guided workshop", { coverTheme: "writing" }),
   ];
-  render(<CourseLaptop items={courses} />);
+  renderLaptop(<CourseLaptop items={courses} />);
   const buttons = screen.getAllByRole("button", { name: /Open course folder:/ });
   expect(buttons).toHaveLength(6);
   expect(screen.getByText("6 courses")).toBeInTheDocument();
@@ -63,7 +64,7 @@ it("gives new courses subject artwork and supports browsing beyond the original 
 });
 
 it("retains the selected library view while opening and closing a course", () => {
-  const { container } = render(<CourseLaptop items={catalogue.courses} />);
+  const { container } = renderLaptop(<CourseLaptop items={catalogue.courses} />);
   const grid = screen.getByRole("button", { name: "Grid view" });
   const list = screen.getByRole("button", { name: "List view" });
   expect(grid).toHaveAttribute("aria-pressed", "true");
@@ -94,7 +95,7 @@ it("provides eleven unique selectable cover presets for a future admin picker", 
 
 it("uses a custom course cover and recovers with subject artwork if it fails to load", () => {
   const course = newCourse("custom-writing", "Writing for students", { coverImage: "/images/courses/writing.jpg" });
-  render(<CourseLaptop items={[course]} />);
+  renderLaptop(<CourseLaptop items={[course]} />);
   const button = screen.getByRole("button", { name: `Open course folder: ${course.title}` });
   const cover = button.querySelector("img");
   expect(cover).toHaveAttribute("src", "/images/courses/writing.jpg");
@@ -109,7 +110,7 @@ it("uses a custom course cover and recovers with subject artwork if it fails to 
 
 it("keeps rapid animated switches independent and removes outgoing details from keyboard and accessibility navigation", () => {
   const animations = mockAnimations();
-  const { container, unmount } = render(<CourseLaptop items={catalogue.courses} />);
+  const { container, unmount } = renderLaptop(<CourseLaptop items={catalogue.courses} />);
   const folders = screen.getAllByRole("button", { name: /Open course folder:/ });
   fireEvent.click(folders[0]);
   fireEvent.click(folders[1]);
@@ -132,7 +133,7 @@ it("keeps rapid animated switches independent and removes outgoing details from 
 it("switches immediately without outgoing snapshots when reduced motion is requested", () => {
   const animations = mockAnimations();
   vi.stubGlobal("matchMedia", vi.fn((query) => ({ matches: query === "(prefers-reduced-motion: reduce)" })));
-  const { container } = render(<CourseLaptop items={catalogue.courses} />);
+  const { container } = renderLaptop(<CourseLaptop items={catalogue.courses} />);
   const folders = screen.getAllByRole("button", { name: /Open course folder:/ });
   fireEvent.click(folders[0]);
   fireEvent.click(folders[1]);
@@ -140,3 +141,5 @@ it("switches immediately without outgoing snapshots when reduced motion is reque
   expect(animations).toHaveLength(0);
   expect(container.querySelector(".course-screen-details--outgoing")).not.toBeInTheDocument();
 });
+
+function renderLaptop(ui) { return render(<MemoryRouter>{ui}</MemoryRouter>); }

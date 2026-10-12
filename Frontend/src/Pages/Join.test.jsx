@@ -31,9 +31,11 @@ describe("Membership application", () => {
     expect(header.querySelector("img")).toHaveAttribute("src", `${import.meta.env.BASE_URL}images/about/community.jpg`);
     expect(header.querySelector("img")).toHaveAttribute("alt", "");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Join theARPC community.");
-    const details = screen.getByRole("group", { name: "Your details" });
-    expect(within(details).getAllByRole("textbox")).toHaveLength(4);
-    expect(within(details).getAllByRole("combobox")).toHaveLength(3);
+    const student = screen.getByRole("group", { name: "Student information" });
+    const contact = screen.getByRole("group", { name: "Contact information" });
+    expect(within(student).getAllByRole("textbox")).toHaveLength(2);
+    expect(within(student).getAllByRole("combobox")).toHaveLength(3);
+    expect(within(contact).getAllByRole("textbox")).toHaveLength(2);
     expect(screen.getByText("৳100")).toBeVisible();
     expect(screen.queryByLabelText("Preferred team")).not.toBeInTheDocument();
     expect(screen.queryByRole("textbox", { name: "Transaction ID" })).not.toBeInTheDocument();

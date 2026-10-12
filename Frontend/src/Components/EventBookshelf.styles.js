@@ -191,7 +191,7 @@ export const bookStyles = {
     "event-book-left",
     "flex flex-col gap-6 min-w-0 [padding:clamp(1.5rem,_3vw,_3rem)] [border-radius:4px_0_0_4px] [background:#f7faf5]",
     // @media (width<=639px) .event-book-left
-    "[@media(width<=639px)]:gap-4 [@media(width<=639px)]:p-6 [@media(width<=639px)]:[border-radius:4px_4px_0_0]",
+    "[@media(width<=639px)]:gap-4 [@media(width<=639px)]:p-6 [@media(width<=639px)]:pt-17 [@media(width<=639px)]:[border-radius:4px_4px_0_0]",
     //  .event-book-left > *
     "[&_>_*]:[transition:opacity_220ms_ease]",
     // @media (prefers-reduced-motion: reduce) .event-book-left > *
@@ -247,7 +247,7 @@ export const bookStyles = {
   ].join(" "),
   "event-book-introduction": [
     "event-book-introduction",
-    "font-editorial [font-size:clamp(1.5rem,_2.4vw,_2rem)] [line-height:1.35] text-justify",
+    "font-editorial [font-size:clamp(1.5rem,_2.4vw,_2rem)] [line-height:1.35] text-justify max-sm:text-left",
     // @media (width<=639px) .event-book-introduction
     "[@media(width<=639px)]:[font-size:1.25rem]",
     // @media (width>639px) and (width<=1023px) .event-book-introduction
@@ -303,7 +303,7 @@ export const bookStyles = {
   ].join(" "),
   "event-book-description": [
     "event-book-description",
-    "mt-5 [font-size:1rem] [line-height:1.75] text-justify",
+    "mt-5 [font-size:1rem] [line-height:1.75] text-justify max-sm:text-left",
   ].join(" "),
   "event-book-takeaways": [
     "event-book-takeaways",

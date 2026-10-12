@@ -1,4 +1,5 @@
 import { publicAsset } from "./publicAsset";
+import { enrollmentFromPath } from "./enrollment";
 
 const heroImages = {
   "/": ["/heroBanner.jpg"],
@@ -7,17 +8,19 @@ const heroImages = {
   "/join": ["/images/about/community.jpg"],
 };
 
-// Keep the skeleton visible for 2.5 seconds, with a 3-second ceiling for
-// stalled images. Reduced motion changes the animation, not this display time.
-const MIN_SKELETON_MS = 2500;
-const MAX_PREPARATION_MS = 3000;
+// Budget the fade-out as part of the two-second maximum, even for stalled images.
+export const ROUTE_FADE_SECONDS = 0.2;
+const MIN_SKELETON_MS = 1600;
+const MAX_PREPARATION_MS = 2000 - ROUTE_FADE_SECONDS * 1000;
 
 export function prepareRoute(pathname, { signal }) {
   return new Promise((resolve) => {
     if (signal.aborted) { resolve(); return; }
     const images = [];
+    const enrollment = enrollmentFromPath(pathname);
+    const routeImages = heroImages[pathname] ?? (enrollment ? [enrollment.item.heroImage || enrollment.item.image] : []);
     let minimumElapsed = false;
-    let pending = (heroImages[pathname] ?? []).length;
+    let pending = routeImages.length;
     let settled = false;
     let minimumTimer;
     let deadlineTimer;
@@ -39,7 +42,7 @@ export function prepareRoute(pathname, { signal }) {
       maybeFinish();
     }, MIN_SKELETON_MS);
 
-    (heroImages[pathname] ?? []).forEach((src) => {
+    routeImages.forEach((src) => {
       const image = new Image();
       images.push(image);
       let completed = false;

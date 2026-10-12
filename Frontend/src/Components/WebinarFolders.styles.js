@@ -202,6 +202,7 @@ export const webinarStyles = {
     "relative min-h-96 overflow-hidden [border-radius:6px] [background:#dce8df]",
     // @media (width<=639px) .webinar-folder-image
     "[@media(width<=639px)]:min-h-0 [@media(width<=639px)]:[aspect-ratio:4_/_3]",
+    "[@media(width<=479px)]:min-h-48",
     // @media (width>639px) and (width<=1023px) .webinar-folder-image
     "[@media(width>639px)_and_(width<=1023px)]:min-h-0 [@media(width>639px)_and_(width<=1023px)]:[aspect-ratio:16_/_7]",
     //  .webinar-folder-image > img
@@ -212,6 +213,8 @@ export const webinarStyles = {
     "absolute [z-index:1] [inset:auto_0_0] flex items-center gap-4 p-5 [background:#173d2e] text-[#fff]",
     // @media (width<=639px) .webinar-folder-image__caption
     "[@media(width<=639px)]:gap-3 [@media(width<=639px)]:p-4",
+    "[@media(width<=479px)]:[&_>_span]:hidden",
+    "[&_p]:min-w-0 [&_p]:[overflow-wrap:anywhere]",
     //  .webinar-folder-image__caption > span
     "[&_>_span]:grid [&_>_span]:place-items-center [&_>_span]:flex-none [&_>_span]:w-12 [&_>_span]:h-12",
     "[&_>_span]:[border:1px_solid_rgb(255_255_255_/_50%)] [&_>_span]:rounded-[50%]",
@@ -233,7 +236,8 @@ export const webinarStyles = {
     "[&_h3]:font-editorial [&_h3]:[font-size:clamp(2rem,_3vw,_3rem)] [&_h3]:font-semibold [&_h3]:[line-height:1.08]",
     "[&_h3]:[letter-spacing:-0.02em]",
     // @media (width<=639px) .webinar-folder-details h3
-    "[@media(width<=639px)]:[&_h3]:[font-size:2rem]",
+    "[@media(width<=639px)]:[&_h3]:[font-size:clamp(1.5rem,_5vw,_2rem)]",
+    "[&_h3]:[overflow-wrap:anywhere]",
   ].join(" "),
   "webinar-folder-metadata": [
     "webinar-folder-metadata",
@@ -253,7 +257,7 @@ export const webinarStyles = {
   ].join(" "),
   "webinar-folder-description": [
     "webinar-folder-description",
-    "mt-5 [font-size:1rem] [line-height:1.75] text-justify",
+    "mt-5 [font-size:1rem] [line-height:1.75] text-justify max-sm:text-left",
   ].join(" "),
   "webinar-folder-takeaways": [
     "webinar-folder-takeaways",

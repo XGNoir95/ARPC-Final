@@ -1,3 +1,4 @@
+import { enrollmentPath } from "../utils/enrollment";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -154,7 +155,7 @@ export default function WebinarFolders({ items, today }) {
               <div className={webinarStyles["webinar-folder-actions"]}>
                 <p>Sample session. {isFinished(item, today) ? "Recording and resources will appear when confirmed." : "Speaker and joining details will appear when confirmed."}</p>
                 {isFinished(item, today) ? <button type="button" disabled className={webinarStyles["webinar-folder-register"]}>Recording coming soon</button>
-                  : <Link to="/join" className={webinarStyles["webinar-folder-register"]}>Register <span aria-hidden="true"><FiArrowUpRight /></span></Link>}
+                  : <Link to={enrollmentPath("webinars", item.id)} className={webinarStyles["webinar-folder-register"]}>Register <span aria-hidden="true"><FiArrowUpRight /></span></Link>}
               </div>
             </div>
           </div>

@@ -1,3 +1,4 @@
+import { enrollmentPath } from "../utils/enrollment";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion as Motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -189,7 +190,7 @@ function EventBookPages({ item, today, onClose, phase, reducedMotion }) {
           <p className={bookStyles["event-book-preview"]}>Sample programme. Dates and availability are illustrative.</p>
           <div className={bookStyles["event-book-actions"]}>
             {finished ? <button type="button" disabled className={bookStyles["event-book-register"]}>Registration closed</button>
-              : <Link to="/join" className={bookStyles["event-book-register"]}>Register <span className={bookStyles["event-book-register__arrow"]}><FiArrowUpRight aria-hidden="true" /></span></Link>}
+              : <Link to={enrollmentPath("events", item.id)} className={bookStyles["event-book-register"]}>Register <span className={bookStyles["event-book-register__arrow"]}><FiArrowUpRight aria-hidden="true" /></span></Link>}
           </div>
         </div>
         {!reducedMotion && <Motion.div

@@ -95,9 +95,9 @@ describe("Featured events carousel", () => {
     expect(selected()).toHaveAccessibleName("Go to event 3");
   });
 
-  it("opens the public membership application from the active event", () => {
-    render(<MemoryRouter><Routes><Route path="/" element={<FeaturedEvents />} /><Route path="/join" element={<h1>Membership application</h1>} /></Routes></MemoryRouter>);
+  it("opens the enrollment page for the active event", () => {
+    render(<MemoryRouter><Routes><Route path="/" element={<FeaturedEvents />} /><Route path="/enroll/events/featured-1" element={<h1>Event enrollment</h1>} /></Routes></MemoryRouter>);
     fireEvent.click(screen.getByRole("link", { name: "Register now" }));
-    expect(screen.getByRole("heading", { name: "Membership application" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Event enrollment" })).toBeVisible();
   });
 });

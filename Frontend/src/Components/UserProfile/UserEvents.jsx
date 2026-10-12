@@ -22,7 +22,7 @@ const UserEvents = ({ events }) => {
                          items-center lg:items-center
                          lg:justify-between gap-2"
             >
-              <div className="text-center lg:text-left">
+              <div className="min-w-0 max-w-full [overflow-wrap:anywhere] text-center lg:text-left">
                 <p className="text-[1.6rem] font-garamond font-semibold text-green-900">
                   {ev.title}
                 </p>
@@ -35,7 +35,7 @@ const UserEvents = ({ events }) => {
               <button
                 type="button"
                 className="self-center lg:self-auto mt-4 lg:mt-0
-                           px-12 lg:px-10 py-2.5 rounded-full bg-green-700 text-white
+                           min-h-11 max-w-full shrink-0 px-6 sm:px-10 py-2.5 rounded-full bg-green-700 text-white
                            text-[1.25rem] font-semibold font-garamond
                            hover:bg-green-800 transition"
               >

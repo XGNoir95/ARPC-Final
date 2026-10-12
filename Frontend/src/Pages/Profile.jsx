@@ -69,7 +69,7 @@ const Profile = () => {
           {/* Header area */}
           <div className="bg-gradient-to-r from-[#0E291E] via-[#133729] to-green-700 px-6 sm:px-10 pt-8 pb-8 flex flex-col items-center text-center">
             {/* Avatar */}
-            <div className="w-[230px] h-[230px] rounded-full overflow-hidden border-[6px] border-white shadow-xl bg-white">
+            <div className="size-44 max-w-full shrink-0 rounded-full overflow-hidden border-[6px] border-white shadow-xl bg-white sm:size-[230px]">
               <img
                 src="https://pbs.twimg.com/profile_images/1328353245408993280/xooFrrYm_400x400.jpg"
                 alt="Profile avatar"
@@ -78,10 +78,10 @@ const Profile = () => {
             </div>
 
             {/* Name + email */}
-            <h1 className="mt-6 text-[2rem] md:text-[2.4rem] font-garamond font-bold text-white">
+            <h1 className="mt-6 max-w-full [overflow-wrap:anywhere] text-[2rem] md:text-[2.4rem] font-garamond font-bold text-white">
               {user.name}
             </h1>
-            <p className="text-[1.1rem] md:text-[1.25rem] text-green-100">
+            <p className="max-w-full [overflow-wrap:anywhere] text-[1.1rem] md:text-[1.25rem] text-green-100">
               {user.email}
             </p>
           </div>

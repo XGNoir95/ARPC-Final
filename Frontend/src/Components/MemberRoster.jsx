@@ -35,7 +35,7 @@ function ProfileExpansion({ origin, reduceMotion, children }) {
       animate={{ clipPath: "inset(0px 0px 0px 0px)", opacity: 1 }}
       exit={{ clipPath: origin, opacity: 0 }}
       transition={{ duration: reduceMotion ? 0 : 0.55, ease: [0.22, 0.68, 0.18, 1] }}
-      className="absolute inset-0 flex flex-col bg-[#173d2e]"
+      className="relative min-h-full min-w-0 flex flex-col bg-[#173d2e] [grid-area:1/1]"
     >
       {children}
     </Motion.div>
@@ -73,7 +73,7 @@ export default function MemberRoster({ team, onOpen }) {
 
   return (
     <div
-      className="relative grid"
+      className="relative grid min-w-0 @container/roster"
       onKeyDown={(event) => {
         if (event.key === "Escape" && selected) {
           event.stopPropagation();
@@ -81,12 +81,12 @@ export default function MemberRoster({ team, onOpen }) {
         }
       }}
     >
-      {/* The roster always supplies the height; the profile fills that same space. */}
+      {/* Share the roster's area, while allowing longer profiles to supply height. */}
       <ul
         aria-label={`${team.label} roster`}
         aria-hidden={Boolean(member)}
         inert={Boolean(member)}
-        className={`grid gap-x-6 transition-[opacity,scale] duration-500 ease-out motion-reduce:transition-none motion-reduce:scale-100 xl:grid-cols-2 ${member ? "pointer-events-none scale-[0.98] opacity-0" : "scale-100 opacity-100"}`}
+        className={`grid min-w-0 gap-x-6 [grid-area:1/1] transition-[opacity,scale] duration-500 ease-out motion-reduce:transition-none motion-reduce:scale-100 xl:grid-cols-2 ${member ? "pointer-events-none scale-[0.98] opacity-0" : "scale-100 opacity-100"}`}
       >
         {team.members.map((person, index) => (
           <li key={person.id} className="min-w-0 border-t border-[#eef4ef]/20">
@@ -100,7 +100,7 @@ export default function MemberRoster({ team, onOpen }) {
               className="group/member flex h-full w-full cursor-pointer items-start gap-3 rounded-b-xl px-3 py-4 text-left transition-colors duration-300 hover:bg-[#eef4ef]/5 focus-visible:bg-[#eef4ef]/5 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#E9AD5E] motion-reduce:transition-none"
             >
               <img src={publicAsset(person.image)} alt="" width="56" height="56" loading="lazy" decoding="async" className="size-14 shrink-0 rounded-full bg-[#eef4ef] object-cover" />
-              <span className="min-w-0">
+              <span className="min-w-0 [overflow-wrap:anywhere]">
                 <span className="block font-garamond text-[1.4rem] font-semibold leading-tight text-[#eef4ef] transition-colors duration-300 group-hover/member:text-[#E9AD5E] motion-reduce:transition-none">{person.name}</span>
                 {person.role && <span className="mt-1 block text-sm font-medium text-[#E9AD5E]">{person.role}</span>}
                 <span className="mt-1 block text-[0.8125rem] leading-relaxed text-[#d9e6dd]">{person.department}</span>
@@ -116,7 +116,7 @@ export default function MemberRoster({ team, onOpen }) {
         aria-label={member ? `${member.name}, ${member.role || team.label} profile` : "Member profile"}
         aria-hidden={!member}
         inert={!member}
-        className={`absolute inset-0 min-h-0 overflow-hidden ${member ? "" : "pointer-events-none"}`}
+        className={`relative grid min-w-0 overflow-hidden [grid-area:1/1] ${member ? "" : "pointer-events-none"}`}
       >
         <AnimatePresence initial={false}>
           {member && (
@@ -127,14 +127,14 @@ export default function MemberRoster({ team, onOpen }) {
                   All members
                 </button>
               </div>
-              <div className="grid min-h-0 flex-1 grid-cols-[5rem_minmax(0,1fr)] content-center items-center gap-x-4 gap-y-5 px-2 pb-4 sm:grid-cols-[5rem_minmax(0,1fr)_auto] sm:px-3 xl:grid-cols-[8rem_minmax(0,1fr)_auto] xl:gap-x-6">
-                <img src={publicAsset(member.image)} alt="" width="128" height="128" className="size-20 rounded-full bg-[#eef4ef] object-cover xl:size-32" />
-                <div className="min-w-0">
-                  <h3 className="break-words font-garamond text-[1.6rem] font-semibold leading-[1.05] text-[#eef4ef] sm:text-[1.9rem] xl:text-[2.5rem]">{member.name}</h3>
-                  <p className="mt-3 text-base font-medium text-[#E9AD5E] sm:text-lg">{member.role || "Team member"}</p>
-                  <p className="mt-2 text-sm leading-relaxed text-[#d9e6dd] sm:text-base">{member.department}</p>
+              <div className="grid flex-1 grid-cols-[4rem_minmax(0,1fr)] content-center items-center gap-x-4 gap-y-5 px-2 py-4 @min-[20rem]/roster:grid-cols-[5rem_minmax(0,1fr)] @min-[36rem]/roster:grid-cols-[5rem_minmax(0,1fr)_auto] @min-[42rem]/roster:grid-cols-[8rem_minmax(0,1fr)_auto] @min-[42rem]/roster:gap-x-6">
+                <img src={publicAsset(member.image)} alt="" width="128" height="128" className="size-16 rounded-full bg-[#eef4ef] object-cover @min-[20rem]/roster:size-20 @min-[42rem]/roster:size-32" />
+                <div className="min-w-0 [overflow-wrap:anywhere]">
+                  <h3 className="font-garamond text-[1.6rem] font-semibold leading-[1.05] text-[#eef4ef] @min-[28rem]/roster:text-[1.9rem] @min-[42rem]/roster:text-[2.5rem]">{member.name}</h3>
+                  <p className="mt-3 text-base font-medium text-[#E9AD5E] @min-[36rem]/roster:text-lg">{member.role || "Team member"}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-[#d9e6dd] @min-[36rem]/roster:text-base">{member.department}</p>
                 </div>
-                <div aria-label="Social profiles" className="col-span-2 flex items-center justify-self-end gap-2 sm:col-span-1">
+                <div aria-label="Social profiles" className="col-span-2 flex items-center justify-self-end gap-2 @min-[36rem]/roster:col-span-1">
                   <MemberSocial member={member} label="LinkedIn" url={member.linkedin} icon={FaLinkedin} />
                   <MemberSocial member={member} label="GitHub" url={member.github} icon={FaGithub} />
                 </div>

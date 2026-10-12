@@ -48,7 +48,7 @@ describe("Catalogue page", () => {
     expect(within(book).queryByText("Time in Dhaka")).not.toBeInTheDocument();
     expect(within(book).queryByRole("button", { name: "Close book", exact: true })).not.toBeInTheDocument();
     if (status === "Upcoming event") {
-      expect(within(book).getByRole("link", { name: "Register", exact: true })).toHaveAttribute("href", "/join");
+      expect(within(book).getByRole("link", { name: "Register", exact: true })).toHaveAttribute("href", `/enroll/events/${catalogue.events.find((item) => item.title === title).id}`);
     } else {
       expect(within(book).getByRole("button", { name: "Registration closed" })).toBeDisabled();
       expect(within(book).queryByRole("link", { name: "Register" })).not.toBeInTheDocument();
@@ -239,7 +239,7 @@ describe("Catalogue page", () => {
     expect(within(details).getByText(item.pace, { selector: "dd" })).toBeInTheDocument();
     expect(within(details).getByText(item.fee === 0 ? "Free" : `৳ ${item.fee.toLocaleString("en-BD")}`, { selector: "dd" })).toBeInTheDocument();
     for (const takeaway of item.takeaways) expect(within(details).getByText(takeaway)).toBeInTheDocument();
-    expect(within(details).getByRole("button", { name: "Enrolment coming soon" })).toBeDisabled();
+    expect(within(details).getByRole("link", { name: "Enroll in course" })).toHaveAttribute("href", `/enroll/courses/${item.id}`);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(document.body.style.overflow).toBe("");
     fireEvent.keyDown(details, { key: "Escape" });
@@ -300,7 +300,7 @@ describe("Catalogue page", () => {
         expect(within(panel).getByRole("button", { name: "Recording coming soon" })).toBeDisabled();
         expect(within(panel).queryByRole("link", { name: "Register" })).not.toBeInTheDocument();
       } else {
-        expect(within(panel).getByRole("link", { name: "Register" })).toHaveAttribute("href", "/join");
+        expect(within(panel).getByRole("link", { name: "Register" })).toHaveAttribute("href", `/enroll/webinars/${panel.id.replace("-folder-panel", "")}`);
       }
     }
     fireEvent.click(covers[0]);

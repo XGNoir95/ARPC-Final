@@ -51,8 +51,6 @@ export default function Catalogue() {
         <div className="relative w-full lg:max-w-80"><FiSearch aria-hidden="true" className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-[#173d2e]/65" /><input type="search" aria-label="Search the catalogue" placeholder="Find something to explore" value={search} onChange={(event) => setSearch(event.target.value)} className={`min-h-12 w-full rounded-full border border-[#173d2e]/25 bg-white py-3 pr-4 pl-12 text-base placeholder:text-[#173d2e]/60 ${focus}`} /></div>
       </div>
     </div>
-    <p className={`${frame} pt-5 text-sm leading-relaxed text-[#173d2e]/65`}>Preview catalogue. The programmes, dates and course fees below are samples.</p>
-
     {sections.map(({ id, title, filters: choices }) => {
       const items = filterCatalogue(catalogue[id], id, filters[id], search, today);
       return <section key={id} id={`catalogue-${id}`} aria-labelledby={`catalogue-${id}-heading`} className="scroll-mt-6 bg-white py-12 sm:py-16 lg:py-20">

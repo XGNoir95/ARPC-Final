@@ -1,73 +1,22 @@
 // src/Pages/Login.jsx
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import ScholarQuotesPanel from "../Components/ScholarQuotesPanel";
 import { publicAsset } from "../utils/publicAsset";
 
 const Login = () => {
   const navigate = useNavigate();
-  const pageRef = useRef(null);
-
-  // scroll behaviour (same as your latest version)
-  useEffect(() => {
-    const html = document.documentElement;
-    const body = document.body;
-    const root = document.getElementById("root");
-
-    const prevHtmlOverflowY = html.style.overflowY;
-    const prevBodyOverflowY = body.style.overflowY;
-    const prevRootOverflowY = root ? root.style.overflowY : undefined;
-
-    if (root) {
-      root.style.overflowY = "visible";
-    }
-
-    const updateOverflow = () => {
-      const isLg = window.innerWidth >= 1024;
-
-      if (!isLg) {
-        html.style.overflowY = prevHtmlOverflowY || "";
-        return;
-      }
-
-      const contentEl = root || pageRef.current || body;
-      const contentHeight = contentEl.scrollHeight;
-      const viewportHeight = window.innerHeight;
-
-      const ratio = contentHeight / viewportHeight;
-      const threshold = 1.05;
-
-      if (ratio > threshold) {
-        html.style.overflowY = "auto";
-      } else {
-        html.style.overflowY = "hidden";
-      }
-    };
-
-    updateOverflow();
-    window.addEventListener("resize", updateOverflow);
-
-    return () => {
-      window.removeEventListener("resize", updateOverflow);
-      html.style.overflowY = prevHtmlOverflowY;
-      body.style.overflowY = prevBodyOverflowY;
-      if (root) {
-        root.style.overflowY = prevRootOverflowY ?? "";
-      }
-    };
-  }, []);
-
   const content = (
     <section
-      ref={pageRef}
       className="relative min-h-screen bg-white flex flex-col lg:flex-row justify-center lg:justify-start"
     >
       {/* Top-left back button */}
       <button
         type="button"
         onClick={() => navigate("/")}
+        aria-label="Back to home"
         className="absolute top-4 left-4 md:top-6 md:left-6
-                   inline-flex items-center gap-2
+                   inline-flex min-h-11 min-w-11 items-center justify-center gap-2
                    rounded-full bg-white/90 text-green-800
                    px-3 py-1.5 md:px-3 md:py-1.5
                    text-xs md:text-sm font-medium
@@ -78,19 +27,19 @@ const Login = () => {
 
       {/* LEFT – form column */}
       <div className="w-full lg:w-3/5 flex flex-col items-center lg:justify-center justify-start lg:py-0 sm:py-12">
-        <div className="max-w-4xl w-full mx-auto px-6 sm:px-10 lg:px-25 pt-18 pb-10 lg:py-16">
+        <div className="max-w-4xl w-full mx-auto px-6 sm:px-10 lg:px-10 xl:px-20 2xl:px-25 pt-18 pb-10 lg:py-16">
           {/* Logo + name */}
           <div className="flex items-center gap-2 lg:gap-4 mb-10">
             <img
               src={publicAsset("/logo.jpg")}
               alt="ARPC Logo"
-              className="h-36 w-36 rounded-full object-contain"
+              className="size-20 shrink-0 rounded-full object-contain sm:size-36"
             />
-            <div>
+            <div className="min-w-0 [overflow-wrap:anywhere]">
               <p className="text-sm tracking-[0.25em] uppercase text-green-700 font-semibold">
                 ARPC
               </p>
-              <p className="mt-1 text-[2rem] font-garamond font-semibold text-green-800">
+              <p className="mt-1 text-[1.5rem] sm:text-[2rem] font-garamond font-semibold text-green-800">
                 Ahsanullah Roh. Peace Club
               </p>
             </div>
@@ -126,14 +75,14 @@ const Login = () => {
               <input
                 id="email"
                 type="email"
-                className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-[0.9rem] md:text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
+                className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
                 placeholder="abcd@gmail.com"
               />
             </div>
 
             {/* Password */}
             <div>
-              <div className="flex items-center justify-between mb-1">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
                 <label
                   htmlFor="password"
                   className="block text-[1.08rem] md:text-lg font-medium text-gray-600"
@@ -150,7 +99,7 @@ const Login = () => {
               <input
                 id="password"
                 type="password"
-                className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-[0.9rem] md:text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
+                className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
                 placeholder="••••••••"
               />
             </div>

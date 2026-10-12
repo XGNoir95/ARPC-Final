@@ -33,6 +33,7 @@ ARPC's website introduces the club, its people, events and affiliations. The int
 | Panel | Executive committee and team profiles with local portrait placeholders. |
 | Club reflection | A founder's quotation, expandable reflection and club contact links. |
 | Membership | Public Join Us form with validation, application review, an email draft and a downloadable copy. |
+| Enrollment | Individual event, webinar and course enrollment pages with programme details, validated student fields, review, email drafts and text downloads. |
 | Admin interface prototypes | Unlisted login and registration routes, plus a sample profile with event and certificate tabs. |
 
 **Current scope:** this repository is a frontend application. Membership applications are sent by the applicant through their email app; no application database is connected. Account interfaces use placeholder data and behavior; admin authorization, account creation, certificate generation and a backend service are not implemented. Unlisted account routes remain directly reachable.

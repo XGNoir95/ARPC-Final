@@ -7,4 +7,5 @@
 - Inline `style` objects may only provide `--custom-properties` for runtime data, images or measured geometry. Apply those values through Tailwind utilities. Framer Motion and the Web Animations API may animate measured values directly.
 - Keep semantic hook classes when interaction code or tests depend on them; their visual styles must come from Tailwind utilities.
 - Preserve keyboard access, visible focus, responsive layouts and reduced-motion behavior during refactors.
+- Check layouts from 320px phones through large desktop screens, including short landscape windows and expanded component states. Use container queries for details inside narrow cards; let forms and profiles grow with their content rather than clipping text or adding nested scrollbars. Keep intentional horizontal scrolling inside the event shelf.
 - Run `npm run lint`, `npm test`, `npm run build` and `npm run verify:build` for styling refactors. The lint command includes a Tailwind policy check that also runs in CI.

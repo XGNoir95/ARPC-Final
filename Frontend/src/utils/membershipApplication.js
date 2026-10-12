@@ -1,21 +1,7 @@
+import { studentFields as applicationFields, validPhone, validateStudentDetails } from "./studentDetails";
 import { paymentMethods, recruitmentPayment } from "../data/recruitment";
 
-const semesters = ["1.1", "1.2", "2.1", "2.2", "3.1", "3.2", "4.1", "4.2", "5.1", "5.2"];
-const departments = [
-  "Computer Science & Engineering", "Electrical & Electronic Engineering",
-  "Mechanical Engineering", "Industrial & Production Engineering", "Civil Engineering",
-  "Textile Engineering", "Bachelor of Business Administration", "Architecture",
-];
-
-export const applicationFields = [
-  { name: "fullName", label: "Full name", autoComplete: "name", maxLength: 100 },
-  { name: "studentId", label: "Student ID", maxLength: 30, autoComplete: "off" },
-  { name: "department", label: "Department", options: departments },
-  { name: "semester", label: "Semester", options: semesters },
-  { name: "gender", label: "Gender", options: ["Female", "Male", "Other", "Prefer not to say"] },
-  { name: "email", label: "Email address", type: "email", autoComplete: "email", maxLength: 150 },
-  { name: "phone", label: "Mobile number", type: "tel", autoComplete: "tel", maxLength: 25, placeholder: "+880 1XXXXXXXXX" },
-];
+export { studentFields as applicationFields } from "./studentDetails";
 
 export const initialApplication = {
   fullName: "", studentId: "", department: "", semester: "", gender: "", email: "", phone: "",
@@ -47,16 +33,8 @@ export function paymentFields(method) {
   return [];
 }
 
-const validPhone = (value) => /^\+?\d{7,15}$/.test(value.replace(/[\s()-]/g, ""));
-
 export function validateApplication(values) {
-  const errors = {};
-  applicationFields.forEach(({ name, label, options }) => {
-    if (!values[name].trim()) errors[name] = `${options ? "Select" : "Enter"} your ${label.toLowerCase()}.`;
-    else if (options && !options.includes(values[name])) errors[name] = `Select a valid ${label.toLowerCase()}.`;
-  });
-  if (values.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) errors.email = "Enter a valid email address.";
-  if (values.phone.trim() && !validPhone(values.phone)) errors.phone = "Enter a valid mobile number, including your country code if needed.";
+  const errors = validateStudentDetails(values);
   if (!paymentMethods.includes(values.paymentMethod)) errors.paymentMethod = "Choose a payment method.";
   paymentFields(values.paymentMethod).forEach(({ name, label, required }) => {
     if (required && !values[name].trim()) errors[name] = `Enter the ${label.toLowerCase()}.`;

@@ -1,5 +1,7 @@
+import { Link } from "react-router-dom";
+import { enrollmentPath } from "../utils/enrollment";
 import { useLayoutEffect, useRef, useState } from "react";
-import { FiArrowLeft, FiArrowUpRight, FiBookOpen, FiCheck, FiClock, FiCompass, FiGrid, FiList, FiLock, FiMapPin } from "react-icons/fi";
+import { FiArrowLeft, FiArrowUpRight, FiBookOpen, FiCheck, FiClock, FiCompass, FiGrid, FiList, FiMapPin } from "react-icons/fi";
 import { publicAsset } from "../utils/publicAsset";
 import { getCourseCover } from "../utils/courseCovers";
 import { courseStyles } from "./CourseLaptop.styles";
@@ -164,7 +166,7 @@ export default function CourseLaptop({ items }) {
             <ul className={courseStyles["course-detail-takeaways"]}>{selected.takeaways.map((point) => <li key={point}><FiCheck aria-hidden="true" />{point}</li>)}</ul>
             <div className={courseStyles["course-detail-actions"]}>
               <p>Sample course. Fees, syllabus and availability will be confirmed before enrolment opens.</p>
-              <button type="button" disabled><FiLock aria-hidden="true" />Enrolment coming soon</button>
+              <Link to={enrollmentPath("courses", selected.id)} className="inline-flex min-h-12 shrink-0 items-center justify-center gap-3 rounded-full bg-[#173d2e] px-5 py-3 font-semibold text-white transition-colors duration-200 hover:bg-[#E9AD5E] hover:text-[#173d2e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#173d2e] motion-reduce:transition-none">Enroll in course <FiArrowUpRight aria-hidden="true" /></Link>
             </div>
           </section>
           <div ref={transitionLayerRef} className={courseStyles["course-detail-transition-layer"]} aria-hidden="true" inert />

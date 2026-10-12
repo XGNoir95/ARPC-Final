@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { prepareRoute } from "./prepareRoute";
+import { prepareRoute, ROUTE_FADE_SECONDS } from "./prepareRoute";
 
 let images;
 beforeEach(() => {
@@ -14,7 +14,15 @@ beforeEach(() => {
 afterEach(() => vi.useRealTimers());
 
 describe("Route preparation", () => {
-  it("keeps the skeleton visible for 2.5 seconds even when assets are ready", async () => {
+  it("prepares the selected enrollment hero under the deployment base", async () => {
+    const preparation = prepareRoute("/enroll/courses/seerah-foundations", { signal: new AbortController().signal });
+    expect(images.map((image) => image.src)).toEqual(["/ARPC-Final/images/about/learning.jpg"]);
+    images[0].onload();
+    await vi.advanceTimersByTimeAsync(1600);
+    await preparation;
+    expect(vi.getTimerCount()).toBe(0);
+  });
+  it("keeps the skeleton visible for 1.6 seconds even when assets are ready", async () => {
     const ready = vi.fn();
     const preparation = prepareRoute("/team", { signal: new AbortController().signal }).then(ready);
     expect(images.map((image) => image.src)).toEqual([
@@ -22,7 +30,7 @@ describe("Route preparation", () => {
       "/ARPC-Final/images/team/meeting-discussion.jpg",
     ]);
     images.forEach((image) => image.onload());
-    await vi.advanceTimersByTimeAsync(2499);
+    await vi.advanceTimersByTimeAsync(1599);
     expect(ready).not.toHaveBeenCalled();
     await vi.advanceTimersByTimeAsync(1);
     await preparation;
@@ -36,7 +44,7 @@ describe("Route preparation", () => {
     let finishDecoding;
     images[0].decode = () => new Promise((resolve) => { finishDecoding = resolve; });
     images[0].onload();
-    await vi.advanceTimersByTimeAsync(2600);
+    await vi.advanceTimersByTimeAsync(1700);
     expect(ready).not.toHaveBeenCalled();
     finishDecoding();
     await preparation;
@@ -48,7 +56,7 @@ describe("Route preparation", () => {
     vi.stubGlobal("Image", class { complete = true; });
     const ready = vi.fn();
     const preparation = prepareRoute("/register", { signal: new AbortController().signal }).then(ready);
-    await vi.advanceTimersByTimeAsync(2499);
+    await vi.advanceTimersByTimeAsync(1599);
     expect(ready).not.toHaveBeenCalled();
     await vi.advanceTimersByTimeAsync(1);
     await preparation;
@@ -59,7 +67,7 @@ describe("Route preparation", () => {
   it("continues after failed images without extending the minimum display", async () => {
     const preparation = prepareRoute("/team", { signal: new AbortController().signal });
     images.forEach((image) => image.onerror());
-    await vi.advanceTimersByTimeAsync(2500);
+    await vi.advanceTimersByTimeAsync(1600);
     await preparation;
     expect(vi.getTimerCount()).toBe(0);
   });
@@ -67,12 +75,29 @@ describe("Route preparation", () => {
   it("never traps navigation when an image request stalls", async () => {
     const ready = vi.fn();
     const preparation = prepareRoute("/", { signal: new AbortController().signal }).then(ready);
-    await vi.advanceTimersByTimeAsync(2999);
+    await vi.advanceTimersByTimeAsync(1799);
     expect(ready).not.toHaveBeenCalled();
     await vi.advanceTimersByTimeAsync(1);
     await preparation;
     expect(ready).toHaveBeenCalledOnce();
     expect(images[0].onload).toBeNull();
+    expect(1800 + ROUTE_FADE_SECONDS * 1000).toBe(2000);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it("caps stalled image decoding and ignores a late completion", async () => {
+    const ready = vi.fn();
+    let finishDecoding;
+    const preparation = prepareRoute("/catalogue", { signal: new AbortController().signal }).then(ready);
+    images[0].decode = () => new Promise((resolve) => { finishDecoding = resolve; });
+    images[0].onload();
+    await vi.advanceTimersByTimeAsync(1800);
+    await preparation;
+    expect(ready).toHaveBeenCalledOnce();
+    expect(images[0].onload).toBeNull();
+    finishDecoding();
+    await vi.advanceTimersByTimeAsync(500);
+    expect(ready).toHaveBeenCalledOnce();
     expect(vi.getTimerCount()).toBe(0);
   });
 

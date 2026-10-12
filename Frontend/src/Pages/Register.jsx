@@ -1,72 +1,22 @@
 // src/Pages/Register.jsx
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import ScholarQuotesPanel from "../Components/ScholarQuotesPanel";
 import { publicAsset } from "../utils/publicAsset";
 
 const Register = () => {
   const navigate = useNavigate();
-  const pageRef = useRef(null);
-
-  useEffect(() => {
-    const html = document.documentElement;
-    const body = document.body;
-    const root = document.getElementById("root");
-
-    const prevHtmlOverflowY = html.style.overflowY;
-    const prevBodyOverflowY = body.style.overflowY;
-    const prevRootOverflowY = root ? root.style.overflowY : undefined;
-
-    if (root) {
-      root.style.overflowY = "visible";
-    }
-
-    const updateOverflow = () => {
-      const isLg = window.innerWidth >= 1024;
-
-      if (!isLg) {
-        html.style.overflowY = prevHtmlOverflowY || "";
-        return;
-      }
-
-      const contentEl = root || pageRef.current || body;
-      const contentHeight = contentEl.scrollHeight;
-      const viewportHeight = window.innerHeight;
-
-      const ratio = contentHeight / viewportHeight;
-      const threshold = 1.05;
-
-      if (ratio > threshold) {
-        html.style.overflowY = "auto";
-      } else {
-        html.style.overflowY = "hidden";
-      }
-    };
-
-    updateOverflow();
-    window.addEventListener("resize", updateOverflow);
-
-    return () => {
-      window.removeEventListener("resize", updateOverflow);
-      html.style.overflowY = prevHtmlOverflowY;
-      body.style.overflowY = prevBodyOverflowY;
-      if (root) {
-        root.style.overflowY = prevRootOverflowY ?? "";
-      }
-    };
-  }, []);
-
   const content = (
     <section
-      ref={pageRef}
       className="relative min-h-screen bg-white flex flex-col lg:flex-row justify-center lg:justify-start"
     >
       {/* Top-left back button */}
       <button
         type="button"
         onClick={() => navigate("/")}
+        aria-label="Back to home"
         className="absolute top-4 left-4 md:top-6 md:left-6
-                   inline-flex items-center gap-2
+                   inline-flex min-h-11 min-w-11 items-center justify-center gap-2
                    rounded-full bg-white/90 text-green-800
                    px-3 py-1.5 md:px-3 md:py-1.5
                    text-xs md:text-sm font-medium
@@ -86,9 +36,8 @@ const Register = () => {
             lg:max-w-5xl
             w-full mx-auto
             px-6 sm:px-10
-            lg:px-20
-            pt-18 pb-10 lg:py-4
-            lg:scale-90
+            lg:px-10 xl:px-20
+            pt-18 pb-10 lg:py-12
           "
         >
           {/* Logo + name */}
@@ -96,13 +45,13 @@ const Register = () => {
             <img
               src={publicAsset("/logo.jpg")}
               alt="ARPC Logo"
-              className="h-36 w-36 rounded-full object-contain"
+              className="size-20 shrink-0 rounded-full object-contain sm:size-36"
             />
-            <div>
+            <div className="min-w-0 [overflow-wrap:anywhere]">
               <p className="text-sm tracking-[0.25em] uppercase text-green-700 font-semibold">
                 ARPC
               </p>
-              <p className="mt-1 lg:text-[2rem] text-[1.8rem] font-garamond font-semibold text-green-800">
+              <p className="mt-1 text-[1.5rem] sm:text-[1.8rem] lg:text-[2rem] font-garamond font-semibold text-green-800">
                 Ahsanullah Roh. Peace Club
               </p>
             </div>
@@ -128,7 +77,7 @@ const Register = () => {
           {/* Form */}
           <form className="space-y-6">
             {/* Row 1 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label
                   htmlFor="fullName"
@@ -139,7 +88,7 @@ const Register = () => {
                 <input
                   id="fullName"
                   type="text"
-                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-[0.9rem] md:text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
+                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
                   placeholder="Your full name"
                 />
               </div>
@@ -154,14 +103,14 @@ const Register = () => {
                 <input
                   id="phone"
                   type="tel"
-                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-[0.9rem] md:text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
+                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
                   placeholder="+8801XXXXXXXXX"
                 />
               </div>
             </div>
 
             {/* Row 2 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label
                   htmlFor="email"
@@ -172,7 +121,7 @@ const Register = () => {
                 <input
                   id="email"
                   type="email"
-                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-[0.9rem] md:text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
+                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
                   placeholder="you.rid@aust.edu"
                 />
               </div>
@@ -187,14 +136,14 @@ const Register = () => {
                 <input
                   id="studentId"
                   type="text"
-                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-[0.9rem] md:text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
+                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
                   placeholder="e.g. 20XX010XXX"
                 />
               </div>
             </div>
 
             {/* Row 3 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label
                   htmlFor="department"
@@ -205,7 +154,7 @@ const Register = () => {
                 <input
                   id="department"
                   type="text"
-                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-[0.9rem] md:text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
+                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
                   placeholder="CSE / EEE / CE / ..."
                 />
               </div>
@@ -220,14 +169,14 @@ const Register = () => {
                 <input
                   id="batch"
                   type="text"
-                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-[0.9rem] md:text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
+                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
                   placeholder="e.g. 22.1.1"
                 />
               </div>
             </div>
 
             {/* Row 4 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label
                   htmlFor="password"
@@ -238,7 +187,7 @@ const Register = () => {
                 <input
                   id="password"
                   type="password"
-                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-[0.9rem] md:text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
+                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
                   placeholder="Create a strong password"
                 />
               </div>
@@ -253,7 +202,7 @@ const Register = () => {
                 <input
                   id="confirmPassword"
                   type="password"
-                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-[0.9rem] md:text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
+                  className="mt-1 block w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-3 text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
                   placeholder="Re-enter your password"
                 />
               </div>

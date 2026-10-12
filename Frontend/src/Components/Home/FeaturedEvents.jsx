@@ -1,48 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { featuredEvents as events } from "../../data/featuredEvents";
+import { enrollmentPath } from "../../utils/enrollment";
 import { publicAsset } from "../../utils/publicAsset";
-
-const events = [
-  {
-    id: 1,
-    title: "Islamic Quiz Competition – Ma'ariful Islamiyyah",
-    subtitle: "Season 3 · Book: Riyad as-Salihin",
-    description:
-      "Test your knowledge and deepen your understanding through a friendly and engaging quiz competition based on selected chapters from Riyad as-Salihin. Participants will answer questions on hadith, key lessons, and practical implementations in daily life, making it both a fun and spiritually uplifting experience.",
-    date: "30 September 2025",
-    dateTime: "2025-09-30",
-    time: "3:00 PM",
-    place: "Online",
-    image: "/event1.png",
-    exploration: "Connect the hadith with everyday choices and put your understanding to the test with other students.",
-  },
-  {
-    id: 2,
-    title: "Tafsir & Reflection Circle",
-    subtitle: "Exploring selected ayat together",
-    description:
-      "Join us for a calm and reflective circle where we read, translate, and discuss selected ayat from the Qur’an together. The session will focus on drawing practical lessons, asking questions, and sharing personal reflections in a warm and welcoming environment.",
-    date: "15 October 2025",
-    dateTime: "2025-10-15",
-    time: "4:30 PM",
-    place: "AUST Campus",
-    image: "/event1.png",
-    exploration: "Bring your questions and consider how the ayat can guide the way we learn, care and live together.",
-  },
-  {
-    id: 3,
-    title: "Seerah Storytelling Evening",
-    subtitle: "Lessons from the life of the Prophet ﷺ",
-    description:
-      "Spend an evening listening to beautifully narrated stories from the Seerah of the Prophet ﷺ, highlighting defining moments from his blessed life. Each story will be followed by short reflections and takeaways to help us apply these lessons in our studies, families, and community work.",
-    date: "28 October 2025",
-    dateTime: "2025-10-28",
-    time: "5:00 PM",
-    place: "AUST Auditorium",
-    image: "/event1.png",
-    exploration: "Discover how the character and compassion in these stories can guide our campus and community life.",
-  },
-];
 
 const wrap = (index) => (index + events.length) % events.length;
 const focusStyle = "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E]";
@@ -190,7 +150,7 @@ const FeaturedEvents = () => {
                       <p className="mt-2 text-justify text-base leading-relaxed text-[#173d2e]/80 @min-[38rem]:text-lg">{event.exploration}</p>
                     </div>
                     <div>
-                      <Link to="/join" className={`group flex min-h-15 w-full items-center justify-between gap-4 rounded-full bg-[#173d2e] px-6 py-3 text-lg leading-tight font-semibold text-white transition-colors duration-200 hover:bg-[#E9AD5E] hover:text-[#173d2e] motion-reduce:transition-none sm:text-xl ${focusStyle}`}>
+                      <Link to={enrollmentPath("events", `featured-${event.id}`)} className={`group flex min-h-15 w-full items-center justify-between gap-4 rounded-full bg-[#173d2e] px-6 py-3 text-lg leading-tight font-semibold text-white transition-colors duration-200 hover:bg-[#E9AD5E] hover:text-[#173d2e] motion-reduce:transition-none sm:text-xl ${focusStyle}`}>
                         Register now
                         <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/10 transition-[transform,background-color,border-color] duration-200 group-hover:translate-x-0.5 group-hover:border-[#173d2e]/30 group-hover:bg-[#173d2e]/10 motion-reduce:transition-none"><EventIcon type="next" className="size-5" /></span>
                       </Link>

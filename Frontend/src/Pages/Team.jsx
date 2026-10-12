@@ -1,74 +1,8 @@
+import { teams } from "../data/teams";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { publicAsset } from "../utils/publicAsset";
 import MemberRoster from "../Components/MemberRoster";
-
-const memberImage = "/images/team/member-placeholder.svg";
-const sampleMembers = (teamId) =>
-  Array.from({ length: 5 }, (_, index) => ({
-    id: `${teamId}-${index + 1}`,
-    name: "Sample Member",
-    department: "Department of Computer Science & Engineering",
-    image: memberImage,
-  }));
-
-// Replace sample profiles with verified club members when the roster is available.
-const teams = [
-  {
-    id: "committee",
-    label: "Executive Committee",
-    description:
-      "The committee gives our shared ideas a direction. It supports the teams, plans the club's activities and keeps learning, friendship and service at the centre of the work. From the first conversation to the final details, it helps everyone move forward together.",
-    members: [
-      { id: "president", role: "President", department: "Department of Computer Science & Engineering" },
-      { id: "vice-president", role: "Vice President", department: "Department of Electrical & Electronic Engineering" },
-      { id: "general-secretary", role: "General Secretary", department: "Department of Civil Engineering" },
-      { id: "joint-secretary", role: "Joint Secretary", department: "Department of Mechanical Engineering" },
-    ].map((member) => ({ ...member, name: "Sample Member", image: memberImage })),
-  },
-  {
-    id: "executive",
-    label: "Executive Panel",
-    description:
-      "The executive panel connects the committee's plans with the teams carrying them out. It coordinates people, follows up on progress and makes room for members to contribute. Its work keeps the club organised, approachable and ready for the next idea.",
-    members: sampleMembers("executive"),
-  },
-  {
-    id: "dawah",
-    label: "Dawah Team",
-    description:
-      "The Dawah team creates space to learn, reflect and ask thoughtful questions. Through study circles, conversations and reminders, it helps members connect Islamic learning with everyday campus life. A welcoming discussion and a useful lesson are at the heart of its work.",
-    members: sampleMembers("dawah"),
-  },
-  {
-    id: "social-media",
-    label: "Social Media & Content Writing Team",
-    description:
-      "This team puts the club's work into words. It prepares announcements, shares stories and develops useful content so the campus community can follow what is happening and take part. Clear writing and thoughtful communication bring each activity beyond the room.",
-    members: sampleMembers("social-media"),
-  },
-  {
-    id: "graphics",
-    label: "Graphics Team",
-    description:
-      "The graphics team gives our ideas a visual form. It designs posters, social content and event materials that feel connected to ARPC and easy to understand. From a small announcement to a full event identity, it makes the message clear and recognisable.",
-    members: sampleMembers("graphics"),
-  },
-  {
-    id: "logistics",
-    label: "Logistics & Event Management Team",
-    description:
-      "This team brings a plan into the room. It looks after venues, materials, schedules and the practical details that help an event run smoothly. Working closely with the other teams, it makes each gathering welcoming, well prepared and easier for everyone to enjoy.",
-    members: sampleMembers("logistics"),
-  },
-  {
-    id: "web-dev",
-    label: "Web Development Team",
-    description:
-      "The web development team builds and maintains the club's digital home. It brings information, events and member interfaces together in a website that is clear and accessible across devices. Its work helps people find the club, explore its activities and stay connected.",
-    members: sampleMembers("web-dev"),
-  },
-];
 
 const cardMotion = "duration-[650ms] ease-[cubic-bezier(0.22,0.68,0.18,1)] motion-reduce:transition-none";
 
@@ -113,7 +47,7 @@ function TeamCard({ team, index, expanded, onToggle, onHover, onLeave, onMemberO
         "--roster-size": `${sizes.roster}px`,
         "--frame-pad": expanded ? "var(--open-pad)" : "var(--card-pad)",
       }}
-      className={`relative grid grid-cols-[3.5rem_minmax(0,1fr)] content-start gap-x-4 gap-y-5 overflow-hidden border-t border-[#eef4ef]/35 px-5 py-[var(--frame-pad)] transition-[height,background-color,padding-block] ${cardMotion} last:border-b [--card-pad:2.125rem] [--open-pad:1.75rem] [--number-row:3.825rem] [--content-gaps:2.5rem] [--closed-floor:18rem] sm:grid-cols-[38%_minmax(0,1fr)] sm:gap-x-7 sm:px-8 sm:[--card-pad:2.625rem] sm:[--open-pad:2.25rem] sm:[--number-row:0rem] sm:[--content-gaps:1.25rem] sm:[--closed-floor:19rem] lg:grid-cols-[40%_minmax(0,1fr)] lg:gap-x-10 lg:px-10 lg:[--card-pad:2.875rem] lg:[--open-pad:2.75rem] lg:[--closed-floor:20rem] xl:px-12 ${expanded ? "bg-[#173d2e] h-[max(var(--closed-floor),calc(var(--heading-size)+var(--roster-size)+var(--number-row)+var(--content-gaps)+2*var(--open-pad)))]" : "bg-[#102c21] hover:bg-[#173d2e] focus-within:bg-[#173d2e] h-[max(calc(var(--closed-floor)+0.75rem),calc(var(--heading-size)+var(--overview-size)+var(--number-row)+var(--content-gaps)+2*var(--card-pad)))]"}`}
+      className={`relative grid grid-cols-[3.5rem_minmax(0,1fr)] content-start gap-x-4 gap-y-5 overflow-hidden border-t border-[#eef4ef]/35 px-5 py-[var(--frame-pad)] transition-[height,background-color,padding-block] ${cardMotion} last:border-b [--card-pad:2.125rem] [--open-pad:1.75rem] [--number-row:3.825rem] [--content-gaps:2.5rem] [--closed-floor:18rem] sm:grid-cols-[30%_minmax(0,1fr)] sm:gap-x-7 sm:px-8 sm:[--card-pad:2.625rem] sm:[--open-pad:2.25rem] sm:[--number-row:0rem] sm:[--content-gaps:1.25rem] sm:[--closed-floor:19rem] lg:grid-cols-[40%_minmax(0,1fr)] lg:gap-x-10 lg:px-10 lg:[--card-pad:2.875rem] lg:[--open-pad:2.75rem] lg:[--closed-floor:20rem] xl:px-12 ${expanded ? "bg-[#173d2e] h-[max(var(--closed-floor),calc(var(--heading-size)+var(--roster-size)+var(--number-row)+var(--content-gaps)+2*var(--open-pad)))]" : "bg-[#102c21] hover:bg-[#173d2e] focus-within:bg-[#173d2e] h-[max(calc(var(--closed-floor)+0.75rem),calc(var(--heading-size)+var(--overview-size)+var(--number-row)+var(--content-gaps)+2*var(--card-pad)))]"}`}
     >
       {/* Keep each number entirely within its own card. */}
       <span
@@ -141,7 +75,7 @@ function TeamCard({ team, index, expanded, onToggle, onHover, onLeave, onMemberO
         </span>
       </button>
 
-      <div className={`contents sm:absolute sm:right-8 sm:left-[calc(38%+1.5rem)] sm:block sm:transition-[top,translate] ${cardMotion} lg:right-10 lg:left-[calc(40%+1.25rem)] xl:right-12 ${expanded ? "sm:top-1/2 sm:-translate-y-1/2" : "sm:top-[var(--card-pad)] sm:translate-y-0"}`}>
+      <div className={`contents sm:absolute sm:right-8 sm:left-[calc(30%+1.5rem)] sm:block sm:transition-[top,translate] ${cardMotion} lg:right-10 lg:left-[calc(40%+1.25rem)] xl:right-12 ${expanded ? "sm:top-1/2 sm:-translate-y-1/2" : "sm:top-[var(--card-pad)] sm:translate-y-0"}`}>
       <div className="contents sm:block sm:min-w-0 sm:pr-36 lg:pr-40">
         <h2
           ref={titleRef}
@@ -158,7 +92,7 @@ function TeamCard({ team, index, expanded, onToggle, onHover, onLeave, onMemberO
           className={`grid transition-[grid-template-rows,opacity] ${cardMotion} ${expanded ? "grid-rows-[0fr] opacity-0" : "grid-rows-[1fr] opacity-100"}`}
         >
           <div className="min-h-0 overflow-hidden">
-            <p ref={overviewRef} className="max-w-[68ch] text-justify text-base leading-[1.85] text-[#d9e6dd] sm:text-[1.0625rem] lg:text-lg">
+            <p ref={overviewRef} className="max-w-[68ch] text-left text-base sm:text-justify leading-[1.85] text-[#d9e6dd] sm:text-[1.0625rem] lg:text-lg">
               {team.description}
             </p>
           </div>

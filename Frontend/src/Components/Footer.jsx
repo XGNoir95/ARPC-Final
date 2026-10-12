@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Quote from "./Home/Quote";
 import { publicAsset } from "../utils/publicAsset";
+import { FooterSkeleton } from "./SkeletonParts";
 
 const campusMapLink =
   "https://www.google.com/maps/dir/?api=1&destination=Ahsanullah+University+of+Science+and+Technology";
@@ -9,12 +10,12 @@ const focusStyle =
   "focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E]";
 const linkStyle = `inline-flex min-h-11 items-center text-white/80 transition-colors hover:text-[#E9AD5E] motion-reduce:transition-none ${focusStyle}`;
 
-const Footer = () => {
+const Footer = ({ loading = false }) => {
   const [reflectionOpen, setReflectionOpen] = useState(false);
 
   return (
-  <footer className="bg-[#0e291e] text-white">
-    <div>
+  <footer aria-busy={loading} className="relative grid bg-[#0e291e] text-white">
+    <div inert={loading ? true : undefined} aria-hidden={loading ? true : undefined} className={`min-w-0 [grid-area:1/1] ${loading ? "invisible" : "visible"}`}>
       <div className="grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
         <Quote onReflectionToggle={setReflectionOpen} />
 
@@ -177,6 +178,7 @@ const Footer = () => {
         </div>
       </div>
     </div>
+    {loading && <div className="pointer-events-none min-w-0 [grid-area:1/1]"><FooterSkeleton /></div>}
   </footer>
   );
 };

@@ -1,3 +1,4 @@
+import ApplicationField from "../Components/ApplicationField";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion as Motion, useIsPresent, useReducedMotion } from "framer-motion";
 import { FiArrowRight, FiArrowLeft, FiCheck, FiDownload, FiMail } from "react-icons/fi";
@@ -6,19 +7,10 @@ import { paymentInstructions, paymentMethods, paymentRecipient, recruitmentPayme
 import { applicationEmail, applicationFields, formatApplication, initialApplication, paymentFields, paymentSummary, validateApplication } from "../utils/membershipApplication";
 
 const frame = "mx-auto w-full max-w-[112rem] px-6 lg:w-[calc(100%_-_10rem)] 2xl:px-24";
-const inputStyle = "block min-h-12 w-full rounded-lg border border-[#173d2e]/25 bg-white px-4 py-3 text-base text-[#173d2e] placeholder:text-[#547366] transition-colors focus:border-[#173d2e] focus:outline-2 focus:outline-offset-2 focus:outline-[#173d2e] aria-invalid:border-[#a33a32] aria-invalid:focus:outline-[#a33a32] motion-reduce:transition-none";
 const focusStyle = "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#173d2e]";
-const actionStyle = `inline-flex min-h-13 cursor-pointer items-center justify-center gap-4 rounded-full bg-[#173d2e] px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-[#E9AD5E] hover:text-[#173d2e] motion-reduce:transition-none sm:text-lg ${focusStyle}`;
-
-function ApplicationField({ field, value, error, onChange, compactError = false }) {
-  const { name, label, type = "text", options, required = true, ...attributes } = field;
-  const props = { id: `join-${name}`, name, required, value, onChange, "aria-invalid": Boolean(error), "aria-describedby": error ? `join-${name}-error` : undefined, className: inputStyle, ...attributes };
-  return <div className={name === "fullName" ? "sm:col-span-2" : "min-w-0"}>
-    <label htmlFor={props.id} className="mb-2 block text-sm font-semibold sm:text-base">{label} {required ? <span aria-hidden="true" className="text-[#b42318]">*</span> : <span className="font-normal text-[#547366]">(optional)</span>}</label>
-    {options ? <select {...props}><option value="">Select {label.toLowerCase()}</option>{options.map((option) => <option key={option}>{option}</option>)}</select> : <input {...props} type={type} />}
-    {error && <p id={`join-${name}-error`} className={compactError ? "sr-only" : "mt-2 text-sm text-[#862f29]"}>{error}</p>}
-  </div>;
-}
+const actionStyle = `inline-flex min-h-13 cursor-pointer items-center justify-center gap-4 rounded-full bg-[#173d2e] px-6 py-3 text-base font-semibold text-white transition-colors duration-200 hover:bg-[#E9AD5E] hover:text-[#173d2e] motion-reduce:transition-none sm:text-lg ${focusStyle}`;
+const studentFields = applicationFields.filter(({ name }) => name !== "email" && name !== "phone");
+const contactFields = applicationFields.filter(({ name }) => name === "email" || name === "phone");
 
 function PaymentView({ method, values, errors, onMethodChange, onChange }) {
   const present = useIsPresent();
@@ -33,21 +25,21 @@ function PaymentView({ method, values, errors, onMethodChange, onChange }) {
     exit={{ opacity: 0, x: reducedMotion ? 0 : -8 }}
     transition={{ duration: reducedMotion ? 0 : present ? 0.22 : 0.12, ease: [0.22, 0.68, 0.18, 1] }}
     onAnimationComplete={() => { if (present && document.activeElement === document.body) focusRef.current?.focus(); }}
-    className="absolute inset-0 flex flex-col p-5"
+    className="flex min-w-0 flex-col p-6 [grid-area:1/1]"
   >
     {method ? <>
-      <div className="mb-3 flex items-center justify-between gap-2">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h4 ref={focusRef} tabIndex={-1} className="font-garamond text-2xl font-semibold outline-none">{method} details</h4>
         <button id="join-paymentMethod" type="button" onClick={() => onMethodChange("")} className={`inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-2 rounded px-1 text-sm font-semibold ${focusStyle}`}><FiArrowLeft aria-hidden="true" /> Change method</button>
       </div>
       <p className={`mb-4 text-sm leading-relaxed ${hasErrors ? "text-[#862f29]" : "text-[#426454]"}`}>{hasErrors ? "Check the highlighted fields. Details are listed in the error summary above." : paymentRecipient(method) || paymentInstructions(method)}</p>
-      <div className="space-y-4">{paymentFields(method).map((field) => <ApplicationField key={field.name} field={field} value={values[field.name]} error={errors[field.name]} onChange={onChange} compactError />)}</div>
+      <div className="space-y-5">{paymentFields(method).map((field) => <ApplicationField key={field.name} variant="enrollment" field={field} value={values[field.name]} error={errors[field.name]} onChange={onChange} compactError />)}</div>
     </> : <>
       <h4 id="join-payment-choice-heading" className="mb-3 text-base font-semibold">Payment method <span aria-hidden="true" className="text-[#b42318]">*</span></h4>
       <div role="group" aria-labelledby="join-payment-choice-heading" className="grid grid-cols-2 gap-2">{paymentMethods.map((option, index) => <button
         key={option} ref={index === 0 ? focusRef : undefined} id={index === 0 ? "join-paymentMethod" : undefined}
         type="button" aria-label={option} aria-controls="join-payment-content" onClick={() => onMethodChange(option)} aria-describedby={errors.paymentMethod ? "join-paymentMethod-error" : undefined}
-        className={`flex min-h-14 cursor-pointer items-center justify-between gap-2 rounded-lg border border-[#173d2e]/25 bg-white px-4 py-3 text-left text-base font-semibold transition-colors hover:border-[#173d2e] hover:bg-[#dce8df] motion-reduce:transition-none ${option === "Cash" ? "col-span-2" : ""} ${focusStyle}`}
+        className={`flex min-h-14 cursor-pointer items-center justify-between gap-2 rounded-lg border border-[#173d2e]/20 bg-[#f6f8f5] px-4 py-3 text-left text-base font-semibold transition-colors duration-200 hover:border-[#173d2e]/40 hover:bg-white motion-reduce:transition-none ${option === "Cash" ? "col-span-2" : ""} ${focusStyle}`}
       >{option === "Bank transfer" ? "Bank" : option}<FiArrowRight aria-hidden="true" className="shrink-0 text-[#547366]" /></button>)}</div>
       {errors.paymentMethod && <p id="join-paymentMethod-error" className="mt-2 text-sm text-[#862f29]">{errors.paymentMethod}</p>}
       <p className="mt-auto border-t border-[#173d2e]/15 pt-4 text-sm leading-relaxed text-[#426454]">Your payment will be checked before membership is confirmed.</p>
@@ -56,13 +48,14 @@ function PaymentView({ method, values, errors, onMethodChange, onChange }) {
 }
 
 function PaymentPanel({ values, errors, onMethodChange, onChange }) {
-  return <section aria-label="Registration payment" className="flex min-h-0 flex-col overflow-hidden rounded-2xl bg-[#eef4ef]">
-    <div className="flex items-end justify-between gap-4 bg-[#173d2e] px-5 py-6 text-white">
-      <div><p className="text-sm text-white/80">New membership</p><h3 className="mt-1 font-garamond text-2xl font-semibold">Registration fee</h3></div>
+  return <section aria-label="Registration payment" className="flex min-w-0 flex-col overflow-hidden rounded-2xl bg-[#eef4ef] ring-1 ring-[#173d2e]/15 ring-inset @container/payment xl:row-span-2">
+    <img src={publicAsset("/images/about/community.jpg")} alt="" aria-hidden="true" loading="lazy" className="aspect-[16/10] w-full object-cover object-[center_60%] xl:aspect-auto xl:h-40 xl:min-h-40 xl:flex-1" />
+    <div className="flex shrink-0 flex-wrap items-end justify-between gap-4 bg-[#173d2e] px-6 py-4 text-white">
+      <div><p className="text-sm text-[#E9AD5E]">New membership</p><h3 className="mt-2 font-garamond text-3xl leading-tight font-semibold">Registration fee</h3></div>
       <p className="shrink-0 font-garamond text-5xl leading-none font-semibold text-[#E9AD5E]">৳{recruitmentPayment.amount}</p>
     </div>
-    {/* Both views occupy the same area; desktop height comes from the member fields. */}
-    <div id="join-payment-content" className="relative min-h-[24rem] flex-1 lg:min-h-0">
+    {/* Shared grid area keeps the transition steady, with room for enlarged text. */}
+    <div id="join-payment-content" className="relative grid min-h-[24rem] shrink-0 @max-[25rem]/payment:min-h-[27rem] @max-[18rem]/payment:min-h-[29rem]">
       <AnimatePresence initial={false} mode="wait"><PaymentView key={values.paymentMethod || "methods"} method={values.paymentMethod} values={values} errors={errors} onMethodChange={onMethodChange} onChange={onChange} /></AnimatePresence>
     </div>
   </section>;
@@ -122,7 +115,7 @@ export default function Join() {
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-black/55" />
       <div className={`${frame} pt-36 pb-10 lg:pt-40 lg:pb-12`}>
         <div className="px-5 sm:px-8 lg:px-10">
-          <h1 id="join-heading" className="max-w-4xl font-garamond text-[clamp(3rem,6.5vw,6.5rem)] leading-[0.98] font-semibold tracking-[-0.025em] text-[#f6f8f3]">Join the<br /><span className="text-[#E9AD5E]">ARPC</span> community.</h1>
+          <h1 id="join-heading" className="max-w-4xl [overflow-wrap:anywhere] font-garamond text-[clamp(2.5rem,8vw,3rem)] leading-[0.98] font-semibold tracking-[-0.025em] text-[#f6f8f3] sm:text-[clamp(3rem,6.5vw,6.5rem)]">Join the<br /><span className="text-[#E9AD5E]">ARPC</span> community.</h1>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-white/90 sm:text-lg">A place to learn, contribute and grow together. Take your first step by becoming a member.</p>
         </div>
       </div>
@@ -130,27 +123,33 @@ export default function Join() {
 
     <div className={`${frame} py-10 sm:py-14 lg:py-16`}>
       <div className="w-full rounded-2xl bg-white p-5 shadow-[0_12px_40px_-24px_rgba(23,61,46,0.28)] ring-1 ring-[#173d2e]/15 ring-inset sm:rounded-3xl sm:p-8 lg:p-10">
-        {step === "form" ? <form noValidate onSubmit={review} aria-labelledby="application-heading">
-          <div className="mb-8 border-b border-[#173d2e]/15 pb-6 sm:mb-10">
+        {step === "form" ? <form noValidate onSubmit={review} aria-labelledby="application-heading" className="grid items-stretch gap-y-8 xl:grid-cols-[minmax(0,1fr)_24rem] xl:gap-x-12">
+          <div className="flex min-w-0 flex-col">
+          <div className="mb-8 border-t-2 border-[#E9AD5E] pt-6">
             <h2 id="application-heading" ref={formHeadingRef} tabIndex={-1} className="font-garamond text-4xl font-semibold outline-none sm:text-5xl">Membership application</h2>
-            <p className="mt-3 text-sm leading-relaxed text-[#547366] sm:text-base">Fill in your details and payment information, then review your application. Fields marked <span className="text-[#b42318]">*</span> are required.</p>
+            <p className="mt-3 text-sm leading-relaxed text-[#547366] sm:text-base">Complete your details and payment information. Fields marked <span className="text-[#b42318]">*</span> are required.</p>
           </div>
 
-          {Object.keys(errors).length > 0 && <div ref={errorRef} tabIndex={-1} role="alert" className="mb-8 rounded-lg border border-[#a33a32]/30 bg-[#fff6f5] p-4 text-[#862f29] focus:outline-2 focus:outline-offset-2 focus:outline-[#a33a32]">
+          {Object.keys(errors).length > 0 && <div ref={errorRef} tabIndex={-1} role="alert" className="mb-6 rounded-lg border border-[#a33a32]/30 bg-[#fff6f5] p-4 text-[#862f29] focus:outline-2 focus:outline-offset-2 focus:outline-[#a33a32]">
             <p className="font-semibold">Please check your application.</p>
             <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">{Object.entries(errors).map(([name, message]) => <li key={name}><a href={`#join-${name}`} onClick={(event) => { event.preventDefault(); document.getElementById(`join-${name}`)?.focus(); }} className="underline underline-offset-2">{message}</a></li>)}</ul>
           </div>}
 
-          <div className="grid items-stretch gap-9 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12">
-            <fieldset className="min-w-0">
-              <legend className="mb-6 font-garamond text-3xl font-semibold">Your details</legend>
-              <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2">{applicationFields.map((field) => <ApplicationField key={field.name} field={field} value={values[field.name]} error={errors[field.name]} onChange={change} />)}</div>
+            <fieldset className="flex min-w-0 flex-col xl:flex-1">
+              <legend className="mb-5 font-garamond text-2xl font-semibold sm:text-3xl">Student information</legend>
+              <div className="grid gap-x-6 gap-y-7 sm:grid-cols-2 xl:flex-1 xl:content-between">{studentFields.map((field) => <ApplicationField key={field.name} variant="enrollment" field={field} value={values[field.name]} error={errors[field.name]} onChange={change} />)}</div>
             </fieldset>
-
-            <PaymentPanel values={values} errors={errors} onMethodChange={(method) => updateValue("paymentMethod", method)} onChange={change} />
+            <div className="mt-8 border-t border-[#173d2e]/15 pt-7">
+              <fieldset className="min-w-0">
+                <legend className="mb-5 font-garamond text-2xl font-semibold sm:text-3xl">Contact information</legend>
+                <div className="grid gap-x-6 gap-y-7 sm:grid-cols-2">{contactFields.map((field) => <ApplicationField key={field.name} variant="enrollment" field={field} value={values[field.name]} error={errors[field.name]} onChange={change} />)}</div>
+              </fieldset>
+            </div>
           </div>
 
-          <div className="mt-9 border-t border-[#173d2e]/15 pt-6 sm:mt-10">
+          <PaymentPanel values={values} errors={errors} onMethodChange={(method) => updateValue("paymentMethod", method)} onChange={change} />
+
+          <div className="min-w-0 border-t border-[#173d2e]/15 pt-6">
             <label htmlFor="join-consent" className="flex cursor-pointer items-start gap-3 text-sm leading-relaxed sm:text-base">
               <input id="join-consent" name="consent" type="checkbox" required checked={values.consent} onChange={change} aria-invalid={Boolean(errors.consent)} aria-describedby={errors.consent ? "join-consent-error" : undefined} className="mt-1 size-5 shrink-0 cursor-pointer accent-[#173d2e] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#173d2e]" />
               <span>I agree to be contacted about my membership application. <span aria-hidden="true" className="text-[#b42318]">*</span></span>
@@ -158,10 +157,10 @@ export default function Join() {
             {errors.consent && <p id="join-consent-error" className="mt-2 text-sm text-[#862f29]">{errors.consent}</p>}
             <div className="mt-7 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
               <p className="max-w-md text-sm leading-relaxed text-[#547366]">You’ll review your details before opening an email to the club.</p>
-              <button type="submit" className={`${actionStyle} shrink-0`}>Review application <FiArrowRight aria-hidden="true" /></button>
+              <button type="submit" className={`${actionStyle} w-full shrink-0 sm:w-auto`}>Review application <FiArrowRight aria-hidden="true" /></button>
             </div>
           </div>
-        </form> : <div className="max-w-4xl">
+        </form> : <div className="max-w-4xl border-t-2 border-[#E9AD5E] pt-6">
           <h2 ref={reviewRef} tabIndex={-1} className="font-garamond text-4xl font-semibold outline-none sm:text-5xl">Review your application</h2>
           <p className="mt-3 text-base leading-relaxed text-[#547366]">Check your details, then open your email app to send them to info@arpc.club. Your application has not been sent yet.</p>
           <dl className="mt-7 grid gap-x-8 sm:grid-cols-2">{applicationFields.map(({ name, label }) => <div key={name} className="min-w-0 border-t border-[#173d2e]/15 py-4"><dt className="text-sm text-[#547366]">{label}</dt><dd className="mt-1 break-words text-base font-medium">{values[name].trim()}</dd></div>)}</dl>

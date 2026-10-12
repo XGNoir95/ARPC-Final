@@ -127,7 +127,7 @@ const ProfileRow = ({ label, value }) => (
     <p className="text-[1.3rem] md:text-[1.5rem] font-semibold text-green-800 mb-2">
       {label}:
     </p>
-    <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-5 py-3 text-[1.15rem] md:text-[1.3rem] text-gray-800">
+    <div className="w-full [overflow-wrap:anywhere] rounded-lg border border-gray-200 bg-gray-50 px-5 py-3 text-[1.15rem] md:text-[1.3rem] text-gray-800">
       {value}
     </div>
   </div>

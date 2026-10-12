@@ -2,12 +2,13 @@
 import { useLayoutEffect, useRef } from "react";
 import { AnimatePresence, motion as Motion, useReducedMotion } from "framer-motion";
 import PageSkeleton from "./PageSkeleton";
+import { ROUTE_FADE_SECONDS } from "../utils/prepareRoute";
 
 const AnimatedPage = ({ children, pathname, loading = false, focusOnEntry = false }) => {
   const pageRef = useRef(null);
   const entryFocus = useRef(focusOnEntry);
   const reducedMotion = useReducedMotion();
-  const transition = { duration: reducedMotion ? 0 : 0.2, ease: [0.22, 1, 0.36, 1] };
+  const transition = { duration: reducedMotion ? 0 : ROUTE_FADE_SECONDS, ease: [0.22, 1, 0.36, 1] };
 
   useLayoutEffect(() => {
     // Show the destination skeleton at the top immediately; never fade to a blank canvas.
@@ -19,11 +20,11 @@ const AnimatedPage = ({ children, pathname, loading = false, focusOnEntry = fals
   }, [loading]);
 
   return (
-    <main ref={pageRef} tabIndex={-1} aria-busy={loading} className="relative isolate flex-1 bg-white outline-none">
+    <main ref={pageRef} tabIndex={-1} aria-busy={loading} className="relative isolate grid flex-1 bg-white outline-none">
       <Motion.div
         inert={loading ? true : undefined}
         aria-hidden={loading ? true : undefined}
-        className={loading ? "invisible" : "visible"}
+        className={`min-w-0 [grid-area:1/1] ${loading ? "invisible" : "visible"}`}
         initial={{ opacity: loading ? 0 : 1 }}
         animate={{ opacity: loading ? 0 : 1 }}
         transition={transition}
@@ -34,7 +35,7 @@ const AnimatedPage = ({ children, pathname, loading = false, focusOnEntry = fals
         {loading && <Motion.div
           key="skeleton"
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-10 overflow-hidden bg-white"
+          className="pointer-events-none relative z-10 min-w-0 bg-white [grid-area:1/1]"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={transition}
