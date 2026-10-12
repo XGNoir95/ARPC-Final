@@ -8,6 +8,25 @@ afterEach(() => window.history.replaceState(null, '', '/'))
 beforeEach(() => vi.stubGlobal('Image', class { complete = true }))
 
 describe('GitHub Pages routing', () => {
+  it.each([false, true])('opens Gallery from navigation, loads the whole layout and supports reload (hash routing: %s)', async (hashRouting) => {
+    vi.stubEnv('VITE_GITHUB_PAGES', String(hashRouting))
+    vi.stubEnv('BASE_URL', hashRouting ? '/ARPC-Final/' : '/')
+    vi.stubGlobal('scrollTo', vi.fn())
+    window.history.replaceState(null, '', hashRouting ? '/ARPC-Final/#/catalogue' : '/catalogue')
+    const { container, unmount } = render(<App />)
+    const navigation = screen.getByRole('navigation', { name: 'Main navigation' })
+    fireEvent.click(within(navigation).getByRole('button', { name: 'Gallery' }))
+    expect(container.querySelector('[data-page-skeleton="/gallery"]')).toBeVisible()
+    expect(container.querySelectorAll('[data-skeleton-photo]')).toHaveLength(7)
+    await waitFor(() => expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Life at ARPC.'), { timeout: 4000 })
+    expect(navigation).toHaveClass('bg-transparent')
+    expect(within(navigation).getByRole('button', { name: 'Gallery' })).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('main')).toHaveFocus()
+    expect(hashRouting ? window.location.hash : window.location.pathname).toBe(hashRouting ? '#/gallery' : '/gallery')
+    unmount()
+    render(<App />)
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Life at ARPC.')
+  })
   it.each([true, false])('opens a course enrollment with a complete loader and supports a direct reload (hash routing: %s)', async (hashRouting) => {
     vi.stubEnv('VITE_GITHUB_PAGES', String(hashRouting))
     vi.stubEnv('BASE_URL', hashRouting ? '/ARPC-Final/' : '/')
@@ -53,7 +72,7 @@ describe('GitHub Pages routing', () => {
     expect(screen.queryByRole('heading', { name: 'Sign in to your ARPC account' })).not.toBeInTheDocument()
   })
 
-  it.each(['/team', '/catalogue', '/profile', '/join', '/'])('includes one combined quote and footer on %s', async (path) => {
+  it.each(['/team', '/catalogue', '/gallery', '/profile', '/join', '/'])('includes one combined quote and footer on %s', async (path) => {
     vi.stubEnv('VITE_GITHUB_PAGES', 'false')
     vi.stubEnv('BASE_URL', '/')
     vi.stubGlobal('scrollTo', vi.fn())

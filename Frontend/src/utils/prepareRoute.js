@@ -5,6 +5,7 @@ const heroImages = {
   "/": ["/heroBanner.jpg"],
   "/team": ["/images/team/meeting-planning.jpg", "/images/team/meeting-discussion.jpg"],
   "/catalogue": ["/images/team/meeting-discussion.jpg"],
+  "/gallery": ["/heroBanner.jpg"],
   "/join": ["/images/about/community.jpg"],
 };
 

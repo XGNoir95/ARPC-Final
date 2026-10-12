@@ -16,6 +16,7 @@ import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import TeamPage from "./Pages/Team";
 import Catalogue from "./Pages/Catalogue";
+import Gallery from "./Pages/Gallery";
 import Profile from "./Pages/Profile";
 import Join from "./Pages/Join";
 import Enrollment from "./Pages/Enrollment";
@@ -25,7 +26,7 @@ import AnimatedPage from "./Components/AnimatedPage";
 import { prepareRoute } from "./utils/prepareRoute";
 
 const pageNames = {
-  "/": "home page", "/team": "panel", "/catalogue": "catalogue",
+  "/": "home page", "/team": "panel", "/catalogue": "catalogue", "/gallery": "gallery",
   "/profile": "profile", "/login": "sign in", "/register": "registration",
   "/join": "membership application",
 };
@@ -73,7 +74,7 @@ function AppContent() {
   const isAuthPage =
     location.pathname === "/login" || location.pathname === "/register";
   const isHomePage = location.pathname === "/";
-  const hasPhotoHero = isHomePage || location.pathname === "/team" || location.pathname === "/catalogue" || location.pathname === "/join";
+  const hasPhotoHero = isHomePage || location.pathname === "/team" || location.pathname === "/catalogue" || location.pathname === "/gallery" || location.pathname === "/join";
   const enrollment = enrollmentFromPath(location.pathname);
   const overlayNavigation = hasPhotoHero || Boolean(enrollment);
 
@@ -91,6 +92,7 @@ function AppContent() {
             <Route path="/" element={<Home />} />
             <Route path="/team" element={<TeamPage />} />
             <Route path="/catalogue" element={<Catalogue />} />
+            <Route path="/gallery" element={<Gallery />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/join" element={<Join />} />
             <Route path="/enroll/:kind/:id" element={<Enrollment />} />

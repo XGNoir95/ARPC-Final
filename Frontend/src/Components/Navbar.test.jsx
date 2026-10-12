@@ -12,10 +12,17 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 function renderNavigation() {
-  return render(<MemoryRouter><Navbar blendWithHero /><Routes><Route path="/" element={<h1>Home</h1>} /><Route path="/join" element={<h1>Membership application</h1>} /></Routes></MemoryRouter>);
+  return render(<MemoryRouter><Navbar blendWithHero /><Routes><Route path="/" element={<h1>Home</h1>} /><Route path="/join" element={<h1>Membership application</h1>} /><Route path="/gallery" element={<h1>Gallery</h1>} /></Routes></MemoryRouter>);
 }
 
 describe("Public navigation", () => {
+  it("places Gallery after Catalogue and opens its route", () => {
+    renderNavigation();
+    const navigation = screen.getByRole("navigation", { name: "Main navigation" });
+    expect(within(navigation).getAllByRole("button").slice(1, 5).map((button) => button.textContent)).toEqual(["Home", "Catalogue", "Gallery", "Panel"]);
+    fireEvent.click(within(navigation).getByRole("button", { name: "Gallery" }));
+    expect(screen.getByRole("heading", { name: "Gallery" })).toBeVisible();
+  });
   it("replaces account navigation with a membership action", () => {
     renderNavigation();
     const navigation = screen.getByRole("navigation", { name: "Main navigation" });

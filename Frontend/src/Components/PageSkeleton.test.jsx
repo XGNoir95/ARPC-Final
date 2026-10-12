@@ -9,12 +9,14 @@ it.each([
   ["/", ["hero", "about", "featured-events", "affiliations"]],
   ["/catalogue", ["hero", "events", "webinars", "courses"]],
   ["/team", ["hero", "teams"]],
+  ["/gallery", ["hero", "gallery"]],
 ])("covers all primary sections on %s rather than just the header", (pathname, sections) => {
   const { container } = render(<PageSkeleton pathname={pathname} />);
   expect(Array.from(container.querySelectorAll("[data-skeleton-section]"), (node) => node.dataset.skeletonSection)).toEqual(sections);
   expect(screen.queryAllByRole("button")).toHaveLength(0);
   expect(container.firstChild).toHaveAttribute("aria-hidden", "true");
   if (pathname === "/team") expect(container.querySelectorAll("[data-skeleton-team]")).toHaveLength(teams.length);
+  if (pathname === "/gallery") expect(container.querySelectorAll("[data-skeleton-photo]")).toHaveLength(7);
 });
 
 it.each([["events", "reflection-evening", 6], ["webinars", "faith-campus", 6], ["courses", "quran-reflection", 7]])("matches the %s enrollment field count", (kind, id, count) => {

@@ -31,6 +31,7 @@ ARPC's website introduces the club, its people, events and affiliations. The int
 | --- | --- |
 | Home | A rotating hero, interactive club introductions, featured events and an affiliation carousel. |
 | Panel | Executive committee and team profiles with local portrait placeholders. |
+| Gallery | A photo album with page-fold transitions, timed playback, a single compact control bar and a full-image viewer; illustrative photos are clearly labelled. |
 | Club reflection | A founder's quotation, expandable reflection and club contact links. |
 | Membership | Public Join Us form with validation, application review, an email draft and a downloadable copy. |
 | Enrollment | Individual event, webinar and course enrollment pages with programme details, validated student fields, review, email drafts and text downloads. |

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { publicAsset } from "../utils/publicAsset";
 
-const links = [{ label: "Home", route: "/" }, { label: "Catalogue", route: "/catalogue" }, { label: "Panel", route: "/team" }];
+const links = [{ label: "Home", route: "/" }, { label: "Catalogue", route: "/catalogue" }, { label: "Gallery", route: "/gallery" }, { label: "Panel", route: "/team" }];
 const focus = "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E]";
 const joinStyle = `inline-flex min-h-11 shrink-0 cursor-pointer items-center justify-center rounded-full border border-current px-5 py-2 font-garamond text-xl leading-none font-semibold transition-colors hover:border-[#E9AD5E] hover:bg-[#E9AD5E] hover:text-[#173d2e] motion-reduce:transition-none md:px-4 md:text-lg lg:px-5 lg:text-xl ${focus}`;
 
@@ -42,7 +42,7 @@ export default function Navbar({ blendWithHero = false, loading = false }) {
           <img src={publicAsset("/logo1.png")} alt="Logo" className="absolute top-1/2 left-1/2 h-auto w-[122%] max-w-none -translate-x-1/2 -translate-y-1/2" />
         </button>
 
-        <div className="hidden shrink-0 items-center gap-4 font-garamond text-xl font-semibold md:flex lg:gap-8 lg:text-2xl">
+        <div className="hidden shrink-0 items-center gap-4 font-garamond text-xl font-semibold md:flex lg:gap-6 lg:text-2xl xl:gap-8">
           {links.map(({ label, route }) => <button key={route} type="button" onClick={() => handleNavigate(route)} aria-current={pathname === route ? "page" : undefined} className={`min-h-11 cursor-pointer hover:underline ${focus}`}>{label}</button>)}
           <button type="button" onClick={() => handleNavigate("/join")} aria-current={pathname === "/join" ? "page" : undefined} className={joinStyle}>Join Us</button>
         </div>

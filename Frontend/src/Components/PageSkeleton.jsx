@@ -4,6 +4,7 @@ import { catalogue } from "../data/catalogue";
 import { teams } from "../data/teams";
 import { enrollmentFields, enrollmentFromPath } from "../utils/enrollment";
 import { studentFields as membershipFields } from "../utils/studentDetails";
+import { galleryPhotos, journalOffset, journalPosition } from "../data/gallery";
 
 const frame = "mx-auto w-full max-w-[112rem] px-6 lg:w-[calc(100%_-_10rem)] 2xl:px-24";
 
@@ -32,16 +33,16 @@ function HomeHeroSkeleton() {
   </div>;
 }
 
-function HeroSkeleton() {
+function HeroSkeleton({ gallery = false }) {
   return <div data-skeleton-section="hero" className="flex min-h-[28rem] items-end bg-[#eef4ef] sm:min-h-[25rem] lg:min-h-[28rem]">
     <div className={`${frame} flex flex-col gap-7 pt-32 pb-10 lg:pt-40 lg:pb-12`}>
       <div className="flex max-w-2xl flex-col gap-4">
-        <Block className="h-[clamp(2.4rem,5vw,4.5rem)] w-[70%]" />
-        <Block className="h-[clamp(2.4rem,5vw,4.5rem)] w-[90%]" />
+        <Block className={gallery ? "h-[clamp(2.4rem,5vw,4.5rem)] w-[40%] max-w-64" : "h-[clamp(2.4rem,5vw,4.5rem)] w-[70%]"} />
+        <Block className={gallery ? "h-[clamp(2.4rem,5vw,4.5rem)] w-[50%] max-w-72" : "h-[clamp(2.4rem,5vw,4.5rem)] w-[90%]"} />
       </div>
       <div className="flex flex-col gap-7 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
         <TextLines className="w-full max-w-[38rem]" />
-        <Block className="h-14 w-52 shrink-0 self-end rounded-full" />
+        <Block className={gallery ? "size-14 shrink-0 self-end rounded-full sm:size-16" : "h-14 w-52 shrink-0 self-end rounded-full"} />
       </div>
     </div>
   </div>;
@@ -84,6 +85,20 @@ function CatalogueCards() {
 
 function SectionHeading() {
   return <div className="mb-8 flex flex-wrap items-center justify-between gap-6 sm:mb-10"><Block className="h-10 w-44 sm:h-12" /><Block className="h-11 w-60 max-w-full rounded-full" /></div>;
+}
+
+function GallerySkeleton() {
+  return <div data-skeleton-section="gallery" className={`${frame} pt-8 pb-12 sm:pt-10 sm:pb-16 lg:pb-20`}>
+    <div className="mb-5 flex flex-col gap-2 sm:mb-6 md:flex-row md:items-end md:justify-between md:gap-8"><Block className="h-9 w-60 max-w-full sm:h-11 sm:w-72" /><Block className="h-5 w-60 max-w-full" /></div>
+    <div className="relative isolate h-[clamp(18rem,82vw,34rem)] overflow-hidden rounded-[1.5rem] bg-[#eef4ef] sm:h-[clamp(24rem,56vw,46rem)] sm:rounded-[2rem]">
+      {galleryPhotos.map(({ id }, index) => {
+        const offset = journalOffset(index, 0, galleryPhotos.length);
+        return <div key={id} data-skeleton-photo={id} style={{ "--page-position": journalPosition(offset), "--page-depth": Math.abs(offset) }} className="absolute top-1/2 left-1/2 w-[78%] max-w-[46rem] -translate-x-1/2 -translate-y-1/2 [z-index:calc(20_-_var(--page-depth))] sm:w-[64%]"><Block className="aspect-[5/4] w-full translate-x-[calc(var(--page-position)_*_1%)] translate-y-[calc(var(--page-depth)_*_3px)] rounded-2xl border-2 border-white [scale:calc(1_-_var(--page-depth)_*_0.045)]" /></div>;
+      })}
+    </div>
+    <div className="relative -mt-3 flex justify-center sm:-mt-4"><div className="flex items-center gap-2 rounded-full border border-[#173d2e]/10 bg-white p-2"><Block className="size-11 rounded-full" /><Block className="h-4 w-16" /><Block className="size-11 rounded-full" /><Block className="size-11 rounded-full" /></div></div>
+    <div className="mx-auto flex max-w-3xl flex-col items-center gap-2 pt-5 sm:pt-6"><Block className="h-7 w-[80%] max-w-sm sm:h-8" /><Block className="h-4 w-44" /></div>
+  </div>;
 }
 
 function WebinarSkeleton() {
@@ -224,8 +239,8 @@ export default function PageSkeleton({ pathname }) {
   const enrollment = enrollmentFromPath(pathname);
   return <div data-page-skeleton={pathname} className={`${skeletonFrame} min-h-full bg-white`} aria-hidden="true">
     {enrollment ? <EnrollmentSkeleton enrollment={enrollment} /> : pathname.startsWith("/enroll/") ? <div className={`${frame} space-y-6 py-20`}><Block className="h-12 w-[75%] max-w-lg" /><TextLines className="max-w-xl" /><Block className="h-13 w-52 rounded-full" /></div> : pathname === "/join" ? <JoinSkeleton /> : auth ? <AccountSkeleton register={pathname === "/register"} /> : pathname === "/profile" ? <ProfileSkeleton /> : <>
-      {pathname === "/" ? <HomeHeroSkeleton /> : <HeroSkeleton />}
-      {pathname === "/" ? <HomeSections /> : pathname === "/team" ? <TeamRows /> : pathname === "/catalogue" ? <CatalogueCards /> : <div className={`${frame} py-12`}><Block className="h-10 w-52" /><TextLines className="mt-8 max-w-2xl" /></div>}
+      {pathname === "/" ? <HomeHeroSkeleton /> : <HeroSkeleton gallery={pathname === "/gallery"} />}
+      {pathname === "/" ? <HomeSections /> : pathname === "/team" ? <TeamRows /> : pathname === "/catalogue" ? <CatalogueCards /> : pathname === "/gallery" ? <GallerySkeleton /> : <div className={`${frame} py-12`}><Block className="h-10 w-52" /><TextLines className="mt-8 max-w-2xl" /></div>}
     </>}
   </div>;
 }

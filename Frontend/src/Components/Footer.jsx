@@ -67,6 +67,11 @@ const Footer = ({ loading = false }) => {
                 </Link>
               </li>
               <li>
+                <Link to="/gallery" className={linkStyle}>
+                  Gallery
+                </Link>
+              </li>
+              <li>
                 <Link to="/team" className={linkStyle}>
                   Panel
                 </Link>

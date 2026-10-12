@@ -25,7 +25,7 @@ describe('Combined footer', () => {
     expect(screen.getByText('Read the full reflection')).toBeVisible()
     expect(screen.queryByRole('region', { name: 'Put learning into practice.' })).not.toBeInTheDocument()
     const navigation = screen.getByRole('navigation', { name: 'Footer navigation' })
-    for (const [name, href] of [['Home', '/'], ['Catalogue', '/catalogue'], ['Panel', '/team'], ['Join Us', '/join']]) {
+    for (const [name, href] of [['Home', '/'], ['Catalogue', '/catalogue'], ['Gallery', '/gallery'], ['Panel', '/team'], ['Join Us', '/join']]) {
       expect(within(navigation).getByRole('link', { name, exact: true })).toHaveAttribute('href', href)
     }
     expect(within(navigation).queryByRole('link', { name: /Login|Register|Profile/ })).not.toBeInTheDocument()
