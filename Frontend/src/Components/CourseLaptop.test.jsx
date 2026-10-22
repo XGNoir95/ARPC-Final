@@ -6,12 +6,15 @@ import { catalogue } from "../data/catalogue";
 import { courseCoverPresets, getCourseCover } from "../utils/courseCovers";
 
 const originalAnimate = Object.getOwnPropertyDescriptor(Element.prototype, "animate");
+const originalScrollIntoView = Object.getOwnPropertyDescriptor(Element.prototype, "scrollIntoView");
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
   if (originalAnimate) Object.defineProperty(Element.prototype, "animate", originalAnimate);
   else delete Element.prototype.animate;
+  if (originalScrollIntoView) Object.defineProperty(Element.prototype, "scrollIntoView", originalScrollIntoView);
+  else delete Element.prototype.scrollIntoView;
 });
 
 function mockAnimations() {
@@ -140,6 +143,30 @@ it("switches immediately without outgoing snapshots when reduced motion is reque
   expect(screen.getByRole("region", { name: catalogue.courses[1].title })).toHaveFocus();
   expect(animations).toHaveLength(0);
   expect(container.querySelector(".course-screen-details--outgoing")).not.toBeInTheDocument();
+});
+
+it("keeps mobile preview updates from scrolling the admin page or stealing its form focus", () => {
+  const scrollIntoView = vi.fn();
+  Object.defineProperty(Element.prototype, 'scrollIntoView', { configurable: true, value: scrollIntoView });
+  vi.stubGlobal('matchMedia', vi.fn(query => ({ matches: query === '(max-width: 1023px)' })));
+  const course = catalogue.courses[0];
+  const editor = items => <MemoryRouter><input aria-label="Admin course title" autoFocus/><CourseLaptop items={items} initialId={course.id} preview/></MemoryRouter>;
+  const { rerender } = render(editor([course]));
+  expect(screen.getByRole('textbox', { name: 'Admin course title' })).toHaveFocus();
+  expect(scrollIntoView).not.toHaveBeenCalled();
+  rerender(editor([{ ...course, title: 'Edited course title' }]));
+  expect(screen.getByRole('textbox', { name: 'Admin course title' })).toHaveFocus();
+  expect(scrollIntoView).not.toHaveBeenCalled();
+  expect(screen.getByRole('region', { name: 'Edited course title' })).toBeVisible();
+});
+
+it("retains automatic focus and mobile scrolling on the public course catalogue", () => {
+  const scrollIntoView = vi.fn();
+  Object.defineProperty(Element.prototype, 'scrollIntoView', { configurable: true, value: scrollIntoView });
+  vi.stubGlobal('matchMedia', vi.fn(query => ({ matches: query === '(max-width: 1023px)' })));
+  renderLaptop(<CourseLaptop items={catalogue.courses} initialId={catalogue.courses[0].id}/>);
+  expect(screen.getByRole('region', { name: catalogue.courses[0].title })).toHaveFocus();
+  expect(scrollIntoView).toHaveBeenCalledWith({ block: 'start', behavior: 'smooth' });
 });
 
 function renderLaptop(ui) { return render(<MemoryRouter>{ui}</MemoryRouter>); }

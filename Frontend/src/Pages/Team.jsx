@@ -1,12 +1,17 @@
-import { teams } from "../data/teams";
+import { useContent } from "../ContentContext";
+import StateView from "../Components/StateView";
+import { ContentNotice, ContentUnavailable } from "../Components/ContentFeedback";
+import { teams as sampleTeams } from "../data/teams";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { publicAsset } from "../utils/publicAsset";
 import MemberRoster from "../Components/MemberRoster";
+import { publicPageFrame } from "../Components/PublicLayout.styles";
+import HeroShade from "../Components/HeroShade";
 
 const cardMotion = "duration-[650ms] ease-[cubic-bezier(0.22,0.68,0.18,1)] motion-reduce:transition-none";
 
-function TeamCard({ team, index, expanded, onToggle, onHover, onLeave, onMemberOpen }) {
+function TeamCard({ team, index, expanded, onToggle, onHover, onLeave, onMemberOpen, fillPreview = false }) {
   const titleRef = useRef(null);
   const overviewRef = useRef(null);
   const rosterRef = useRef(null);
@@ -47,7 +52,7 @@ function TeamCard({ team, index, expanded, onToggle, onHover, onLeave, onMemberO
         "--roster-size": `${sizes.roster}px`,
         "--frame-pad": expanded ? "var(--open-pad)" : "var(--card-pad)",
       }}
-      className={`relative grid grid-cols-[3.5rem_minmax(0,1fr)] content-start gap-x-4 gap-y-5 overflow-hidden border-t border-[#eef4ef]/35 px-5 py-[var(--frame-pad)] transition-[height,background-color,padding-block] ${cardMotion} last:border-b [--card-pad:2.125rem] [--open-pad:1.75rem] [--number-row:3.825rem] [--content-gaps:2.5rem] [--closed-floor:18rem] sm:grid-cols-[30%_minmax(0,1fr)] sm:gap-x-7 sm:px-8 sm:[--card-pad:2.625rem] sm:[--open-pad:2.25rem] sm:[--number-row:0rem] sm:[--content-gaps:1.25rem] sm:[--closed-floor:19rem] lg:grid-cols-[40%_minmax(0,1fr)] lg:gap-x-10 lg:px-10 lg:[--card-pad:2.875rem] lg:[--open-pad:2.75rem] lg:[--closed-floor:20rem] xl:px-12 ${expanded ? "bg-[#173d2e] h-[max(var(--closed-floor),calc(var(--heading-size)+var(--roster-size)+var(--number-row)+var(--content-gaps)+2*var(--open-pad)))]" : "bg-[#102c21] hover:bg-[#173d2e] focus-within:bg-[#173d2e] h-[max(calc(var(--closed-floor)+0.75rem),calc(var(--heading-size)+var(--overview-size)+var(--number-row)+var(--content-gaps)+2*var(--card-pad)))]"}`}
+      className={`relative grid grid-cols-[3.5rem_minmax(0,1fr)] content-start gap-x-4 gap-y-5 overflow-hidden border-t border-[#eef4ef]/35 px-5 py-[var(--frame-pad)] transition-[height,background-color,padding-block] ${cardMotion} last:border-b [--card-pad:2.125rem] [--open-pad:1.75rem] [--number-row:3.825rem] [--content-gaps:2.5rem] [--closed-floor:18rem] sm:grid-cols-[30%_minmax(0,1fr)] sm:gap-x-7 sm:px-8 sm:[--card-pad:2.625rem] sm:[--open-pad:2.25rem] sm:[--number-row:0rem] sm:[--content-gaps:1.25rem] sm:[--closed-floor:19rem] lg:grid-cols-[40%_minmax(0,1fr)] lg:gap-x-10 lg:px-10 lg:[--card-pad:2.875rem] lg:[--open-pad:2.75rem] lg:[--closed-floor:20rem] xl:px-12 ${fillPreview ? 'max-lg:grow max-lg:shrink-0 max-sm:grid-rows-[auto_auto_minmax(0,1fr)]' : ''} ${expanded ? "bg-brand h-[max(var(--closed-floor),calc(var(--heading-size)+var(--roster-size)+var(--number-row)+var(--content-gaps)+2*var(--open-pad)))]" : "bg-brand-panel hover:bg-brand focus-within:bg-brand h-[max(calc(var(--closed-floor)+0.75rem),calc(var(--heading-size)+var(--overview-size)+var(--number-row)+var(--content-gaps)+2*var(--card-pad)))]"}`}
     >
       {/* Keep each number entirely within its own card. */}
       <span
@@ -86,7 +91,7 @@ function TeamCard({ team, index, expanded, onToggle, onHover, onLeave, onMemberO
         </h2>
       </div>
 
-      <div className="col-span-2 min-w-0 sm:mt-5">
+      <div className={`col-span-2 min-w-0 sm:mt-5 ${fillPreview ? 'max-sm:self-center' : ''}`}>
         <div
           aria-hidden={expanded}
           className={`grid transition-[grid-template-rows,opacity] ${cardMotion} ${expanded ? "grid-rows-[0fr] opacity-0" : "grid-rows-[1fr] opacity-100"}`}
@@ -118,8 +123,11 @@ function TeamCard({ team, index, expanded, onToggle, onHover, onLeave, onMemberO
   );
 }
 
-export default function TeamPage() {
-  const [activeTeam, setActiveTeam] = useState(null);
+export default function TeamPage({ initialTeamId, sectionOnly = false, preview = false } = {}) {
+  const fillPreview = preview && sectionOnly;
+  const content = useContent();
+  const teams = content ? content.teams.map(team=>({...team,members:Array.isArray(team.members)?team.members:[]})) : sampleTeams;
+  const [activeTeam, setActiveTeam] = useState(initialTeamId || null);
   const interaction = useRef(null);
   const hoverTimer = useRef(null);
   const pendingTeam = useRef(null);
@@ -200,8 +208,8 @@ export default function TeamPage() {
   }, [clearHoverTimer]);
 
   return (
-    <section aria-labelledby="team-page-heading" className="bg-white pb-12 text-[#173d2e] md:pb-16">
-      <header className="relative isolate flex min-h-[28rem] items-end overflow-hidden bg-neutral-900 text-white sm:min-h-[25rem] lg:min-h-[28rem]">
+    <section aria-labelledby={sectionOnly ? teams.some(team => team.id === initialTeamId) ? `${initialTeamId}-heading` : undefined : 'team-page-heading'} className={`bg-surface pb-12 text-ink md:pb-16 ${fillPreview ? 'max-lg:flex max-lg:flex-col max-lg:pb-20' : ''}`}>
+      {!sectionOnly && <header className="relative isolate flex min-h-[28rem] items-end overflow-hidden bg-neutral-900 text-white sm:min-h-[25rem] lg:min-h-[28rem]">
         {/* Stock meeting placeholders, not club portraits. Replace with ARPC photography.
             Walls.io: https://unsplash.com/photos/O0jOMufR1_g
             Vlada Karpovich: https://www.pexels.com/photo/people-having-a-meeting-7433823/ */}
@@ -227,7 +235,8 @@ export default function TeamPage() {
           />
         </div>
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-black/65" />
-        <div className="flex w-full flex-col items-start gap-6 px-6 pt-28 pb-8 sm:gap-7 sm:pt-32 sm:pb-10 lg:mx-20 lg:w-auto lg:flex-1 lg:pb-12 2xl:px-24">
+        <HeroShade />
+        <div className={`${publicPageFrame} flex flex-col items-start gap-6 pt-28 pb-8 sm:gap-7 sm:pt-32 sm:pb-10 lg:flex-1 lg:pb-12`}>
           <h1 id="team-page-heading" className="font-garamond text-[clamp(2.5rem,9vw,3.5rem)] font-semibold leading-[0.98] tracking-[-0.025em] text-[#eef4ef] sm:text-[clamp(3.75rem,7vw,6rem)]">
             <span className="block">The teams</span>{" "}
             <span className="block">behind <span className="text-[#E9AD5E]">ARPC</span>.</span>
@@ -238,7 +247,7 @@ export default function TeamPage() {
             </p>
             <Link
               to="/join"
-              className="group inline-flex min-h-14 shrink-0 items-center justify-center self-end gap-7 rounded-full border border-[#eef4ef]/30 bg-[#eef4ef] px-6 py-3 text-base font-semibold leading-normal text-[#102c21] transition-colors duration-200 hover:border-[#E9AD5E] hover:bg-[#E9AD5E] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E] motion-reduce:transition-none sm:px-7 sm:text-lg"
+              className="group inline-flex min-h-14 shrink-0 items-center justify-center self-end gap-7 rounded-full border border-[#eef4ef]/30 bg-soft px-6 py-3 text-base font-semibold leading-normal text-ink transition-colors duration-200 hover:border-[#E9AD5E] hover:bg-[#E9AD5E] hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E] motion-reduce:transition-none sm:px-7 sm:text-lg"
             >
               Join ARPC
               <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="size-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none">
@@ -247,15 +256,18 @@ export default function TeamPage() {
             </Link>
           </div>
         </div>
-      </header>
-      <div className="max-w-8xl px-6 pt-10 lg:mx-20 lg:pt-14 2xl:px-24">
-        <div id="panel-teams" aria-label="Club teams" className="scroll-mt-6">
-          {teams.map((team, index) => (
+      </header>}
+      <div className={`${publicPageFrame} pt-10 lg:pt-14 ${fillPreview ? 'max-lg:flex max-lg:flex-1 max-lg:flex-col' : ''}`}>
+        <div id="panel-teams" aria-label="Club teams" className={`scroll-mt-6 ${fillPreview ? 'max-lg:flex max-lg:flex-1 max-lg:flex-col' : ''}`}>
+          <ContentNotice content={content}/>
+          {!teams.length && (content?.loading || content?.error&&!content?.hasData ? <ContentUnavailable content={content} resource="the club teams"/> : <StateView fill={fillPreview} kind="team" title="No team profiles available yet." description="Team profiles will appear here when they are available. Explore our programmes or contact the club in the meantime." actions={[{label:'Explore programmes',to:'/catalogue'}, {label:'Contact the club',href:'mailto:info@arpc.club',secondary:true}]}/>)}
+          {teams.map((team, index) => (!sectionOnly || team.id === initialTeamId) && (
             <TeamCard
               key={team.id}
               team={team}
               index={index}
               expanded={activeTeam === team.id}
+              fillPreview={fillPreview}
               onToggle={toggleTeam}
               onHover={hoverTeam}
               onLeave={leaveTeam}

@@ -1,0 +1,11 @@
+import mongoose from 'mongoose';
+import { User } from '../src/models.js';
+import { hashPassword } from '../src/security.js';
+import { email, password, text } from '../src/validation.js';
+const target=email.parse(process.env.SUPERADMIN_EMAIL);
+const secret=password.parse(process.env.SUPERADMIN_PASSWORD);
+const fullName=text(100).parse(process.env.SUPERADMIN_NAME || 'ARPC Superadmin');
+await mongoose.connect(process.env.MONGODB_URI);
+if(await User.exists({role:'superadmin'}))throw new Error('A superadmin already exists. Bootstrap never overwrites accounts.');
+await User.create({email:target,fullName,passwordHash:await hashPassword(secret),role:'superadmin',status:'active',emailVerified:true});
+console.log('Initial superadmin created. Remove SUPERADMIN_PASSWORD from .env now.');await mongoose.disconnect();

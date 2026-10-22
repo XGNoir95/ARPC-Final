@@ -20,6 +20,17 @@ const mockMedia = ({ reducedMotion = false, desktop = false } = {}) => {
 afterEach(() => vi.useRealTimers());
 
 describe("Hero photos", () => {
+  it('supports controlled preview selection without advancing while editing', () => {
+    vi.useFakeTimers();
+    const select = vi.fn();
+    const { rerender } = render(<Hero activeIndex={1} onPhotoChange={select} autoPlay={false}/>);
+    act(() => vi.advanceTimersByTime(18000));
+    expect(screen.getByRole('slider')).toHaveAttribute('aria-valuenow', '1');
+    fireEvent.click(screen.getByRole('button', { name: '03: Image 3' }));
+    expect(select).toHaveBeenCalledExactlyOnceWith(2);
+    rerender(<Hero activeIndex={2} onPhotoChange={select} autoPlay={false}/>);
+    expect(screen.getByRole('slider')).toHaveAttribute('aria-valuenow', '2');
+  });
   it("offers exactly three numbered photos and selects them manually", () => {
     render(<Hero />);
     const controls = screen.getByRole("group", { name: "Hero photos" });
@@ -28,27 +39,27 @@ describe("Hero photos", () => {
       within(controls).getAllByRole("button", { pressed: false }),
     ).toHaveLength(2);
     expect(screen.queryByText("Start")).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "03: Learning" }));
+    fireEvent.click(screen.getByRole("button", { name: "03: Image 3" }));
     expect(screen.getByRole("slider")).toHaveAttribute(
       "aria-valuetext",
-      "Learning",
+      "Image 3",
     );
-    expect(screen.getByText("Photo 3 of 3: Learning")).toBeInTheDocument();
+    expect(screen.getByText("Photo 3 of 3: Image 3")).toBeInTheDocument();
     expect(
       within(controls).getAllByRole("button", { pressed: true }),
     ).toHaveLength(1);
-    fireEvent.click(screen.getByRole("button", { name: "01: AUST campus" }));
-    expect(screen.getByText("Photo 1 of 3: AUST campus")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "01: Image 1" }));
+    expect(screen.getByText("Photo 1 of 3: Image 1")).toBeInTheDocument();
   });
 
   it("supports arrow keys, Home, and End without losing slider focus", () => {
     render(<Hero />);
-    fireEvent.keyDown(screen.getByRole("button", { name: "01: AUST campus" }), {
+    fireEvent.keyDown(screen.getByRole("button", { name: "01: Image 1" }), {
       key: "ArrowRight",
     });
-    expect(screen.getByRole("button", { name: "02: Community" })).toHaveFocus();
+    expect(screen.getByRole("button", { name: "02: Image 2" })).toHaveFocus();
     fireEvent.keyDown(document.activeElement, { key: "End" });
-    expect(screen.getByRole("button", { name: "03: Learning" })).toHaveFocus();
+    expect(screen.getByRole("button", { name: "03: Image 3" })).toHaveFocus();
     const slider = screen.getByRole("slider");
     act(() => slider.focus());
     fireEvent.keyDown(slider, { key: "ArrowDown" });
@@ -125,7 +136,7 @@ describe("Hero photos", () => {
       expect(slider).toHaveAttribute("aria-valuenow", String(index));
     }
     act(() => vi.advanceTimersByTime(5000));
-    fireEvent.click(screen.getByRole("button", { name: "01: AUST campus" }));
+    fireEvent.click(screen.getByRole("button", { name: "01: Image 1" }));
     act(() => vi.advanceTimersByTime(5999));
     expect(slider).toHaveAttribute("aria-valuenow", "0");
     act(() => vi.advanceTimersByTime(1));
@@ -168,7 +179,7 @@ describe("Hero photos", () => {
     expect(
       screen.queryByRole("button", { name: "Pause slideshow" }),
     ).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "03: Learning" }));
+    fireEvent.click(screen.getByRole("button", { name: "03: Image 3" }));
     expect(screen.getByRole("slider")).toHaveAttribute("aria-valuenow", "2");
   });
 });

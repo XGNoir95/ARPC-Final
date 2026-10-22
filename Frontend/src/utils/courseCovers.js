@@ -12,17 +12,17 @@ import technology from "../assets/courses/technology-cover.svg?no-inline";
 import { publicAsset } from "./publicAsset";
 
 const themes = {
-  reflection: { label: "Reflection", color: "#dce8df", ink: "#173d2e", cover: reflection },
-  writing: { label: "Writing", color: "#E9AD5E", ink: "#173d2e", cover: writing },
-  history: { label: "History", color: "#577262", ink: "#fff", cover: history },
-  learning: { label: "General learning", color: "#b9cdbd", ink: "#173d2e", cover: learning },
-  nature: { label: "Nature", color: "#577262", ink: "#fff", cover: nature },
-  science: { label: "Science", color: "#dce8df", ink: "#173d2e", cover: science },
-  community: { label: "Community", color: "#b9cdbd", ink: "#173d2e", cover: community },
-  leadership: { label: "Leadership", color: "#E9AD5E", ink: "#173d2e", cover: leadership },
-  language: { label: "Language", color: "#dce8df", ink: "#173d2e", cover: language },
-  creativity: { label: "Creativity", color: "#E9AD5E", ink: "#173d2e", cover: creativity },
-  technology: { label: "Technology", color: "#577262", ink: "#fff", cover: technology },
+  reflection: { label: "Reflection", color: "#dce8df", ink: "var(--color-brand)", cover: reflection },
+  writing: { label: "Writing", color: "#E9AD5E", ink: "var(--color-brand)", cover: writing },
+  history: { label: "History", color: "var(--color-brand-muted)", ink: "#fff", cover: history },
+  learning: { label: "General learning", color: "#b9cdbd", ink: "var(--color-brand)", cover: learning },
+  nature: { label: "Nature", color: "var(--color-brand-muted)", ink: "#fff", cover: nature },
+  science: { label: "Science", color: "#dce8df", ink: "var(--color-brand)", cover: science },
+  community: { label: "Community", color: "#b9cdbd", ink: "var(--color-brand)", cover: community },
+  leadership: { label: "Leadership", color: "#E9AD5E", ink: "var(--color-brand)", cover: leadership },
+  language: { label: "Language", color: "#dce8df", ink: "var(--color-brand)", cover: language },
+  creativity: { label: "Creativity", color: "#E9AD5E", ink: "var(--color-brand)", cover: creativity },
+  technology: { label: "Technology", color: "var(--color-brand-muted)", ink: "#fff", cover: technology },
 };
 
 // A future admin picker can use the label and cover as its preview and save id

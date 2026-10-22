@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:admin": "vite --mode admin",
     "build": "vite build",
+    "build:admin": "vite build --mode admin",
     "lint": "npm run verify:styles && eslint . --max-warnings=0",
     "verify:styles": "node scripts/verify-styles.mjs",
     "audit": "npm audit --audit-level=high",

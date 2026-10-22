@@ -3,7 +3,7 @@ import { publicAsset } from "../../utils/publicAsset";
 const Quote = ({ onReflectionToggle }) => (
   <figure
     aria-labelledby="founder-attribution"
-    className="flex h-full min-w-0 flex-col bg-[#eef4ef] px-6 py-12 text-[#173d2e] sm:py-14 lg:py-16 lg:pr-12 lg:pl-26 2xl:pr-16 2xl:pl-44"
+    className="flex h-full min-w-0 flex-col bg-soft px-6 py-12 text-ink sm:py-14 lg:py-16 lg:pr-12 lg:pl-26 2xl:pr-16 2xl:pl-44"
   >
     <figcaption id="founder-attribution" className="flex items-center gap-4">
       <img
@@ -13,13 +13,13 @@ const Quote = ({ onReflectionToggle }) => (
         decoding="async"
         width="80"
         height="80"
-        className="size-16 shrink-0 rounded-full bg-[#dce8df] object-cover object-[center_15%] sm:size-32"
+        className="size-16 shrink-0 rounded-full bg-raised object-cover object-[center_15%] sm:size-32"
       />
       <div className="min-w-0">
         <p className="font-garamond text-xl leading-tight font-semibold text-balance sm:text-3xl">
           Khan Bahadur Ahsanullah (R.)
         </p>
-        <p className="mt-2 text-xs leading-relaxed text-[#173d2e]/70 sm:text-[1rem]">
+        <p className="mt-2 text-xs leading-relaxed text-ink/70 sm:text-[1rem]">
           Founder, Dhaka Ahsania Mission &amp; AUST
         </p>
       </div>
@@ -34,15 +34,15 @@ const Quote = ({ onReflectionToggle }) => (
 
     <details
       onToggle={(event) => onReflectionToggle?.(event.currentTarget.open)}
-      className="group border-t border-[#173d2e]/15 pt-6"
+      className="group border-t border-ink/15 pt-6"
     >
-      <summary className="flex min-h-12 w-fit cursor-pointer list-none items-center gap-5 rounded-full border border-[#173d2e]/25 px-5 py-3 text-sm font-semibold transition-colors hover:border-[#173d2e] hover:bg-[#173d2e] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-green-700 motion-reduce:transition-none [&::-webkit-details-marker]:hidden sm:text-base">
+      <summary className="flex min-h-12 w-fit cursor-pointer list-none items-center gap-5 rounded-full border border-ink/25 px-5 py-3 text-sm font-semibold transition-colors hover:border-ink hover:bg-action hover:text-on-action focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink motion-reduce:transition-none [&::-webkit-details-marker]:hidden sm:text-base">
         <span>Read the full reflection</span>
         <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="size-5 shrink-0 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none">
           <path d="m6 9 6 6 6-6" />
         </svg>
       </summary>
-      <p className="mt-4 max-w-[65ch] font-garamond text-xl leading-relaxed text-[#173d2e]/85 sm:text-2xl">
+      <p className="mt-4 max-w-[65ch] font-garamond text-xl leading-relaxed text-ink/85 sm:text-2xl">
         The education which caters both to the body and the mind is the real
         education. We should make our generation aware of it. Our responsibility
         does not end with the fulfillment of our earthly obligation. It is our

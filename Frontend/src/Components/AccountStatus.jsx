@@ -1,0 +1,19 @@
+import { FiCheck, FiClock, FiMail, FiShield } from 'react-icons/fi';
+import { createElement, useState } from 'react';
+import { Notice, StatePage } from './StateView';
+import EmailVerification from './EmailVerification';
+
+export default function AccountStatus({ profile, error, busy, notice, onRefresh, onVerified, onSignOut }) {
+  const [verificationBusy, setVerificationBusy] = useState(false);
+  const actionBusy = busy || verificationBusy;
+  if (!profile || error && profile.status === 'active' && profile.emailVerified) return <StatePage standalone kind={error ? 'error' : 'loading'} title={error ? profile ? 'Your workspace could not be loaded.' : 'Unable to connect to your workspace.' : 'Connecting your workspace…'} description={error || 'We’re checking your account and preparing your workspace.'} actions={error ? [{label:'Try again',onClick:onRefresh,busy}, {label:'Sign out',onClick:onSignOut,secondary:true,disabled:busy}] : []}>{notice && <div className="mt-6"><Notice tone={notice.error ? 'error' : 'success'}>{notice.message}</Notice></div>}</StatePage>;
+  const blocked = ['rejected', 'suspended'].includes(profile.status);
+  const approved = profile.status === 'active';
+  return <StatePage standalone kind={blocked ? 'locked' : 'pending'} title={blocked ? profile.status === 'suspended' ? 'Your account access is paused.' : 'Your access request wasn’t approved.' : approved ? 'Verify your email to continue.' : 'Your account is awaiting access.'} description={blocked ? 'Please contact the club if you have questions about your administrator access.' : profile.emailVerified ? 'Your email is verified. The club will review your request before you can open the admin workspace.' : approved ? 'Your account is approved. Verify your email address to open the admin workspace.' : 'Email verification and club approval are both required. Verify your email while the club reviews your request.'} actions={blocked ? [{label:'Contact the club',href:'mailto:info@arpc.club'}, {label:'Sign out',onClick:onSignOut,secondary:true,disabled:actionBusy}] : [{label:'Refresh status',onClick:onRefresh,busy,disabled:actionBusy}, {label:'Sign out',onClick:onSignOut,secondary:true,disabled:actionBusy}]}>
+    {!blocked && !profile.emailVerified && <EmailVerification key={profile.id || profile.email} email={profile.email} busy={busy} onVerified={onVerified} onBusyChange={setVerificationBusy}/>}
+    {!blocked && <ol className="mt-7 divide-y divide-ink/12 border-y border-ink/12">
+      {[{label:'Email verification',complete:profile.emailVerified,Icon:FiMail,detail:profile.emailVerified ? 'Your email address is confirmed.' : 'Enter the code from your verification email above.'}, {label:'Club approval',complete:approved,Icon:FiShield,detail:approved ? 'Your administrator access is approved.' : profile.emailVerified ? 'The club will contact you when your access has been reviewed.' : 'The club can review your request while you verify your email.'}].map(({label,complete,Icon,detail}) => <li key={label} className="flex gap-4 py-5"><span aria-hidden="true" className="flex size-11 shrink-0 items-center justify-center rounded-full border border-ink/15 bg-surface">{createElement(Icon,{className:'size-5'})}</span><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center justify-between gap-2"><h2 className="text-base font-semibold">{label}</h2><span className={`inline-flex items-center gap-1.5 text-sm font-medium ${complete ? 'text-success' : 'text-warning'}`}>{complete ? <FiCheck aria-hidden="true"/> : <FiClock aria-hidden="true"/>}{complete ? 'Complete' : 'Pending'}</span></div><p className="mt-1 text-sm leading-6 text-muted">{detail}</p></div></li>)}
+    </ol>}
+    {(error || notice) && <div className="mt-6"><Notice tone={error || notice?.error ? 'error' : 'success'}>{error || notice.message}</Notice></div>}
+  </StatePage>;
+}

@@ -1,25 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import { affiliations as sampleAffiliations } from "../../data/sponsors";
+import { useContent } from "../../ContentContext";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { publicAsset } from "../../utils/publicAsset";
+import { publicPageFrame } from "../PublicLayout.styles";
 
-const affiliations = [
-  { name: "Al-Falaq", src: "/sponsors/alfalaq.png" },
-  { name: "Shomokalin", src: "/sponsors/shomokalin.jpg" },
-  { name: "Sean Publication", src: "/sponsors/sean.jpg" },
-  { name: "Luncheon", src: "/sponsors/luncheon.png" },
-  { name: "Academy for Community Development", src: "/sponsors/acd.png", wide: true },
-  { name: "As-Sunnah Foundation", src: "/sponsors/assunnah.png", wide: true },
-  { name: "Sattayan", src: "/sponsors/sattayan.png", wide: true },
-];
+const focusStyle = "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink";
+const nameFocusStyle = "focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ink";
 
-const wrap = (index) => (index + affiliations.length) % affiliations.length;
-// Wrapping happens beyond the faded edges, so the rail can loop in either direction.
-const midpoint = Math.floor(affiliations.length / 2);
-const distanceFrom = (index, active) => wrap(index - active + midpoint) - midpoint;
-const focusStyle = "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-green-700";
-const nameFocusStyle = "focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-green-700";
-
-const Sponsors = () => {
-  const [active, setActive] = useState(0);
+const Sponsors = ({ autoPlay = true, initialId } = {}) => {
+  const content = useContent();
+  const affiliations = content ? content.sponsors : sampleAffiliations;
+  const wrap = useCallback(index => (index + affiliations.length) % affiliations.length, [affiliations.length]);
+  const midpoint = Math.floor(affiliations.length / 2);
+  const distanceFrom = (index, active) => wrap(index - active + midpoint) - midpoint;
+  const [storedActive, setActive] = useState(() => Math.max(0, affiliations.findIndex(item => item.id === initialId)));
+  const active = storedActive % Math.max(1, affiliations.length);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const [held, setHeld] = useState(false);
@@ -27,7 +22,7 @@ const Sponsors = () => {
   const touchStart = useRef(null);
   const buttons = useRef([]);
   const focusSelection = useRef(false);
-  const playing = !hovered && !focused && !held && !reducedMotion;
+  const playing = autoPlay && !hovered && !focused && !held && !reducedMotion;
 
   useEffect(() => {
     const preference = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -38,10 +33,10 @@ const Sponsors = () => {
   }, []);
 
   useEffect(() => {
-    if (!playing) return;
+    if (!playing || affiliations.length < 2) return;
     const timer = window.setTimeout(() => setActive((index) => wrap(index + 1)), 3600);
     return () => window.clearTimeout(timer);
-  }, [active, playing]);
+  }, [active, playing, wrap, affiliations.length]);
 
   useEffect(() => {
     if (!focusSelection.current) return;
@@ -66,28 +61,29 @@ const Sponsors = () => {
     setHeld(false);
   };
 
+  if (!affiliations.length) return null;
   return (
-    <section aria-labelledby="affiliations-heading" lang="en" className="bg-white py-12 text-justify md:py-16">
-      <div className="mx-auto grid w-full max-w-[112rem] items-center gap-8 px-6 lg:w-[calc(100%_-_10rem)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:grid-rows-[auto_auto_auto_auto] lg:gap-x-8 lg:gap-y-0 xl:gap-x-10 2xl:gap-x-28 2xl:px-24">
+    <section aria-labelledby="affiliations-heading" lang="en" className="bg-surface py-12 text-justify md:py-16">
+      <div className={`${publicPageFrame} grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:grid-rows-[auto_auto_auto_auto] lg:gap-x-8 lg:gap-y-0 xl:gap-x-10 2xl:gap-x-28`}>
         <div className="@container flex min-w-0 flex-col lg:row-start-2 lg:h-full">
-          <h2 id="affiliations-heading" className="mb-5 font-garamond text-[clamp(2rem,10cqi,3rem)] leading-none font-bold text-[#173d2e] lg:-translate-y-[0.15em]">
+          <h2 id="affiliations-heading" className="mb-5 font-garamond text-[clamp(2rem,10cqi,3rem)] leading-none font-bold text-ink lg:-translate-y-[0.15em]">
             Our Affiliations
           </h2>
-          <div className="grid grid-cols-[minmax(0,1fr)_clamp(3.5rem,14cqi,5.5rem)] items-center gap-3 rounded-[0.35rem_1.75rem_0.35rem_0.35rem] bg-[#173d2e] p-5 sm:gap-4 sm:p-7">
+          <div className="grid grid-cols-[minmax(0,1fr)_clamp(3.5rem,14cqi,5.5rem)] items-center gap-3 rounded-[0.35rem_1.75rem_0.35rem_0.35rem] bg-brand p-5 sm:gap-4 sm:p-7">
             <p className="font-garamond text-[clamp(1.375rem,7.2cqi,2.75rem)] font-semibold leading-[1.08] tracking-[-0.025em] text-white">
               <span className="block">Read together.</span>
               <span className="block">Reach further.</span>
             </p>
             <svg aria-hidden="true" viewBox="0 0 88 88" fill="none" className="w-full text-[#eef4ef]">
               <path d="M8 27v38l35 12 37-13V25" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-              <path d="M12 18c11-2 21 1 31 8v43c-10-7-20-10-31-8V18Z" fill="#2D5644" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-              <path d="M43 26c10-7 21-10 33-8v43c-12-2-23 1-33 8V26Z" fill="#406552" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+              <path d="M12 18c11-2 21 1 31 8v43c-10-7-20-10-31-8V18Z" fill="var(--color-brand-leaf)" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+              <path d="M43 26c10-7 21-10 33-8v43c-12-2-23 1-33 8V26Z" fill="var(--color-brand-leaf-light)" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
               <path d="M59 18v26l5-4 5 2V17" fill="#E9AD5E" />
               <path d="m19 30 16 6m-16 4 16 6m-16 4 11 4m20-2 17-6m-17 16 17-6" stroke="currentColor" strokeOpacity="0.35" strokeWidth="1.5" strokeLinecap="round" />
               <path d="M43 27v48" stroke="currentColor" strokeWidth="1.5" />
             </svg>
           </div>
-          <div className="mt-6 space-y-4 text-[clamp(1rem,3.7cqi,1.2rem)] leading-relaxed text-[#173d2e]/80">
+          <div className="mt-6 space-y-4 text-[clamp(1rem,3.7cqi,1.2rem)] leading-relaxed text-ink/80">
             <p>
               Meet the publishers, foundations and community organisations that share ARPC’s interest
               in learning and service.
@@ -100,10 +96,10 @@ const Sponsors = () => {
           <div className="pt-7 lg:mt-auto">
             <a
               href="mailto:info@arpc.club?subject=An%20affiliation%20with%20ARPC"
-              className={`group flex min-h-14 w-full items-center justify-between gap-3 rounded-full border border-[#173d2e]/30 bg-[#eef4ef] px-5 py-2.5 font-semibold text-[#173d2e] transition-colors duration-200 hover:border-[#173d2e] hover:bg-[#173d2e] hover:text-white motion-reduce:transition-none sm:text-lg ${focusStyle}`}
+              className={`group flex min-h-14 w-full items-center justify-between gap-3 rounded-full border border-ink/30 bg-soft px-5 py-2.5 font-semibold text-ink transition-colors duration-200 hover:border-ink hover:bg-action hover:text-on-action motion-reduce:transition-none sm:text-lg ${focusStyle}`}
             >
               Let’s work together
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#173d2e] text-white transition-colors duration-200 group-hover:bg-white group-hover:text-[#173d2e] motion-reduce:transition-none">
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-action text-on-action transition-colors duration-200 group-hover:bg-surface group-hover:text-ink motion-reduce:transition-none">
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="size-4">
                   <rect x="3" y="5" width="18" height="14" rx="2" />
                   <path d="m3 7 9 6 9-6" />
@@ -156,11 +152,11 @@ const Sponsors = () => {
               className="@container pointer-events-auto relative grid h-[var(--stage-height)] touch-pan-x grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] overflow-clip [--logo-step:9rem] [--name-step:5rem] @sm:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] @sm:[--logo-step:11.5rem] @sm:[--name-step:5.75rem] @lg:[--logo-step:15rem] @lg:[--name-step:6.5rem]"
             >
               {/* The landscape screen stays centred while the logo rail passes beyond its edges. */}
-              <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-1/2 h-[var(--screen-height)] -translate-y-1/2 overflow-hidden rounded-[1.5rem] border-[3px] border-[#0e291e] bg-[#f5f8f5] shadow-[inset_0_0_0_3px_white,0_12px_30px_-24px_rgba(14,41,30,0.4)] @sm:rounded-[1.75rem]">
-                <div className="absolute inset-y-0 left-0 flex w-8 flex-col items-center justify-around border-r border-[#173d2e]/20 bg-[#e4ece6] py-8 shadow-[inset_-3px_0_0_rgba(255,255,255,0.5)] @sm:w-11 @sm:py-10">
-                  <span className="absolute top-3 left-1/2 size-1.5 -translate-x-1/2 rounded-full bg-[#173d2e]/70 ring-2 ring-white/60 @sm:top-4" />
+              <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-1/2 h-[var(--screen-height)] -translate-y-1/2 overflow-hidden rounded-[1.5rem] border-[3px] border-ink bg-field shadow-[inset_0_0_0_3px_white,0_12px_30px_-24px_rgba(14,41,30,0.4)] @sm:rounded-[1.75rem]">
+                <div className="absolute inset-y-0 left-0 flex w-8 flex-col items-center justify-around border-r border-ink/20 bg-raised py-8 shadow-[inset_-3px_0_0_rgba(255,255,255,0.5)] @sm:w-11 @sm:py-10">
+                  <span className="absolute top-3 left-1/2 size-1.5 -translate-x-1/2 rounded-full bg-brand/70 ring-2 ring-white/60 @sm:top-4" />
                   {["Learning", "Community", "Service"].map((value) => (
-                    <span key={value} className="rotate-180 text-[9px] font-medium leading-none text-[#173d2e]/80 [writing-mode:vertical-rl] @sm:text-[11px]">
+                    <span key={value} className="rotate-180 text-[9px] font-medium leading-none text-ink/80 [writing-mode:vertical-rl] @sm:text-[11px]">
                       {value}
                     </span>
                   ))}
@@ -195,7 +191,7 @@ const Sponsors = () => {
                         aria-pressed={selected}
                         tabIndex={selected ? 0 : -1}
                         onClick={() => setActive(index)}
-                        className={`relative min-h-11 w-full cursor-pointer rounded-sm py-1 text-left font-garamond leading-[1.15] wrap-break-word text-[#173d2e] transition-[font-size,color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-green-700 motion-reduce:transition-none ${selected ? "text-[clamp(1.125rem,5.2cqi,2.25rem)] font-semibold" : "text-[clamp(0.9375rem,3.6cqi,1.5rem)] font-medium"} ${nameFocusStyle}`}
+                        className={`relative min-h-11 w-full cursor-pointer rounded-sm py-1 text-left font-garamond leading-[1.15] wrap-break-word text-ink transition-[font-size,color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-ink motion-reduce:transition-none ${selected ? "text-[clamp(1.125rem,5.2cqi,2.25rem)] font-semibold" : "text-[clamp(0.9375rem,3.6cqi,1.5rem)] font-medium"} ${nameFocusStyle}`}
                       >
                         {affiliation.name}
                       </button>
@@ -216,7 +212,7 @@ const Sponsors = () => {
                         "--logo-transform": `translate(-50%, calc(-50% + ${distance} * var(--logo-step))) scale(${selected ? 1 : 0.9})`,
                         "--logo-opacity": selected ? 1 : outside ? 0 : 0.55,
                       }}
-                      className={`absolute top-1/2 left-1/2 flex h-32 w-[90%] max-w-xs items-center justify-center rounded-xl border bg-white p-2 [transform:var(--logo-transform)] opacity-[var(--logo-opacity)] shadow-[0_12px_35px_-20px_rgba(14,41,30,0.25)] transition-[transform,opacity,border-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none @sm:h-40 @sm:w-[86%] @sm:p-5 @lg:h-52 @lg:p-7 ${selected ? "border-[#173d2e]/30" : "border-[#173d2e]/8"} ${outside ? "invisible" : ""}`}
+                      className={`absolute top-1/2 left-1/2 flex h-32 w-[90%] max-w-xs items-center justify-center rounded-xl border bg-white p-2 [transform:var(--logo-transform)] opacity-[var(--logo-opacity)] shadow-[0_12px_35px_-20px_rgba(14,41,30,0.25)] transition-[transform,opacity,border-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none @sm:h-40 @sm:w-[86%] @sm:p-5 @lg:h-52 @lg:p-7 ${selected ? "border-ink/30" : "border-ink/8"} ${outside ? "invisible" : ""}`}
                     >
                       <img
                         src={publicAsset(affiliation.src)}
@@ -247,11 +243,11 @@ const Sponsors = () => {
             onBlurCapture={(event) => {
               if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
             }}
-            className="flex items-center gap-2 rounded-full border border-[#173d2e]/25 bg-[#eef4ef] p-1 pl-4 shadow-[0_4px_12px_rgba(14,41,30,0.08)]"
+            className="flex items-center gap-2 rounded-full border border-ink/25 bg-soft p-1 pl-4 shadow-[0_4px_12px_rgba(14,41,30,0.08)]"
           >
-            <p role="status" aria-live={focused ? "polite" : "off"} aria-label={`Affiliation ${active + 1} of ${affiliations.length}`} className="border-r border-[#173d2e]/20 pr-3 text-sm text-[#173d2e]/80 tabular-nums">
-              <span className="font-semibold text-[#173d2e]">{String(active + 1).padStart(2, "0")}</span>
-              <span aria-hidden="true" className="mx-2 text-[#173d2e]/30">/</span>
+            <p role="status" aria-live={focused ? "polite" : "off"} aria-label={`Affiliation ${active + 1} of ${affiliations.length}`} className="border-r border-ink/20 pr-3 text-sm text-ink/80 tabular-nums">
+              <span className="font-semibold text-ink">{String(active + 1).padStart(2, "0")}</span>
+              <span aria-hidden="true" className="mx-2 text-ink/30">/</span>
               {String(affiliations.length).padStart(2, "0")}
             </p>
             <div className="flex">
@@ -262,7 +258,7 @@ const Sponsors = () => {
                   aria-label={label}
                   aria-controls="affiliations-slider"
                   onClick={() => setActive((index) => wrap(index + step))}
-                  className={`flex size-11 cursor-pointer items-center justify-center rounded-full text-[#173d2e] transition-colors hover:bg-[#173d2e] hover:text-white motion-reduce:transition-none ${focusStyle}`}
+                  className={`flex size-11 cursor-pointer items-center justify-center rounded-full text-ink transition-colors hover:bg-action hover:text-on-action motion-reduce:transition-none ${focusStyle}`}
                 >
                   <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="size-5">
                     <path d={step === 1 ? "M12 5v14m-5-5 5 5 5-5" : "M12 19V5m-5 5 5-5 5 5"} />

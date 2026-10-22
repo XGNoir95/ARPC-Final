@@ -1,46 +1,19 @@
+import { aboutCards as sampleCards } from "../../data/about";
+import { useContent } from "../../ContentContext";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { publicAsset } from "../../utils/publicAsset";
+import { publicPageFrame } from "../PublicLayout.styles";
+import HeroShade from "../HeroShade";
+import { homepageDraft } from '../../utils/homeContent';
 
 // Replace the placeholder photos here when club photography is available.
-const aboutCards = [
-  {
-    id: "about-us",
-    title: "About Us",
-    label: "Who we are",
-    image: "/images/about/community.jpg",
-    summary: "A student community rooted in faith, friendship, and service.",
-    description:
-      "Ahsanullah Roh. Peace Club brings students at AUST together through faith, friendship, and service. From study circles to community projects, we create opportunities to learn, reflect, and build a sincere connection with the Creator and one another.",
-    link: "/team",
-    linkLabel: "Meet our team",
-  },
-  {
-    id: "our-mission",
-    title: "Our Mission",
-    label: "What guides us",
-    image: "/images/about/learning.jpg",
-    summary: "Turning knowledge into kindness and shared purpose into action.",
-    description:
-      "Our mission is to turn learning into practice. Through thoughtful discussions, shared study, and acts of service, we encourage students to deepen their understanding of Islam, strengthen their character, and bring compassion into everyday campus life.",
-    link: "/join",
-    linkLabel: "Be part of our mission",
-  },
-  {
-    id: "our-vision",
-    title: "Our Vision",
-    label: "Looking ahead",
-    image: "/images/about/nature.jpg",
-    summary: "A campus shaped by peace, compassion, and a sense of belonging.",
-    description:
-      "We envision a campus where faith inspires kindness, knowledge leads to service, and every student finds a place to belong. Together, we hope to nurture a community that carries the values of peace and compassion beyond university life.",
-    link: "/join",
-    linkLabel: "Grow with us",
-  },
-];
 
-const About = () => {
-  const [activeCard, setActiveCard] = useState(null);
+
+const About = ({ initialCardId } = {}) => {
+  const content = useContent();
+  const aboutCards = sampleCards.map(card => homepageDraft(card.id, content?.home.find(p => p.id === card.id)));
+  const [activeCard, setActiveCard] = useState(() => { const index = aboutCards.findIndex(card => card.id === initialCardId); return index < 0 ? null : index; });
 
   const activateHoveredCard = (event, index) => {
     // Pointer movement also covers a cursor already over a card on page load.
@@ -60,12 +33,12 @@ const About = () => {
     <section
       id="about"
       aria-labelledby="about-heading"
-      className="mt-3 bg-white py-12 md:py-16"
+      className="mt-3 bg-surface py-12 md:py-16"
     >
-      <div className="@container/about-layout max-w-8xl px-6 lg:mx-20 2xl:px-24">
+      <div className={`${publicPageFrame} @container/about-layout`}>
         <h2
           id="about-heading"
-          className="mb-6 font-garamond text-[2.4rem] font-bold text-[#173d2e] md:mb-8 md:text-[3rem]"
+          className="mb-6 font-garamond text-[2.4rem] font-bold text-ink md:mb-8 md:text-[3rem]"
         >
           About Us:
         </h2>
@@ -105,6 +78,7 @@ const About = () => {
                   aria-hidden="true"
                   className="pointer-events-none absolute inset-0 -z-10 bg-green-950/80"
                 />
+                <HeroShade />
 
                 {/* The label's width controls its font size as the card expands. */}
                 <p className="@container mb-8 flex min-h-12 w-[calc(100%_-_3.75rem)] items-center font-garamond leading-[1.25] font-semibold whitespace-nowrap [text-shadow:0_2px_6px_rgb(0_0_0_/_85%)]">
@@ -175,7 +149,7 @@ const About = () => {
                       </p>
                       <Link
                         to={card.link}
-                        className="mt-6 inline-flex max-w-full items-center gap-3 rounded-full bg-[#eef4ef] px-6 py-3 text-base font-semibold text-[#173d2e] transition-colors duration-200 hover:bg-[#E9AD5E] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E] motion-reduce:transition-none lg:text-lg"
+                        className="mt-6 inline-flex max-w-full items-center gap-3 rounded-full bg-soft px-6 py-3 text-base font-semibold text-ink transition-colors duration-200 hover:bg-[#E9AD5E] hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E] motion-reduce:transition-none lg:text-lg"
                       >
                         {card.linkLabel}
                         <svg

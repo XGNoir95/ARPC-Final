@@ -1,20 +1,45 @@
+# Dependencies and generated output
 node_modules/
 dist/
+dist-admin/
 dist-ssr/
 coverage/
 .cache/
-.env
-.env.*
+.vite/
+.nyc_output/
+.eslintcache
+*.tsbuildinfo
+playwright-report/
+test-results/
+
+# Local configuration and credentials; keep blank reference templates
+.env*
 !.env.example
+!.env.*.example
+.direnv/
 *.local
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Runtime data and uploads
+/Backend/.local-db/
+/Backend/uploads/
+
+# Logs and temporary files
 *.log
+*.pid
+*.pid.lock
+*.tmp
+*.temp
+
+# OS and editor files
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
-*.pem
-*.key
 *.suo
 *.ntvs*
 *.njsproj

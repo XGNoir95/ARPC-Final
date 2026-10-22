@@ -1,3 +1,4 @@
+import SafeImage from './SafeImage';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion as Motion, useReducedMotion } from "framer-motion";
 import { FiChevronLeft, FiChevronRight, FiMaximize2, FiPause, FiPlay } from "react-icons/fi";
@@ -5,12 +6,12 @@ import { publicAsset } from "../utils/publicAsset";
 import { journalOffset, journalPosition } from "../data/gallery";
 
 const focus = "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E]";
-const control = `inline-flex size-11 shrink-0 cursor-pointer sm:size-12 items-center justify-center rounded-full bg-transparent text-[#173d2e] transition-colors duration-200 hover:bg-[#E9AD5E] motion-reduce:transition-none ${focus}`;
+const control = `inline-flex size-11 shrink-0 cursor-pointer sm:size-12 items-center justify-center rounded-full bg-transparent text-ink transition-colors duration-200 hover:bg-[#E9AD5E] hover:text-brand motion-reduce:transition-none ${focus}`;
 
 function PhotoCaption({ photo }) {
   return <>
     <h3 className="font-garamond text-2xl leading-tight font-semibold sm:text-3xl">{photo.title}</h3>
-    <p className="mt-2 text-xs leading-relaxed text-[#547366]">{photo.category} <span aria-hidden="true" className="mx-1.5">{"\u00b7"}</span> {photo.placeholder ? "Illustrative photo" : "Club artwork"}</p>
+    <p className="mt-2 text-xs leading-relaxed text-muted">{photo.category} <span aria-hidden="true" className="mx-1.5">{"\u00b7"}</span> {photo.placeholder ? "Illustrative photo" : "Club artwork"}</p>
   </>;
 }
 
@@ -24,8 +25,8 @@ function PhotoPage({ item, current, offset, reducedMotion, instant }) {
       const angle = left ? (offset > 0 ? 168 : 12) : (offset < 0 ? -168 : -12);
       return <Motion.span key={side} aria-hidden="true" data-page-half={side} initial={false} animate={{ rotateY: angle }} transition={transition}
         className={`absolute inset-y-0 w-1/2 [backface-visibility:hidden] [transform-style:preserve-3d] ${left ? "left-0 origin-right" : "right-0 origin-left"}`}>
-        <span className={`absolute inset-y-0 block overflow-hidden shadow-[0_12px_24px_-15px_rgba(23,61,46,0.55)] ${item.poster ? "bg-[#f6f8f3]" : "bg-transparent"} ${left ? "left-0 -right-px rounded-l-[1rem] border-y-2 border-l-2 border-white sm:rounded-l-[1.25rem]" : "-left-px right-0 rounded-r-[1rem] border-y-2 border-r-2 border-white sm:rounded-r-[1.25rem]"}`}>
-          <img src={publicAsset(item.image)} alt="" aria-hidden="true" width="1200" height="960" decoding="async" draggable={false}
+        <span className={`absolute inset-y-0 block overflow-hidden shadow-[0_12px_24px_-15px_rgba(23,61,46,0.55)] ${item.poster ? "bg-field" : "bg-transparent"} ${left ? "left-0 -right-px rounded-l-[1rem] border-y-2 border-l-2 border-white sm:rounded-l-[1.25rem]" : "-left-px right-0 rounded-r-[1rem] border-y-2 border-r-2 border-white sm:rounded-r-[1.25rem]"}`}>
+          <SafeImage src={publicAsset(item.image)} alt="" aria-hidden="true" width="1200" height="960" decoding="async" draggable={false}
             className={`absolute top-0 h-full w-[calc(200%_-_2px)] max-w-none ${left ? "left-0" : "right-0"} ${item.poster ? "object-contain p-2 sm:p-5" : "object-cover"}`} />
           <span className={`pointer-events-none absolute inset-0 opacity-25 ${left ? "bg-linear-to-l from-black/35 via-transparent to-white/5" : "bg-linear-to-r from-black/35 via-transparent to-white/5"}`} />
           {current && !left && <span className="absolute right-3 bottom-3 flex size-10 items-center justify-center rounded-full border border-white/30 bg-black/45 text-white backdrop-blur-sm sm:right-4 sm:bottom-4"><FiMaximize2 className="size-4" /></span>}
@@ -35,13 +36,13 @@ function PhotoPage({ item, current, offset, reducedMotion, instant }) {
   </span>;
 }
 
-export default function GalleryJournal({ photos, onOpen, viewerOpen = false }) {
-  const [{ active, cursor, turn }, setJournal] = useState({ active: 0, cursor: 0, turn: null });
+export default function GalleryJournal({ photos, onOpen, viewerOpen = false, initialId, autoPlay = true, fillPreview = false }) {
+  const [{ active, cursor, turn }, setJournal] = useState(() => { const index = Math.max(0, photos.findIndex(item => item.id === initialId)); return { active: index, cursor: index, turn: null }; });
   const reducedMotion = useReducedMotion();
   const gesture = useRef(null);
   const suppressClickUntil = useRef(0);
   const journalRef = useRef(null);
-  const [paused, setPaused] = useState(false);
+  const [paused, setPaused] = useState(!autoPlay);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const [inView, setInView] = useState(() => typeof IntersectionObserver === "undefined");
@@ -101,7 +102,7 @@ export default function GalleryJournal({ photos, onOpen, viewerOpen = false }) {
   return <div ref={journalRef} role="region" aria-roledescription="carousel" aria-label="Club photo journal"
     onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
     onFocusCapture={(event) => setFocused(event.target.matches(":focus-visible"))} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}
-    className="min-w-0">
+    className={`min-w-0 ${fillPreview ? 'max-lg:flex max-lg:flex-1 max-lg:flex-col' : ''}`}>
     <div tabIndex={0} aria-label="Photo pages. Use left and right arrow keys to browse." onKeyDown={(event) => {
       suppressClickUntil.current = 0;
       if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
@@ -132,7 +133,7 @@ export default function GalleryJournal({ photos, onOpen, viewerOpen = false }) {
       }}
       onPointerCancel={() => { gesture.current = null; }}
       data-turn-phase={turn?.phase}
-      className={`relative isolate h-[clamp(18rem,82vw,34rem)] touch-pan-y overflow-hidden rounded-[1.5rem] bg-[#eef4ef] sm:rounded-[2rem] sm:h-[clamp(24rem,56vw,46rem)] ${focus}`}>
+      className={`relative isolate h-[clamp(18rem,82vw,34rem)] touch-pan-y overflow-hidden rounded-[1.5rem] bg-soft sm:rounded-[2rem] sm:h-[clamp(24rem,56vw,46rem)] ${fillPreview ? 'max-lg:min-h-[clamp(18rem,82vw,34rem)] max-lg:flex-1' : ''} ${focus}`}>
       {pages.map(({ item, index, pageCursor, duplicate }) => {
         const offset = pageCursor === undefined ? journalOffset(index, active, photos.length) : pageCursor - cursor;
         const depth = Math.abs(offset);
@@ -164,17 +165,17 @@ export default function GalleryJournal({ photos, onOpen, viewerOpen = false }) {
       })}
     </div>
     <div className="relative z-30 -mt-3 flex justify-center sm:-mt-4">
-      <div role="group" aria-label="Album playback" className="flex items-center gap-1 rounded-full border border-[#173d2e]/10 bg-white p-2 shadow-[0_8px_24px_-12px_rgba(23,61,46,0.25)] sm:gap-2">
+      <div role="group" aria-label="Album playback" className="flex items-center gap-1 rounded-full border border-ink/10 bg-surface p-2 shadow-[0_8px_24px_-12px_rgba(23,61,46,0.25)] sm:gap-2">
         {photos.length > 1 && <button type="button" onClick={() => move(-1)} aria-label="Previous journal photo" className={control}><FiChevronLeft aria-hidden="true" className="size-5" /></button>}
         <div className="flex min-w-16 flex-col items-center gap-2 px-2">
-          <p className="text-sm tabular-nums text-[#173d2e]">{String(active + 1).padStart(2, "0")} <span className="mx-1 text-[#547366]/60">/</span> {String(photos.length).padStart(2, "0")}</p>
-          {photos.length > 1 && !reducedMotion && <div aria-hidden="true" className="h-0.5 w-14 overflow-hidden rounded-full bg-[#173d2e]/10">
+          <p className="text-sm tabular-nums text-ink">{String(active + 1).padStart(2, "0")} <span className="mx-1 text-muted/60">/</span> {String(photos.length).padStart(2, "0")}</p>
+          {photos.length > 1 && !reducedMotion && <div aria-hidden="true" className="h-0.5 w-14 overflow-hidden rounded-full bg-ink/10">
             {playing && !turnToken && <Motion.span key={`${active}-${cursor}`} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 6, ease: "linear" }} className="block size-full origin-left rounded-full bg-[#E9AD5E]" />}
           </div>}
         </div>
         {photos.length > 1 && <button type="button" onClick={() => move(1)} aria-label="Next journal photo" className={control}><FiChevronRight aria-hidden="true" className="size-5" /></button>}
         {photos.length > 1 && !reducedMotion && <>
-          <span aria-hidden="true" className="mx-1 h-5 w-px bg-[#173d2e]/15" />
+          <span aria-hidden="true" className="mx-1 h-5 w-px bg-ink/15" />
           <button type="button" aria-label={paused ? "Play slideshow" : "Pause slideshow"} title={paused ? "Play slideshow" : "Pause slideshow"}
             onClick={() => { setPaused((value) => !value); if (paused) setFocused(false); }} className={control}>
             {paused ? <FiPlay aria-hidden="true" className="size-4" /> : <FiPause aria-hidden="true" className="size-4" />}

@@ -1,17 +1,18 @@
+import SafeImage from './SafeImage';
+import ApplicationLink from "../Components/ApplicationLink";
 import { enrollmentPath } from "../utils/enrollment";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
-import { Link } from "react-router-dom";
 import { FiArrowUpRight, FiCalendar, FiCheck, FiChevronLeft, FiChevronRight, FiClock, FiFolder, FiVideo, FiX } from "react-icons/fi";
 import { formatCatalogueDate, isFinished } from "../data/catalogue";
 import { publicAsset } from "../utils/publicAsset";
 import { webinarStyles, webinarStylesClasses } from "./WebinarFolders.styles";
 
 const clothes = {
-  "faith-campus": { color: "#173d2e", ink: "#eef4ef" },
-  "thoughtful-writing": { color: "#E9AD5E", ink: "#173d2e" },
-  "reading-habit": { color: "#dce8df", ink: "#173d2e" },
-  "community-ideas": { color: "#577262", ink: "#eef4ef" },
+  "faith-campus": { color: "var(--color-brand)", ink: "#eef4ef" },
+  "thoughtful-writing": { color: "#E9AD5E", ink: "var(--color-brand)" },
+  "reading-habit": { color: "#dce8df", ink: "var(--color-brand)" },
+  "community-ideas": { color: "var(--color-brand-muted)", ink: "#eef4ef" },
 };
 const tabDate = (date) => new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`));
 
@@ -23,11 +24,11 @@ function FolderShape({ position, tabStep }) {
   </svg>;
 }
 
-export default function WebinarFolders({ items, today }) {
-  const [selectedId, setSelectedId] = useState(null);
-  const [frontIndex, setFrontIndex] = useState(0);
+export default function WebinarFolders({ items, today, initialId, autoPlay = true, preview = false }) {
+  const [selectedId, setSelectedId] = useState(initialId || null);
+  const [frontIndex, setFrontIndex] = useState(() => Math.max(0, items.findIndex(item => item.id === initialId)));
   const [turn, setTurn] = useState(null);
-  const [paused, setPaused] = useState(false);
+  const [paused, setPaused] = useState(!autoPlay);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const [inView, setInView] = useState(() => typeof IntersectionObserver === "undefined");
@@ -77,10 +78,10 @@ export default function WebinarFolders({ items, today }) {
   }, []);
 
   useLayoutEffect(() => {
-    if (selected) panelRef.current?.focus({ preventScroll: true });
-    else if (wasOpen.current) returnFocus.current?.focus({ preventScroll: true });
+    if (selected && !preview) panelRef.current?.focus({ preventScroll: true });
+    else if (!selected && wasOpen.current) returnFocus.current?.focus({ preventScroll: true });
     wasOpen.current = Boolean(selected);
-  }, [selected]);
+  }, [selected, preview]);
 
   function openFolder(item, trigger) {
     setTurn(null);
@@ -119,7 +120,7 @@ export default function WebinarFolders({ items, today }) {
               <span className={webinarStyles["webinar-folder-cover__tab"]}><span className={webinarStyles["webinar-folder-cover__format"]}>{item.format}</span><span className={webinarStyles["webinar-folder-cover__short-date"]}>{tabDate(item.date)}</span></span>
               <span className={webinarStyles["webinar-folder-cover__summary"]}>
                 <span className={webinarStyles["webinar-folder-cover__visual"]} aria-hidden="true">
-                  <img src={publicAsset(item.image)} alt="" width="800" height="600" loading="lazy" />
+                  <SafeImage src={publicAsset(item.image)} alt="" width="800" height="600" loading="lazy" />
                   <span className={webinarStyles["webinar-folder-cover__video"]}><FiVideo /></span>
                 </span>
                 <span className={webinarStyles["webinar-folder-cover__copy"]}>
@@ -140,7 +141,7 @@ export default function WebinarFolders({ items, today }) {
           <button type="button" className={webinarStyles["webinar-folder-close"]} aria-label="Close webinar folder" onClick={() => setSelectedId(null)}><FiX aria-hidden="true" /></button>
           <div className={webinarStyles["webinar-folder-content"]}>
             <div className={webinarStyles["webinar-folder-image"]}>
-              <img src={publicAsset(item.image)} alt={item.imageAlt} width="800" height="600" loading="lazy" />
+              <SafeImage src={publicAsset(item.image)} alt={item.imageAlt} width="800" height="600" loading="lazy" />
               <div className={webinarStyles["webinar-folder-image__caption"]}><span aria-hidden="true"><FiVideo /></span><p>{item.format}<span>Online with ARPC</span></p></div>
             </div>
             <div className={webinarStyles["webinar-folder-details"]}>
@@ -155,7 +156,7 @@ export default function WebinarFolders({ items, today }) {
               <div className={webinarStyles["webinar-folder-actions"]}>
                 <p>Sample session. {isFinished(item, today) ? "Recording and resources will appear when confirmed." : "Speaker and joining details will appear when confirmed."}</p>
                 {isFinished(item, today) ? <button type="button" disabled className={webinarStyles["webinar-folder-register"]}>Recording coming soon</button>
-                  : <Link to={enrollmentPath("webinars", item.id)} className={webinarStyles["webinar-folder-register"]}>Register <span aria-hidden="true"><FiArrowUpRight /></span></Link>}
+                  : <ApplicationLink to={enrollmentPath("webinars", item.id)} className={webinarStyles["webinar-folder-register"]}>Register <span aria-hidden="true"><FiArrowUpRight /></span></ApplicationLink>}
               </div>
             </div>
           </div>

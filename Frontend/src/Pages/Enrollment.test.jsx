@@ -1,6 +1,9 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within, waitFor } from "@testing-library/react";
 import { MemoryRouter, Routes, Route, Link } from "react-router-dom";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, beforeEach, vi } from "vitest";
+import { post } from "../utils/api";
+vi.mock("../utils/api",()=>({post:vi.fn()}));
+beforeEach(()=>post.mockResolvedValue({id:"enrollment-1",message:"Enrollment received."}));
 import Enrollment from "./Enrollment";
 import { catalogue } from "../data/catalogue";
 import { featuredEvents } from "../data/featuredEvents";
@@ -37,7 +40,7 @@ describe("Programme enrollment", () => {
     expect(screen.getByRole("form")).toBeVisible();
   });
 
-  it.each(["events", "webinars", "courses"])("validates %s fields, focuses errors, and exports only the required data", (kind) => {
+  it.each(["events", "webinars", "courses"])("validates %s fields, focuses errors, and submits the required data", async (kind) => {
     const item = catalogue[kind][0];
     renderEnrollment(kind, item.id);
     fireEvent.click(screen.getByRole("button", { name: "Review enrollment" }));
@@ -49,20 +52,16 @@ describe("Programme enrollment", () => {
     fillDetails(kind === "courses");
     fireEvent.click(screen.getByRole("button", { name: "Review enrollment" }));
     expect(screen.getByRole("heading", { name: "Review your enrollment" })).toHaveFocus();
-    expect(screen.getByText(/Your request has not been sent yet/)).toBeVisible();
+    expect(screen.getByText(/submit your enrollment for club approval/)).toBeVisible();
     const programme = screen.getByRole("complementary", { name: "Selected programme" });
     expect(within(programme).queryByRole("img")).not.toBeInTheDocument();
     expect(within(programme).queryByRole("heading", { name: "What to expect" })).not.toBeInTheDocument();
     expect(within(programme).getByRole("heading", { name: "Programme details" })).toBeVisible();
-    const draft = new URL(screen.getByRole("link", { name: "Open email to send" }).href);
-    expect(draft.pathname).toBe("info@arpc.club");
-    expect(draft.searchParams.get("subject")).toContain(item.title);
-    const body = draft.searchParams.get("body");
-    expect(body).toContain(`Programme ID: ${item.id}`);
-    expect(body).toContain("Full name: Test Student");
-    expect(body).toContain("Semester: 5.2");
-    expect(body).toContain("Enrollment status: Pending club confirmation");
-    expect(body.includes("Mobile number:")).toBe(kind === "courses");
+    fireEvent.click(screen.getByRole("button", {name:"Submit enrollment"}));
+    await waitFor(()=>expect(post).toHaveBeenCalled());
+    expect(post.mock.lastCall[1]).toMatchObject({type:kind,programmeId:item.id,details:{fullName:" Test Student ",semester:"5.2"}});
+    expect(Boolean(post.mock.lastCall[1].details.phone)).toBe(kind==='courses');
+    expect(await screen.findByText(/Reference: enrollment-1/)).toBeVisible();
     fireEvent.click(screen.getByRole("button", { name: "Edit details" }));
     expect(screen.getByRole("textbox", { name: "Full name" })).toHaveValue(" Test Student ");
   });

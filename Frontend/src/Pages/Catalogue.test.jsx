@@ -273,7 +273,7 @@ describe("Catalogue page", () => {
     const paid = courses.getByRole("button", { name: "Open course folder: Content writing for community work" });
     fireEvent.click(paid);
     fireEvent.change(screen.getByRole("searchbox"), { target: { value: "no such course" } });
-    expect(courses.queryByRole("region")).not.toBeInTheDocument();
+    expect(courses.queryByRole("region", { name: "Content writing for community work" })).not.toBeInTheDocument();
     expect(courses.getByRole("heading", { name: "No courses match this selection." })).toBeInTheDocument();
     fireEvent.click(courses.getByRole("button", { name: "Reset search and filter" }));
     expect(courses.getAllByRole("button", { name: /Open course folder:/ })).toHaveLength(3);

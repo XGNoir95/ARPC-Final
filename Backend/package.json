@@ -1,0 +1,41 @@
+{
+  "name": "arpc-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "node --env-file=.env --watch src/server.js",
+    "start": "node --env-file=.env src/server.js",
+    "dev:local": "node --env-file=.env --watch --watch-preserve-output scripts/local.js",
+    "seed": "node --env-file=.env scripts/seed.js",
+    "admin:create": "node --env-file=.env scripts/admin.js",
+    "mail:inspect": "node --env-file=.env scripts/mail.js",
+    "mail:preview": "node scripts/preview-mail.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js",
+    "check": "node --check src/app.js && node --check src/sessions.js && node --check src/infrastructure.js && node --check src/mail.js && node --check src/emailTemplates.js && node --check src/emailMessage.js && node --check src/emailVerification.js && node --check src/outbox.js && node --check src/notifications.js && node --check scripts/preview-mail.js && node --check src/server.js && node --check src/worker.js",
+    "worker": "node --env-file=.env src/worker.js"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.1",
+    "google-auth-library": "^11.3.0",
+    "helmet": "^8.3.0",
+    "jose": "^6.2.13",
+    "mongoose": "^9.11.2",
+    "multer": "^2.4.0",
+    "nodemailer": "^10.1.1",
+    "pdfkit": "^0.20.2",
+    "rate-limit-redis": "^6.0.1",
+    "redis": "^6.3.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^11.3.0",
+    "supertest": "^7.3.1"
+  }
+}

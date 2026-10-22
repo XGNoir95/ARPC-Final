@@ -2,7 +2,13 @@
 
 ## Setup
 
-Use Node.js 24 LTS, then run these commands from `Frontend`:
+Use Node.js 24 LTS. Start the API in a terminal from `Backend` (see [first-time backend setup](../Backend/README.md)):
+
+```sh
+npm run dev:local
+```
+
+Then run these commands in a separate terminal from `Frontend`:
 
 ```sh
 npm ci
@@ -11,11 +17,15 @@ npm run dev
 
 Use the URL printed by Vite. Do not run a clean installation over an active Vite process on Windows: native build packages can be locked while the server is running. Stop the server before `npm ci`, then restart it afterward.
 
+Vite waits up to 30 seconds for `/api/health/ready` before listening. During backend restarts, API requests wait up to 12 seconds for readiness; only health checks are retried, never form submissions. A longer outage returns HTTP 503 and logs backend startup instructions. Once the backend recovers, subsequent requests work without restarting Vite. Keep the backend terminal running: restarting the frontend does not start the backend.
+
 ## Commands
 
 | Command | Purpose |
 | --- | --- |
 | `npm run dev` | Start Vite with hot module replacement. |
+| `npm run dev:admin` | Start the local admin site at `http://admin.localhost:5174/login`. |
+| `npm run build:admin` | Build the separate admin artifact into `dist-admin`; requires `VITE_ADMIN_ORIGIN`. |
 | `npm run lint` | Run ESLint with zero warnings allowed. |
 | `npm run verify:styles` | Enforce the Tailwind styling policy. Also included in lint and CI. |
 | `npm test` | Run component, interaction and deployment tests with Vitest. |
@@ -44,9 +54,9 @@ Copy `Frontend/.env.example` to `Frontend/.env.local` only when overriding defau
 | --- | --- | --- |
 | `VITE_BASE_PATH` | `/` | `/ARPC-Final/` |
 | `VITE_GITHUB_PAGES` | `false` | `true` |
-| `VITE_API_ORIGIN` | No service configured; the example suggests `http://localhost:5000`. | Not configured by the workflow. |
+| `VITE_API_URL` | `/api`, proxied to `http://127.0.0.1:4000`. | Set to the deployed API URL. |
 
-`VITE_API_ORIGIN` is reserved for a future backend. The Axios client appends `/api` to a configured origin and otherwise uses `/api`; there is no implemented backend in this repository.
+`VITE_API_URL` is the public API base URL. It defaults to `/api`, which Vite proxies to the local Express server on port 4000. Requests use the shared cookie/header policy in `src/utils/api.js`. Start the backend alongside Vite; see [Backend setup](../Backend/README.md).
 
 Every `VITE_*` value is exposed to the browser. Never put credentials or private data in these variables.
 
@@ -85,7 +95,7 @@ coverImage: "/images/courses/my-course.jpg",
 
 `courseCoverPresets` exported from `Frontend/src/utils/courseCovers.js` provides
 each preset's stable `id`, readable `label`, preview `cover`, folder `color` and
-`ink`. A future admin cover picker can display these previews and save the chosen
+`ink`. The admin programme editor displays these previews and saves the chosen
 `id` as `coverTheme` in its course record. No admin or backend is implemented yet.
 
 Without an explicit theme, the title and format select a subject illustration;
@@ -106,6 +116,7 @@ Use **Actions → CI/CD** to inspect logs or dispatch a new run. A new push runs
 
 | Symptom | Action |
 | --- | --- |
+| `[api] The local API is unavailable` or `/api` returns 503 | Start `npm run dev:local` in `Backend`, inspect that terminal for MongoDB/startup errors, and wait for `ARPC API listening on port 4000`. If Vite exited during startup, run `npm run dev` in `Frontend` again. |
 | Dependency audit fails | Read the advisory, update the affected dependency, commit the lockfile and rerun validation. Keep the audit enabled. |
 | Tests pass locally but fail in CI | Reproduce with `npm ci`, the supported Node version and the Pages environment. |
 | Images or fonts disappear on Pages | Use `publicAsset()` for public images; check the base and run `verify:build`. |
@@ -113,3 +124,13 @@ Use **Actions → CI/CD** to inspect logs or dispatch a new run. A new push runs
 | Windows installation reports `EPERM` | Stop Vite/preview processes that hold native package files, then retry `npm ci`. |
 
 See [GitHub's Pages workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages) and [Vite's deployment guide](https://vite.dev/guide/static-deploy.html#github-pages).
+
+
+## Backend
+
+Public `/login`, `/register`, recovery and `/admin/*` routes are hidden. Use the
+separate admin site described in [admin hosting](admin-hosting.md). Local admin
+access requires `NODE_ENV=development`; production requires the configured
+identity gateway and otherwise denies admin access.
+
+The local MERN API, database, superadmin bootstrap, SMTP and Google configuration are documented in [Backend setup](../Backend/README.md). The public forms now submit to this API; start it alongside Vite. Run `npm test` in `Backend` for MongoDB integration checks.

@@ -1,0 +1,14 @@
+FROM node:24-alpine AS build
+WORKDIR /frontend
+COPY Frontend/package*.json ./
+RUN npm ci
+COPY Frontend ./
+ARG VITE_ADMIN_ORIGIN
+ENV VITE_ADMIN_ORIGIN=$VITE_ADMIN_ORIGIN
+ENV VITE_API_URL=/api
+RUN npm run build:admin && BUILD_DIR=dist-admin node scripts/verify-build.mjs
+
+FROM nginx:stable-alpine
+RUN rm /etc/nginx/conf.d/default.conf
+COPY --from=build /frontend/dist-admin /usr/share/nginx/html
+COPY infra/nginx.admin.conf.template /etc/nginx/templates/default.conf.template

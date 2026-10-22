@@ -1,13 +1,10 @@
+import { useContent } from "../../ContentContext";
 import { useEffect, useRef, useState } from "react";
 import { publicAsset } from "../../utils/publicAsset";
 import HijriDate from "./HijriDate";
-
-// Replace these existing photos with club photography whenever it is available.
-const heroPhotos = [
-  { label: "01", name: "AUST campus", image: "/heroBanner.jpg" },
-  { label: "02", name: "Community", image: "/images/about/community.jpg" },
-  { label: "03", name: "Learning", image: "/images/about/learning.jpg" },
-];
+import { publicPageFrame } from "../PublicLayout.styles";
+import HeroShade from "../HeroShade";
+import { heroSlides as resolveHeroSlides, heroGreeting } from '../../utils/homeContent';
 
 // Each photo remains visible for six seconds after an automatic or manual change.
 const PHOTO_INTERVAL_MS = 6000;
@@ -25,8 +22,13 @@ function useMediaPreference(query) {
   return matches;
 }
 
-const Hero = () => {
-  const [activePhoto, setActivePhoto] = useState(0);
+const Hero = ({ activeIndex, onPhotoChange, autoPlay = true }) => {
+  const content = useContent();
+  const hero = content?.home.find(p => p.id === "hero");
+  const heroPhotos = resolveHeroSlides(hero);
+  const [storedPhoto, setActivePhoto] = useState(0);
+  const activePhoto = (activeIndex ?? storedPhoto) % heroPhotos.length;
+  const activeCopy = heroPhotos[activePhoto];
   const [selectionVersion, setSelectionVersion] = useState(0);
   const [controlsHovered, setControlsHovered] = useState(false);
   const [controlsFocused, setControlsFocused] = useState(false);
@@ -45,6 +47,7 @@ const Hero = () => {
 
   useEffect(() => {
     if (
+      !autoPlay ||
       controlsHovered ||
       controlsFocused ||
       reducedMotion ||
@@ -56,16 +59,19 @@ const Hero = () => {
     }, PHOTO_INTERVAL_MS);
     return () => window.clearTimeout(timer);
   }, [
+    autoPlay,
     activePhoto,
     selectionVersion,
     controlsHovered,
     controlsFocused,
     reducedMotion,
     pageHidden,
+    heroPhotos.length,
   ]);
 
   const selectPhoto = (index) => {
-    setActivePhoto(index);
+    if (activeIndex === undefined) setActivePhoto(index);
+    onPhotoChange?.(index);
     setSelectionVersion((current) => current + 1);
   };
 
@@ -115,7 +121,7 @@ const Hero = () => {
       >
         {heroPhotos.map((photo, index) => (
           <img
-            key={photo.image}
+            key={photo.id}
             src={publicAsset(photo.image)}
             alt=""
             fetchPriority={index === 0 ? "high" : "low"}
@@ -130,7 +136,8 @@ const Hero = () => {
         className="pointer-events-none absolute inset-0 -z-20 bg-linear-to-br from-[#0b1d26]/90 via-[#0b1d26]/55 to-[#0b1d26]/20"
       />
 
-      <div className="relative flex flex-1 flex-col justify-center px-6 pt-36 pb-28 sm:pt-40 sm:pb-36 lg:mx-20 lg:pt-48 lg:pb-48 2xl:px-24">
+      <HeroShade />
+      <div className={`${publicPageFrame} relative flex flex-1 flex-col justify-center pt-36 pb-28 sm:pt-40 sm:pb-36 lg:pt-48 lg:pb-48`}>
         <div className="grid flex-1 grid-rows-[auto_1fr_auto_auto] items-center gap-y-6 lg:flex-initial lg:grid-cols-[minmax(0,1fr)_5rem] lg:grid-rows-[auto_1fr] lg:gap-x-16 lg:gap-y-8">
           <p className="row-start-1 flex items-center justify-center gap-3 text-[0.65rem] leading-relaxed font-semibold tracking-[0.18em] text-[#E9AD5E] uppercase sm:gap-6 sm:text-xs lg:col-start-1 lg:justify-start lg:text-lg lg:tracking-[0.3em]">
             <span
@@ -144,9 +151,11 @@ const Hero = () => {
               id="hero-heading"
               className="mx-auto max-w-[16em] font-garamond text-[clamp(2.3rem,6.4vw,5rem)] leading-[1.08] font-medium tracking-[-0.02em] text-balance lg:mx-0"
             >
+              {hero ? <span className="whitespace-pre-line">{activeCopy.title}</span> : <>
               Find Where You Belong.
               <br />
               Discover Who You’ll Become.
+              </>}
             </h1>
 
             <p
@@ -154,22 +163,22 @@ const Hero = () => {
               dir="rtl"
               className="mx-auto mt-6 w-fit max-w-full font-serif text-[clamp(1.2rem,3vw,3rem)] leading-relaxed text-[#E9AD5E] sm:mt-8 lg:mx-0"
             >
-              السلامُ عليكم ورحمةُ اللهِ وبركاتُهُ
+              {heroGreeting(hero)}
             </p>
             <p className="mx-auto mt-4 max-w-[30rem] text-base leading-relaxed text-white/85 sm:text-lg lg:mx-0 lg:text-[1.3rem]">
-              Faith, friendship, and service — a place to grow together at AUST.
+              {activeCopy.description}
             </p>
 
             <div className="mt-8 sm:mt-10">
               <button
                 type="button"
                 onClick={scrollToAbout}
-                className="group inline-flex min-h-14 cursor-pointer items-center gap-5 rounded-full border border-white/20 bg-[#173d2e] py-2.5 pr-3 pl-6 text-base font-semibold text-white shadow-lg shadow-black/15 transition-colors duration-200 hover:border-[#E9AD5E] hover:bg-[#E9AD5E] hover:text-[#173d2e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E] active:border-[#E9AD5E] active:bg-[#E9AD5E] active:text-[#173d2e] motion-reduce:transition-none sm:gap-6 sm:pl-7 sm:text-lg"
+                className="group inline-flex min-h-14 cursor-pointer items-center gap-5 rounded-full border border-white/20 bg-action py-2.5 pr-3 pl-6 text-base font-semibold text-on-action shadow-lg shadow-black/15 transition-colors duration-200 hover:border-[#E9AD5E] hover:bg-[#E9AD5E] hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E9AD5E] active:border-[#E9AD5E] active:bg-[#E9AD5E] active:text-brand motion-reduce:transition-none sm:gap-6 sm:pl-7 sm:text-lg"
               >
                 Discover ARPC
                 <span
                   aria-hidden="true"
-                  className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/10 transition-colors duration-200 group-hover:border-[#173d2e]/30 group-hover:bg-[#173d2e]/10 motion-reduce:transition-none"
+                  className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/10 transition-colors duration-200 group-hover:border-ink/30 group-hover:bg-ink/10 motion-reduce:transition-none"
                 >
                   <svg
                     viewBox="0 0 16 24"
@@ -184,7 +193,8 @@ const Hero = () => {
           <div
             role="group"
             aria-label="Hero photos"
-            className="relative z-20 row-start-4 w-fit justify-self-center lg:col-start-2 lg:row-start-2 lg:justify-self-end"
+            className="relative z-20 row-start-4 w-fit max-w-full justify-self-center lg:col-start-2 lg:row-start-2 lg:justify-self-end"
+            style={{ '--hero-controls-width': `${Math.max(192, heroPhotos.length * 44)}px` }}
           >
             <div
               onKeyDown={handlePhotoKeys}
@@ -195,11 +205,11 @@ const Hero = () => {
                 if (!event.currentTarget.contains(event.relatedTarget))
                   setControlsFocused(false);
               }}
-              className="relative flex w-48 pt-4 lg:w-20 lg:flex-col lg:pt-0"
+              className="relative flex w-(--hero-controls-width) max-w-full pt-4 lg:w-20 lg:flex-col lg:pt-0"
             >
               {heroPhotos.map((photo, index) => (
                 <button
-                  key={photo.label}
+                  key={photo.id}
                   ref={(element) => {
                     photoButtons.current[index] = element;
                   }}
@@ -207,7 +217,7 @@ const Hero = () => {
                   aria-label={`${photo.label}: ${photo.name}`}
                   aria-pressed={activePhoto === index}
                   onClick={() => selectPhoto(index)}
-                  className={`flex h-11 w-1/3 cursor-pointer items-center justify-center text-sm font-semibold transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:h-15 lg:w-full lg:justify-end lg:pr-8 lg:text-lg ${activePhoto === index ? "text-white" : "text-white/60"}`}
+                  className={`flex h-11 min-w-7 flex-1 cursor-pointer items-center justify-center text-sm font-semibold transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:h-16 lg:w-full lg:flex-none lg:justify-end lg:pr-8 lg:text-lg ${activePhoto === index ? "text-white" : "text-white/60"}`}
                 >
                   {photo.label}
                 </button>
@@ -248,9 +258,10 @@ const Hero = () => {
                   className="absolute inset-x-0 top-0 h-[3px] bg-white/35 lg:inset-x-auto lg:inset-y-0 lg:right-0 lg:h-auto lg:w-[3px]"
                 >
                   <span
-                    className="absolute top-0 left-0 h-full w-1/3 bg-white [transform:var(--rail-transform)] transition-transform duration-500 ease-in-out motion-reduce:transition-none lg:h-1/3 lg:w-full"
+                    className="absolute top-0 left-0 h-full w-(--rail-size) bg-surface [transform:var(--rail-transform)] transition-transform duration-500 ease-in-out motion-reduce:transition-none lg:h-(--rail-size) lg:w-full"
                     style={{
                       "--rail-transform": `translate${verticalRail ? "Y" : "X"}(${activePhoto * 100}%)`,
+                      "--rail-size": `${100 / heroPhotos.length}%`,
                     }}
                   />
                 </div>
@@ -268,10 +279,10 @@ const Hero = () => {
         {heroPhotos[activePhoto].name}
       </p>
 
-      {/* Finish in the existing next section's white, without changing that section. */}
+      {/* Blend into the next section's surface in either theme. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 -bottom-px -z-10 h-28 bg-linear-to-b from-transparent via-white/55 via-65% to-white sm:h-36 lg:h-44"
+        className="pointer-events-none absolute inset-x-0 -bottom-px -z-10 h-28 bg-linear-to-b from-transparent via-surface/55 via-65% to-surface sm:h-36 lg:h-44"
       />
     </section>
   );

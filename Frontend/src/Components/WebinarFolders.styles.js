@@ -5,7 +5,7 @@ export const webinarStyles = {
   "webinar-folders": [
     "webinar-folders",
     "relative isolate [--folder-step:3rem] [--folder-inset:1rem] [--folder-cover-height:clamp(24rem,_33vw,_28rem)]",
-    "[--folder-front-top:calc((var(--folder-count)_-_1)_*_var(--folder-step))] text-[#173d2e]",
+    "[--folder-front-top:calc((var(--folder-count)_-_1)_*_var(--folder-step))] text-ink",
     // @media (width<=639px) .webinar-folders
     "[@media(width<=639px)]:[--folder-inset:0.5rem] [@media(width<=639px)]:[--folder-cover-height:26rem]",
     // @media (width>639px) and (width<=767px) .webinar-folders
@@ -13,14 +13,14 @@ export const webinarStyles = {
   ].join(" "),
   "webinar-folder-basket": [
     "webinar-folder-basket",
-    "relative isolate [padding:4rem_clamp(1.25rem,_2.5vw,_2rem)] [border:3px_solid_#577262] [border-radius:1.5rem_1.5rem_2.75rem_2.75rem]",
-    "bg-[#e6ede5] [background-image:url(./assets/basket-weave.svg)] [background-size:32px_32px]",
-    "[box-shadow:inset_0_0_0_3px_#b9cdbd,_0_8px_0_-3px_#b9cdbd,_0_16px_28px_-20px_rgb(23_61_46_/_35%)] overflow-hidden",
+    "relative isolate [padding:4rem_clamp(1.25rem,_2.5vw,_2rem)] [border:3px_solid_var(--color-muted)] [border-radius:1.5rem_1.5rem_2.75rem_2.75rem]",
+    "bg-raised [background-image:url(./assets/basket-weave.svg)] dark:[background-blend-mode:multiply] [background-size:32px_32px]",
+    "[box-shadow:inset_0_0_0_3px_var(--color-chart-line),_0_8px_0_-3px_var(--color-chart-line),_0_16px_28px_-20px_rgb(23_61_46_/_35%)] overflow-hidden",
     // @media (width<=639px) .webinar-folder-basket
     "[@media(width<=639px)]:py-8",
     //  .webinar-folder-basket::before
-    "[&::before]:content-[''] [&::before]:absolute [&::before]:[inset:8px] [&::before]:[border:3px_solid_#b9cdbd]",
-    "[&::before]:[border-radius:1rem_1rem_2.15rem_2.15rem] [&::before]:[box-shadow:inset_0_0_0_1px_#f7faf5] [&::before]:pointer-events-none",
+    "[&::before]:content-[''] [&::before]:absolute [&::before]:[inset:8px] [&::before]:[border:3px_solid_var(--color-chart-line)]",
+    "[&::before]:[border-radius:1rem_1rem_2.15rem_2.15rem] [&::before]:[box-shadow:inset_0_0_0_1px_var(--color-field)] [&::before]:pointer-events-none",
   ].join(" "),
   "webinar-folder-deck": [
     "webinar-folder-deck",
@@ -72,7 +72,7 @@ export const webinarStyles = {
     "webinar-folder-shape",
     "absolute [inset:0] w-full h-full overflow-visible [filter:drop-shadow(0_8px_12px_rgb(23_61_46_/_16%))] pointer-events-none",
     //  .webinar-folder-shape path
-    "[&_path]:[stroke:#577262] [&_path]:[stroke-width:1.25px] [&_path]:[vector-effect:non-scaling-stroke]",
+    "[&_path]:[stroke:var(--color-muted)] [&_path]:[stroke-width:1.25px] [&_path]:[vector-effect:non-scaling-stroke]",
   ].join(" "),
   "webinar-folder-cover__tab": [
     "webinar-folder-cover__tab",
@@ -103,7 +103,7 @@ export const webinarStyles = {
   ].join(" "),
   "webinar-folder-cover__visual": [
     "webinar-folder-cover__visual",
-    "relative [grid-row:1_/_-1] min-h-0 overflow-hidden p-[0.4rem] [border:1px_solid_var(--folder-ink)] [border-radius:3px] [background:#eef4ef]",
+    "relative [grid-row:1_/_-1] min-h-0 overflow-hidden p-[0.4rem] [border:1px_solid_var(--folder-ink)] [border-radius:3px] [background:var(--color-soft)]",
     "[box-shadow:6px_6px_0_color-mix(in_srgb,_var(--folder-ink)_18%,_transparent)]",
     // @media (width<=767px) .webinar-folder-cover__visual
     "[@media(width<=767px)]:[grid-row:auto]",
@@ -112,7 +112,7 @@ export const webinarStyles = {
   ].join(" "),
   "webinar-folder-cover__video": [
     "webinar-folder-cover__video",
-    "absolute right-4 bottom-4 grid place-items-center w-11 h-11 rounded-[50%] [background:#eef4ef] text-[#173d2e]",
+    "absolute right-4 bottom-4 grid place-items-center w-11 h-11 rounded-[50%] [background:var(--color-soft)] text-ink",
     // @media (width<=767px) .webinar-folder-cover__video
     "[@media(width<=767px)]:right-3.5 [@media(width<=767px)]:bottom-3.5 [@media(width<=767px)]:w-9 [@media(width<=767px)]:h-9",
     //  .webinar-folder-cover__video svg
@@ -145,7 +145,7 @@ export const webinarStyles = {
     "[@media(width<=767px)]:pt-3 [@media(width<=767px)]:[font-size:0.75rem]",
     //  .webinar-folder-cover__footer .webinar-folder-status
     "[&_.webinar-folder-status]:[padding:0.3rem_0.6rem] [&_.webinar-folder-status]:rounded-[999px]",
-    "[&_.webinar-folder-status]:[background:#eef4ef] [&_.webinar-folder-status]:text-[#173d2e]",
+    "[&_.webinar-folder-status]:[background:var(--color-soft)] [&_.webinar-folder-status]:text-ink",
   ].join(" "),
   "webinar-file--open": [
     "webinar-file--open",
@@ -159,29 +159,29 @@ export const webinarStyles = {
     //  .webinar-folder-status > span
     "[&_>_span]:flex-none [&_>_span]:w-[6px] [&_>_span]:h-[6px] [&_>_span]:rounded-[50%] [&_>_span]:[box-shadow:0_0_0_1px_rgb(255_255_255_/_60%)]",
     //  .webinar-folder-status[data-status="upcoming"] > span
-    "[&[data-status=upcoming]_>_span]:[background:#E9AD5E]",
+    "[&[data-status=upcoming]_>_span]:[background:#E9AD5E] [&[data-status=upcoming]_>_span]:text-brand",
     //  .webinar-folder-status[data-status="finished"] > span
     "[&[data-status=finished]_>_span]:[background:#64748b]",
   ].join(" "),
   "webinar-folder-panel": [
     "webinar-folder-panel",
-    "relative [z-index:5] [border:1px_solid_#a9bfb0] [border-radius:0_12px_12px_12px] [background:#f7faf5]",
-    "[box-shadow:0_5px_0_-2px_#dce8df,_0_12px_24px_-12px_rgb(23_61_46_/_16%)]",
+    "relative [z-index:5] [border:1px_solid_var(--color-chart-line)] [border-radius:0_12px_12px_12px] [background:var(--color-field)]",
+    "[box-shadow:0_5px_0_-2px_var(--color-raised),_0_12px_24px_-12px_rgb(23_61_46_/_16%)]",
     //  .webinar-folder-panel:focus-visible
     "[&:focus-visible]:[outline:2px_solid_#E9AD5E] [&:focus-visible]:[outline-offset:4px]",
   ].join(" "),
   "webinar-folder-open-tab": [
     "webinar-folder-open-tab",
-    "absolute bottom-full left-0 flex items-center justify-center min-h-11 [padding:0.75rem_1.5rem] [border:1px_solid_#a9bfb0] [border-bottom:0]",
-    "[border-radius:12px_24px_0_0] [background:#f7faf5] [font-size:0.875rem] font-semibold",
+    "absolute bottom-full left-0 flex items-center justify-center min-h-11 [padding:0.75rem_1.5rem] [border:1px_solid_var(--color-chart-line)] [border-bottom:0]",
+    "[border-radius:12px_24px_0_0] [background:var(--color-field)] [font-size:0.875rem] font-semibold",
   ].join(" "),
   "webinar-folder-close": [
     "webinar-folder-close",
-    "absolute [z-index:1] top-4 right-4 grid place-items-center w-11 h-11 rounded-[50%] [background:#eef4ef] text-[#173d2e] cursor-pointer",
+    "absolute [z-index:1] top-4 right-4 grid place-items-center w-11 h-11 rounded-[50%] [background:var(--color-soft)] text-ink cursor-pointer",
     //  .webinar-folder-close svg
     "[&_svg]:w-5 [&_svg]:h-5",
     //  .webinar-folder-close:hover
-    "[&:hover]:[background:#E9AD5E]",
+    "[&:hover]:[background:#E9AD5E] [&:hover]:text-brand",
     //  .webinar-folder-close:focus-visible
     "[&:focus-visible]:[outline:2px_solid_#E9AD5E] [&:focus-visible]:[outline-offset:3px]",
   ].join(" "),
@@ -199,7 +199,7 @@ export const webinarStyles = {
   ].join(" "),
   "webinar-folder-image": [
     "webinar-folder-image",
-    "relative min-h-96 overflow-hidden [border-radius:6px] [background:#dce8df]",
+    "relative min-h-96 overflow-hidden [border-radius:6px] [background:var(--color-raised)]",
     // @media (width<=639px) .webinar-folder-image
     "[@media(width<=639px)]:min-h-0 [@media(width<=639px)]:[aspect-ratio:4_/_3]",
     "[@media(width<=479px)]:min-h-48",
@@ -210,7 +210,7 @@ export const webinarStyles = {
   ].join(" "),
   "webinar-folder-image__caption": [
     "webinar-folder-image__caption",
-    "absolute [z-index:1] [inset:auto_0_0] flex items-center gap-4 p-5 [background:#173d2e] text-[#fff]",
+    "absolute [z-index:1] [inset:auto_0_0] flex items-center gap-4 p-5 bg-action text-on-action",
     // @media (width<=639px) .webinar-folder-image__caption
     "[@media(width<=639px)]:gap-3 [@media(width<=639px)]:p-4",
     "[@media(width<=479px)]:[&_>_span]:hidden",
@@ -241,17 +241,17 @@ export const webinarStyles = {
   ].join(" "),
   "webinar-folder-metadata": [
     "webinar-folder-metadata",
-    "grid [grid-template-columns:minmax(0,_1.3fr)_repeat(2,_minmax(0,_1fr))] gap-4 mt-6 py-[1.1rem] [border-block:1px_solid_#dce8df]",
+    "grid [grid-template-columns:minmax(0,_1.3fr)_repeat(2,_minmax(0,_1fr))] gap-4 mt-6 py-[1.1rem] [border-block:1px_solid_var(--color-raised)]",
     // @media (width<=639px) .webinar-folder-metadata
     "[@media(width<=639px)]:[grid-template-columns:repeat(2,_minmax(0,_1fr))]",
     //  .webinar-folder-metadata dt
-    "[&_dt]:flex [&_dt]:items-center [&_dt]:gap-2 [&_dt]:text-[#577262] [&_dt]:[font-size:0.875rem] [&_dt]:[line-height:1.5]",
+    "[&_dt]:flex [&_dt]:items-center [&_dt]:gap-2 [&_dt]:text-muted [&_dt]:[font-size:0.875rem] [&_dt]:[line-height:1.5]",
     //  .webinar-folder-metadata dt svg
     "[&_dt_svg]:flex-none [&_dt_svg]:w-[1.1rem] [&_dt_svg]:h-[1.1rem]",
     //  .webinar-folder-metadata dd
     "[&_dd]:mt-2 [&_dd]:[font-size:1rem] [&_dd]:font-semibold [&_dd]:[line-height:1.5]",
     //  .webinar-folder-metadata dd > span
-    "[&_dd_>_span]:block [&_dd_>_span]:[font-size:0.8rem] [&_dd_>_span]:font-normal [&_dd_>_span]:text-[#577262]",
+    "[&_dd_>_span]:block [&_dd_>_span]:[font-size:0.8rem] [&_dd_>_span]:font-normal [&_dd_>_span]:text-muted",
     // @media (width<=639px) .webinar-folder-metadata > div:last-child
     "[@media(width<=639px)]:[&_>_div:last-child]:[grid-column:1_/_-1]",
   ].join(" "),
@@ -273,25 +273,25 @@ export const webinarStyles = {
     // @media (width<=639px) .webinar-folder-actions
     "[@media(width<=639px)]:pt-5",
     //  .webinar-folder-actions > p
-    "[&_>_p]:[flex:1_1_14rem] [&_>_p]:max-w-[40ch] [&_>_p]:text-[#577262] [&_>_p]:[font-size:0.8rem] [&_>_p]:[line-height:1.6]",
+    "[&_>_p]:[flex:1_1_14rem] [&_>_p]:max-w-[40ch] [&_>_p]:text-muted [&_>_p]:[font-size:0.8rem] [&_>_p]:[line-height:1.6]",
   ].join(" "),
   "webinar-folder-register": [
     "webinar-folder-register",
-    "inline-flex items-center justify-center gap-5 min-h-13 ml-auto [padding:0.65rem_0.65rem_0.65rem_1.5rem] rounded-[999px] [background:#173d2e]",
-    "text-[#fff] [font-size:1.05rem] font-semibold [line-height:1.25] no-underline [transition:background-color_200ms_ease,_color_200ms_ease]",
+    "inline-flex items-center justify-center gap-5 min-h-13 ml-auto [padding:0.65rem_0.65rem_0.65rem_1.5rem] rounded-[999px] bg-action",
+    "text-on-action [font-size:1.05rem] font-semibold [line-height:1.25] no-underline [transition:background-color_200ms_ease,_color_200ms_ease]",
     //  .webinar-folder-register > span
     "[&_>_span]:grid [&_>_span]:place-items-center [&_>_span]:flex-none [&_>_span]:w-8 [&_>_span]:h-8",
     "[&_>_span]:[border:1px_solid_rgb(255_255_255_/_30%)] [&_>_span]:rounded-[50%]",
     //  .webinar-folder-register svg
     "[&_svg]:w-[1.1rem] [&_svg]:h-[1.1rem]",
     //  .webinar-folder-register:hover
-    "[&:hover:not(:disabled)]:[background:#E9AD5E] [&:hover:not(:disabled)]:text-[#102c21]",
+    "[&:hover:not(:disabled)]:[background:#E9AD5E] [&:hover:not(:disabled)]:text-brand",
     //  .webinar-folder-register:hover > span
     "[&:hover_>_span]:[border-color:rgb(16_44_33_/_30%)]",
     //  .webinar-folder-register:focus-visible
     "[&:focus-visible]:[outline:2px_solid_#E9AD5E] [&:focus-visible]:[outline-offset:4px]",
     //  .webinar-folder-register:disabled
-    "[&:disabled]:px-5 [&:disabled]:[background:#eef4ef] [&:disabled]:text-[#577262]",
+    "[&:disabled]:px-5 [&:disabled]:[background:var(--color-soft)] [&:disabled]:text-muted",
     // @media (prefers-reduced-motion: reduce) .webinar-folder-register
     "[@media(prefers-reduced-motion:_reduce)]:[transition:none]",
   ].join(" "),
@@ -304,22 +304,22 @@ export const webinarStyles = {
     // @media (width<=639px) .webinar-folder-toolbar > p
     "[@media(width<=639px)]:[&_>_p]:[font-size:0.8rem] [@media(width<=639px)]:[&_>_p]:w-full",
     //  .webinar-folder-toolbar > p svg
-    "[&_>_p_svg]:flex-none [&_>_p_svg]:w-[1.1rem] [&_>_p_svg]:h-[1.1rem] [&_>_p_svg]:text-[#577262]",
+    "[&_>_p_svg]:flex-none [&_>_p_svg]:w-[1.1rem] [&_>_p_svg]:h-[1.1rem] [&_>_p_svg]:text-muted",
   ].join(" "),
   "webinar-folder-controls": [
     "webinar-folder-controls",
-    "flex items-center gap-3 p-[0.4rem] [border:1px_solid_#a9bfb0] rounded-[999px] [background:#eef4ef]",
+    "flex items-center gap-3 p-[0.4rem] [border:1px_solid_var(--color-chart-line)] rounded-[999px] [background:var(--color-soft)]",
     // @media (width<=639px) .webinar-folder-controls
     "[@media(width<=639px)]:mx-auto",
     //  .webinar-folder-controls button
-    "[&_button]:grid [&_button]:place-items-center [&_button]:w-11 [&_button]:h-11 [&_button]:[border:1px_solid_#a9bfb0] [&_button]:rounded-[50%]",
-    "[&_button]:[background:#fff] [&_button]:text-[#173d2e] [&_button]:cursor-pointer [&_button]:[transition:background-color_180ms_ease]",
+    "[&_button]:grid [&_button]:place-items-center [&_button]:w-11 [&_button]:h-11 [&_button]:[border:1px_solid_var(--color-chart-line)] [&_button]:rounded-[50%]",
+    "[&_button]:[background:var(--color-surface)] [&_button]:text-ink [&_button]:cursor-pointer [&_button]:[transition:background-color_180ms_ease]",
     //  .webinar-folder-controls button svg
     "[&_button_svg]:w-[1.1rem] [&_button_svg]:h-[1.1rem]",
     //  .webinar-folder-controls button:hover:not(:disabled)
-    "[&_button:hover:not(:disabled)]:[background:#E9AD5E]",
+    "[&_button:hover:not(:disabled)]:[background:#E9AD5E] [&_button:hover:not(:disabled)]:text-brand",
     //  .webinar-folder-controls button:focus-visible
-    "[&_button:focus-visible]:[outline:2px_solid_#173d2e] [&_button:focus-visible]:[outline-offset:3px]",
+    "[&_button:focus-visible]:[outline:2px_solid_var(--color-ink)] [&_button:focus-visible]:[outline-offset:3px]",
     //  .webinar-folder-controls button:disabled
     "[&_button:disabled]:opacity-[0.4] [&_button:disabled]:cursor-default",
     // @media (prefers-reduced-motion: reduce) .webinar-folder-controls button
@@ -329,7 +329,7 @@ export const webinarStyles = {
     "webinar-folder-position",
     "min-w-16 text-center [font-size:0.875rem] font-semibold tabular-nums",
     //  .webinar-folder-position > span
-    "[&_>_span]:text-[#577262] [&_>_span]:font-normal",
+    "[&_>_span]:text-muted [&_>_span]:font-normal",
   ].join(" "),
 };
 

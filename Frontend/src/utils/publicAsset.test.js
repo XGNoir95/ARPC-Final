@@ -2,6 +2,9 @@ import { describe, expect, it, vi } from 'vitest'
 import { publicAsset } from './publicAsset'
 
 describe('deployment asset URLs', () => {
+  it.each([undefined,null,'',42])('does not create a broken asset URL for a missing source (%s)',value=>{
+    expect(publicAsset(value)).toBe('');
+  })
   it('keeps assets under the GitHub Pages repository path', () => {
     vi.stubEnv('BASE_URL', '/ARPC-Final/')
     expect(publicAsset('/images/about/community.jpg')).toBe('/ARPC-Final/images/about/community.jpg')

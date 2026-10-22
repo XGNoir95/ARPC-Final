@@ -6,7 +6,7 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 import tailwindStyling from './eslint-rules/tailwind-styling.js'
 
 export default defineConfig([
-  globalIgnores(['dist', '.cache', 'coverage']),
+  globalIgnores(['dist', 'dist-admin', '.cache', 'coverage']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [

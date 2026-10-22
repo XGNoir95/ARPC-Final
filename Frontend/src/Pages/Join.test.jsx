@@ -1,5 +1,8 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, within, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { post } from "../utils/api";
+vi.mock("../utils/api",()=>({post:vi.fn()}));
+beforeEach(()=>post.mockResolvedValue({id:"receipt-1",message:"Application received."}));
 import Join from "./Join";
 
 async function fillApplication(method = "bKash") {
@@ -67,12 +70,12 @@ describe("Membership application", () => {
     fireEvent.change(screen.getByRole("textbox", { name: senderLabel }), { target: { value: senderValue } });
     fireEvent.change(screen.getByRole("textbox", { name: referenceLabel }), { target: { value: referenceValue } });
     fireEvent.click(screen.getByRole("button", { name: "Review application" }));
-    const body = new URL(screen.getByRole("link", { name: "Open email to send" }).href).searchParams.get("body");
-    expect(body).toContain(`Payment method: ${method}`);
-    expect(body).toContain(`${senderLabel}: ${senderValue}`);
-    expect(body).toContain(`${referenceLabel}: ${referenceValue}`);
-    expect(body).not.toContain("ABC123XYZ");
-    expect(body).toContain("Payment status: Pending club verification");
+    fireEvent.click(screen.getByRole("button", {name:"Submit application"}));
+    await waitFor(()=>expect(post).toHaveBeenCalled());
+    const payload=post.mock.lastCall[1];
+    expect(payload.payment).toMatchObject({method,sender:senderValue,reference:referenceValue});
+    expect(JSON.stringify(payload)).not.toContain("ABC123XYZ");
+    expect(await screen.findByText(/Reference: receipt-1/)).toBeVisible();
   });
 
   it("preserves separate payment drafts when returning to the original method", async () => {
@@ -119,12 +122,9 @@ describe("Membership application", () => {
     expect(within(screen.getByRole("alert")).getByRole("link", { name: "Enter the cash received by." })).toBeVisible();
     fireEvent.change(screen.getByRole("textbox", { name: "Cash received by" }), { target: { value: "Test Representative" } });
     fireEvent.click(screen.getByRole("button", { name: "Review application" }));
-    const body = new URL(screen.getByRole("link", { name: "Open email to send" }).href).searchParams.get("body");
-    expect(body).toContain("Payment method: Cash");
-    expect(body).toContain("Cash received by: Test Representative");
-    expect(body).toContain("Receipt / reference: Not provided");
-    expect(body).not.toContain("bKash sender number");
-    expect(body).not.toContain("Transaction ID:");
+    fireEvent.click(screen.getByRole("button", {name:"Submit application"}));
+    await waitFor(()=>expect(post).toHaveBeenCalled());
+    expect(post.mock.lastCall[1].payment).toEqual({method:"Cash",sender:"",reference:"",receivedBy:"Test Representative"});
   });
 
   it("identifies missing details and sends focus to the summary and chosen field", () => {
@@ -151,28 +151,14 @@ describe("Membership application", () => {
     expect(screen.queryByRole("heading", { name: "Review your application" })).not.toBeInTheDocument();
   });
 
-  it("reviews validated details, creates an encoded email draft, and preserves edits", async () => {
+  it("reviews validated details before submission and preserves edits", async () => {
     render(<Join />);
     await fillApplication();
     fireEvent.click(screen.getByRole("button", { name: "Review application" }));
     expect(screen.getByRole("heading", { name: "Review your application" })).toHaveFocus();
     expect(screen.getByText("Test Applicant")).toBeVisible();
-    expect(screen.getByText(/Your application has not been sent yet/)).toBeVisible();
-    const email = new URL(screen.getByRole("link", { name: "Open email to send" }).href);
-    expect(email.protocol).toBe("mailto:");
-    expect(email.pathname).toBe("info@arpc.club");
-    expect(email.searchParams.get("subject")).toBe("ARPC membership application");
-    const body = email.searchParams.get("body");
-    expect(body).toContain("Full name: Test Applicant");
-    expect(body).toContain("Department: Computer Science & Engineering");
-    expect(body).toContain("Semester: 2.1");
-    expect(body).toContain("Gender: Female");
-    expect(body).toContain("Registration fee: BDT 100");
-    expect(body).toContain("Payment method: bKash");
-    expect(body).toContain("bKash sender number: 01712345678");
-    expect(body).toContain("Transaction ID: ABC123XYZ");
-    expect(body).toContain("Payment status: Pending club verification");
-    expect(body).not.toContain("Cash received by");
+    expect(screen.getByRole("button",{name:"Submit application"})).toBeVisible();
+    expect(post).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "Edit details" }));
     expect(screen.getByRole("heading", { name: "Membership application" })).toHaveFocus();
     expect(screen.getByRole("textbox", { name: "Full name" })).toHaveValue("  Test Applicant  ");

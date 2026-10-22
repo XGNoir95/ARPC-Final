@@ -1,103 +1,47 @@
-# System architecture
+# ARPC architecture
 
-## Purpose and scope
-
-ARPC is a client-rendered website for Ahsanullah Roh. Peace Club at AUST. Its implemented responsibilities are club information, event presentation, team profiles, affiliations and member interface prototypes.
-
-There is no implemented backend, database, session service or certificate generator. Team and profile data are placeholders, and event content is defined in the frontend. This document describes the existing system; future services are explicitly identified as future work.
-
-## Requirements
-
-| Requirement | Current approach |
-| --- | --- |
-| Present club information across device sizes | React components with responsive Tailwind layouts. |
-| Support navigation on a static host | React Router, with hash routing for GitHub Pages. |
-| Serve assets under a repository URL | Vite's base setting and the `publicAsset()` helper. |
-| Validate changes before deployment | Locked installation, ESLint, Vitest, npm audit, build verification and CodeQL. |
-| Keep generated files out of source control | A repository-level `.gitignore`. |
-
-## Components and boundaries
+The React/Vite frontend uses Tailwind, EB Garamond, local static assets and the existing shelf, basket, laptop and gallery animations. An Express API uses MongoDB through Mongoose. Full backend setup and endpoint boundaries are in [Backend/README.md](../Backend/README.md).
 
 ```mermaid
 flowchart LR
-    visitor[Visitor browser] --> pages[GitHub Pages static site]
-    pages --> app[React application]
-    app --> router[React Router]
-    router --> home[Home and club information]
-    router --> team[Panel and team profiles]
-    router --> member[Member interface prototypes]
-    app --> assets[Local images and fonts]
-    change[Push or pull request] --> ci[CI validation]
-    ci --> build[Vite production artifact]
-    build --> pages
+  browser[React frontend] --> api[Express API]
+  api --> db[(MongoDB)]
+  api --> media[Private local media storage]
+  api --> identity[Google ID-token verification]
+  db --> mail[SMTP outbox worker]
+  mail --> inbox[Applicant and administrator emails]
 ```
 
-| Component | Responsibility |
+## Data and access
+
+- Users have an admin/superadmin role, verification flag and pending/active/rejected/suspended status. Only a local bootstrap command creates the first superadmin. Both direct and invited signup remain pending until approved.
+- Admin sessions and learner sessions are separate collections/cookies. Random session tokens are hashed at rest; HttpOnly cookies replace browser sessionStorage authentication.
+- Content records keep draft and published snapshots with revisions. Public APIs return only published/live content. Saving a draft never changes the public snapshot. Lessons follow the same explicit publication pattern.
+- Membership and enrollment forms validate on the server and create applications with email receipts queued in MongoDB. Administrators make decisions and verify payments manually. Membership fees are fixed server-side at BDT 100.
+- Approved course enrollment grants email-link access to the learner area. Every lesson/material/progress/certificate endpoint checks current approval for that course. Certificates require all published lessons marked complete.
+- Files are stored separately from MongoDB; the database keeps names, types and references. Uploaded PDF learning materials are private. Only referenced, published images are public.
+- Analytics stores one aggregate counter per page/date, plus application statistics. The dashboard uses real counts; no synthetic visitors or records are seeded.
+- The email worker uses a database outbox, bounded retries and configurable SMTP. Without credentials, messages are queued and explicitly labelled undelivered. Local mailbox inspection is disabled in production.
+
+## Frontend routes
+
+| Route | Behavior |
 | --- | --- |
-| `Frontend/src/App.jsx` | Chooses the router, declares routes and coordinates shared navigation/footer visibility. |
-| `Frontend/src/Pages/` | Composes route-level screens, including the public membership application and unlisted account prototypes. |
-| `Frontend/src/Components/` | Implements reusable UI, carousels, the founder reflection and profile tabs. |
-| Route transition context | Shares the previous/current route for transition behavior. |
-| `Frontend/src/utils/publicAsset.js` | Prefixes static asset URLs with Vite's deployment base. |
-| `Frontend/src/Config/api.js` | Provides an Axios client for a future API; it does not implement a service. |
-| `Frontend/public/` | Supplies images, portraits, logos and locally served EB Garamond fonts. |
+| `/`, `/catalogue`, `/gallery`, `/team` | Existing public layouts with published API content |
+| `/join` | Public membership application and manual payment information |
+| `/enroll/:kind/:id` | Enrollment form for a published programme |
+| `/login`, `/register` | Unlisted admin authentication/request pages, Google or password |
+| `/forgot-password`, `/reset-password`, `/verify-email` | Email account recovery and verification |
+| `/admin/*` | Server-approved admin workspace or pending-access state |
+| `/learn` | Email-link learning area for approved enrollees |
+| `/profile` | Legacy illustrative profile component; not an authentication boundary |
 
-## Routes and data flow
+Account/admin/learning pages use standalone layouts without public navigation or footer. BrowserRouter and HashRouter are supported; set the backend FRONTEND_URL to include `/#` when using hash links in emails. Route skeleton timing remains capped at two seconds; data requests have explicit loading/error states.
 
-| Route | Screen | Data source |
-| --- | --- | --- |
-| `/` | Home | Component content, shared featured events in `src/data/featuredEvents.js`, and the local affiliation array. |
-| `/catalogue` | Events, webinars and courses | Sample programmes in `src/data/catalogue.js`. |
-| `/gallery` | Club gallery | Local imagery and captions in `src/data/gallery.js`; illustrative photos are explicitly marked. |
-| `/team` | Panel | Local sample committee and team member data. |
-| `/profile` | Member profile | Sample user, event and certificate data held in component state. |
-| `/join` | Membership application | Validated details held in memory, reviewed before an email draft or text download. |
-| `/enroll/:kind/:id` | Individual programme enrollment | Selected catalogue or featured event data; validated student details held in memory. |
-| `/login` | Unlisted admin login interface | Interface prototype; no authenticated session is established. |
-| `/register` | Unlisted admin registration interface | Interface prototype; no account record is created. |
+## Local runtime and validation
 
-User input and carousel selections update React state. Public assets load from the same static deployment. There is no implemented server-side persistence or API contract to document.
+`Backend/scripts/local.js` downloads a real mongod to the user's cache and starts it with a persistent WiredTiger database. An existing local MongoDB installation or Atlas can be used via MONGODB_URI instead. Seed import is idempotent and all sample records start unpublished.
 
-The gallery uses a photo album in `GalleryJournal.jsx`, a single playback toolbar and a native dialog for viewing images. Each photo comprises two aligned image halves hinged at the middle. Next folds only the outgoing right half from −12° to −168° while the incoming left half opens from +168° to +12°; the other two halves stay broad. Previous mirrors the motion. The whole page does not rotate. The outgoing half folds over 480ms; the incoming half unfolds over 400ms so the surfaces overlap through the midpoint. Backface hiding exchanges the visible leaf, and an explicit layer switch drops the outgoing page behind its replacement after 240ms. Left-stack pages retain their left face and right-stack pages retain their right face, avoiding a fold reset after the transition. Stable photo IDs keep the image independent of adjacent turns. Far wrapping pages reposition without animating across the centre. Two-photo albums use a decorative, accessibility-hidden side copy to preserve the direction of repeated Next/Previous turns. The clipped image surfaces overlap the centre hinge by 1px, with compensated image widths, to prevent a pale antialias seam while retaining the approved geometry. Ordinary photos have transparent backing; poster margins retain paper. Autoplay gives each selected photo a six-second reading interval after its turn, with a gold countdown, pause/play in one compact toolbar. It pauses on hover, keyboard focus, an open viewer, a hidden browser tab or less than 35% viewport visibility, and stays manual for reduced motion or a single photo. A compact centred title and category sit beneath the toolbar; descriptions are shown only in the full-image viewer. Captions reserve only their largest compact height so controls do not shift between slides. Reduced motion changes pages immediately. Side-page clicks, Previous/Next controls, arrow keys, Home/End and horizontal touch swipes move the selected page. Horizontal swipes suppress the resulting click; vertical gestures retain normal page scrolling. Clicking the centre page opens the viewer, which supports Previous/Next buttons, arrow keys, Escape and outside-click dismissal; it restores focus to the opening control and releases the page scroll lock when closed or unmounted. Navigation places Gallery after Catalogue. Its photo hero uses the transparent navbar, and route loading includes the compact introduction, full photo stage, playback toolbar and caption silhouette. Replace placeholder records in `src/data/gallery.js` with confirmed club photographs and captions as the archive grows.
+Backend integration tests run against a separate disposable MongoDB instance, testing account approval, token replay, publication isolation, submissions, material access, progress, certificates and analytics. Frontend tests mock the API at its boundary. Lint, Tailwind policy, build and artifact verification remain mandatory.
 
-Each programme has an enrollment URL (`kind` is `events`, `webinars` or `courses`). Event and webinar forms require name, student ID, department, semester, gender and email; courses also require mobile number. Shared field definitions and validation live in `src/utils/studentDetails.js`. On desktop, form and programme columns stretch to the same height. Field spacing and the programme image adapt to available space; review uses a compact programme summary. Changing programme IDs resets the form; invalid IDs show a recovery link instead of a form. Review exports identify the selected programme and contain only its required fields. Applicants send an email draft or download a text copy; no place, payment or successful submission is claimed automatically. Archived catalogue entries retain their closed registration actions.
-
-Route changes show the skeleton for at least 1.6 seconds, with a 1.8-second image preparation deadline. The shared 200ms fade-out keeps the entire loader within a two-second maximum, including failed or stalled images. Silhouettes cover every primary section on Home, all panel team rows, the catalogue shelf/basket/laptop, membership and enrollment forms, account/profile layouts, and the combined quote/footer. Skeleton and real content share a grid area so the full silhouette remains in page flow rather than being clipped to a short overlay. Loading content is inert and hidden from assistive technology; navbar navigation remains available. Reduced-motion preferences disable shimmer and shorten transitions.
-
-Public navigation and join actions lead to `/join`, with a photo hero and transparent navbar. The hero and application use the same content alignment. Applications collect name, student ID, one of eight departments, semester (1.1–5.2), gender, email, mobile number, and transaction information for the BDT 100 registration fee. The payment panel matches the member fields' desktop height and switches between method selection and transaction details without resizing. bKash, Nagad and Rocket applicants provide a sender number and transaction ID; bank transfers include the sender bank and transfer reference; cash applicants identify the collecting representative and optionally provide a receipt reference. Switching methods preserves drafts but validates and exports only the chosen method. All payment details remain pending club verification. Confirmed receiving/payment instructions belong in `Frontend/src/data/recruitment.js`; no receiving number is invented or inferred.
-
-Applicants review their entries before opening a draft addressed to the existing club contact (`info@arpc.club`); they must send that email themselves. A text download supports applicants without a configured email app. No application is stored in browser storage, no real payment is initiated, and nothing is claimed to be submitted or paid automatically.
-
-Account routes are intentionally absent from public navigation. They remain directly reachable until backend admin authorization and restricted account provisioning are implemented; unlisted routes are not access controls.
-
-## Deployment flow
-
-The `CI/CD` workflow runs on pull requests, pushes to `main` and manual dispatch:
-
-1. Check out source and select Node.js 24.
-2. Run `npm ci`, lint, component/deployment tests and a high-severity dependency audit.
-3. Build with `VITE_BASE_PATH=/ARPC-Final/` and `VITE_GITHUB_PAGES=true`.
-4. Verify generated HTML/CSS asset URLs and packaged public files.
-5. For successful `main` runs, upload the artifact and deploy through GitHub Pages.
-
-CodeQL runs independently on pushes, pull requests and a weekly schedule. Dependabot proposes dependency and Actions updates. Deployment permissions are limited to the deploy job.
-
-## Design decisions
-
-| Decision | Benefit | Tradeoff |
-| --- | --- | --- |
-| Static frontend deployment | Simple delivery without application server operations. | Member accounts and persistent data require a future service. |
-| Hash routing on Pages | Deep links refresh correctly without server rewrite rules. | Production URLs contain `#`. |
-| Browser routing during local development | Conventional local URLs. | Both routing modes need deployment tests. |
-| Local images and fonts | Deployment does not depend on external placeholder services. | Assets increase the repository and build size. |
-| Component-local content and state | Straightforward frontend development. | Content updates require code changes and a new deployment. |
-
-## Operational and security considerations
-
-Keep `package-lock.json` committed so development and CI use the same versions. Fix failing audits rather than bypassing them. A reverted source change can be deployed through the usual pull request workflow; deployment artifacts are retained for three days.
-
-All `VITE_*` configuration is public in the browser bundle. A future backend must enforce authentication, authorization, input validation and data access; frontend visibility alone cannot protect member information. See the [security policy](../.github/SECURITY.md) and [developer guide](DEVELOPMENT.md).
-
-## Future work
-
-Replace sample content with verified club data. Design the backend and its API contracts before connecting real accounts, registrations or certificates. Add integration tests when those flows exist.
+Hosting remains a later decision. Local uploaded files and database backups must move to persistent storage before deployment. Use HTTPS and a same-origin API topology so the cookie and Origin policies remain effective. The static GitHub Pages workflow must have an API URL before deployment of this version.

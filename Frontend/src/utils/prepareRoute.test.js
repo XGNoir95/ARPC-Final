@@ -14,6 +14,11 @@ beforeEach(() => {
 afterEach(() => vi.useRealTimers());
 
 describe("Route preparation", () => {
+  it.each(['/admin', '/admin/home', '/admin/programmes', '/admin/account'])("opens %s without a public loading delay", async pathname => {
+    await prepareRoute(pathname, { signal: new AbortController().signal });
+    expect(images).toHaveLength(0);
+    expect(vi.getTimerCount()).toBe(0);
+  });
   it("prepares the selected enrollment hero under the deployment base", async () => {
     const preparation = prepareRoute("/enroll/courses/seerah-foundations", { signal: new AbortController().signal });
     expect(images.map((image) => image.src)).toEqual(["/ARPC-Final/images/about/learning.jpg"]);
@@ -55,7 +60,7 @@ describe("Route preparation", () => {
   it("keeps the same minimum display for routes without hero images", async () => {
     vi.stubGlobal("Image", class { complete = true; });
     const ready = vi.fn();
-    const preparation = prepareRoute("/register", { signal: new AbortController().signal }).then(ready);
+    const preparation = prepareRoute("/profile", { signal: new AbortController().signal }).then(ready);
     await vi.advanceTimersByTimeAsync(1599);
     expect(ready).not.toHaveBeenCalled();
     await vi.advanceTimersByTimeAsync(1);

@@ -1,21 +1,25 @@
+import SafeImage from './SafeImage';
+import StateView from './StateView';
 import { useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion as Motion, useIsPresent, useReducedMotion } from "framer-motion";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { publicAsset } from "../utils/publicAsset";
+import { memberProfileUrl } from '../utils/memberProfiles';
 
 function MemberSocial({ member, label, url, icon }) {
+  const href = memberProfileUrl(label.toLowerCase(), url);
   const SocialIcon = icon;
   const classes = "group/social flex w-14 flex-col items-center gap-2 rounded-lg text-[#eef4ef] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9AD5E] sm:w-16";
   const content = (
     <>
-      <span className="flex size-12 items-center justify-center rounded-full bg-[#eef4ef]/10 transition-[background-color,color,translate] duration-250 ease-out group-hover/social:-translate-y-0.5 group-hover/social:bg-[#E9AD5E] group-hover/social:text-[#102c21] group-focus-visible/social:bg-[#E9AD5E] group-focus-visible/social:text-[#102c21] motion-reduce:translate-y-0 motion-reduce:transition-none sm:size-14">
+      <span className="flex size-12 items-center justify-center rounded-full bg-[#eef4ef]/10 transition-[background-color,color,translate] duration-250 ease-out group-hover/social:-translate-y-0.5 group-hover/social:bg-[#E9AD5E] group-hover/social:text-brand group-focus-visible/social:bg-[#E9AD5E] group-focus-visible/social:text-brand motion-reduce:translate-y-0 motion-reduce:transition-none sm:size-14">
         <SocialIcon aria-hidden="true" className="size-6 sm:size-7" />
       </span>
       <span aria-hidden="true" className="text-xs font-medium leading-tight text-[#d9e6dd] transition-colors duration-250 group-hover/social:text-[#E9AD5E] group-focus-visible/social:text-[#E9AD5E] motion-reduce:transition-none">{label}</span>
     </>
   );
-  return url ? (
-    <a href={url} target="_blank" rel="noopener noreferrer" aria-label={`${member.name} on ${label}`} title={`${member.name} on ${label}`} className={classes}>
+  return href ? (
+    <a href={href} target="_blank" rel="noopener noreferrer" aria-label={`${member.name} on ${label}`} title={`${member.name} on ${label}`} className={classes}>
       {content}
     </a>
   ) : (
@@ -35,7 +39,7 @@ function ProfileExpansion({ origin, reduceMotion, children }) {
       animate={{ clipPath: "inset(0px 0px 0px 0px)", opacity: 1 }}
       exit={{ clipPath: origin, opacity: 0 }}
       transition={{ duration: reduceMotion ? 0 : 0.55, ease: [0.22, 0.68, 0.18, 1] }}
-      className="relative min-h-full min-w-0 flex flex-col bg-[#173d2e] [grid-area:1/1]"
+      className="relative min-h-full min-w-0 flex flex-col bg-brand [grid-area:1/1]"
     >
       {children}
     </Motion.div>
@@ -71,6 +75,7 @@ export default function MemberRoster({ team, onOpen }) {
     previousSelection.current = selected;
   }, [selected]);
 
+  if(!team.members.length)return <StateView compact kind="team" title="No member profiles available yet." description="Member profiles for this team will appear here when they are available. Please check back later."/>;
   return (
     <div
       className="relative grid min-w-0 @container/roster"
@@ -99,7 +104,7 @@ export default function MemberRoster({ team, onOpen }) {
               onClick={() => open(person.id)}
               className="group/member flex h-full w-full cursor-pointer items-start gap-3 rounded-b-xl px-3 py-4 text-left transition-colors duration-300 hover:bg-[#eef4ef]/5 focus-visible:bg-[#eef4ef]/5 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#E9AD5E] motion-reduce:transition-none"
             >
-              <img src={publicAsset(person.image)} alt="" width="56" height="56" loading="lazy" decoding="async" className="size-14 shrink-0 rounded-full bg-[#eef4ef] object-cover" />
+              <SafeImage src={publicAsset(person.image)} alt="" width="56" height="56" loading="lazy" decoding="async" className="size-14 shrink-0 rounded-full bg-soft object-cover" />
               <span className="min-w-0 [overflow-wrap:anywhere]">
                 <span className="block font-garamond text-[1.4rem] font-semibold leading-tight text-[#eef4ef] transition-colors duration-300 group-hover/member:text-[#E9AD5E] motion-reduce:transition-none">{person.name}</span>
                 {person.role && <span className="mt-1 block text-sm font-medium text-[#E9AD5E]">{person.role}</span>}
@@ -128,7 +133,7 @@ export default function MemberRoster({ team, onOpen }) {
                 </button>
               </div>
               <div className="grid flex-1 grid-cols-[4rem_minmax(0,1fr)] content-center items-center gap-x-4 gap-y-5 px-2 py-4 @min-[20rem]/roster:grid-cols-[5rem_minmax(0,1fr)] @min-[36rem]/roster:grid-cols-[5rem_minmax(0,1fr)_auto] @min-[42rem]/roster:grid-cols-[8rem_minmax(0,1fr)_auto] @min-[42rem]/roster:gap-x-6">
-                <img src={publicAsset(member.image)} alt="" width="128" height="128" className="size-16 rounded-full bg-[#eef4ef] object-cover @min-[20rem]/roster:size-20 @min-[42rem]/roster:size-32" />
+                <SafeImage src={publicAsset(member.image)} alt="" width="128" height="128" className="size-16 rounded-full bg-soft object-cover @min-[20rem]/roster:size-20 @min-[42rem]/roster:size-32" />
                 <div className="min-w-0 [overflow-wrap:anywhere]">
                   <h3 className="font-garamond text-[1.6rem] font-semibold leading-[1.05] text-[#eef4ef] @min-[28rem]/roster:text-[1.9rem] @min-[42rem]/roster:text-[2.5rem]">{member.name}</h3>
                   <p className="mt-3 text-base font-medium text-[#E9AD5E] @min-[36rem]/roster:text-lg">{member.role || "Team member"}</p>

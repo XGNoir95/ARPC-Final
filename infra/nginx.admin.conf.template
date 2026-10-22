@@ -1,0 +1,59 @@
+# Deploy on a private network behind a Cloudflare Tunnel/Access application.
+# ADMIN_HOST is the exact public hostname, without scheme or trailing slash.
+upstream arpc_api {
+    least_conn;
+    server api1:4000 max_fails=2 fail_timeout=10s;
+    server api2:4000 max_fails=2 fail_timeout=10s;
+    keepalive 32;
+}
+server {
+    listen 80 default_server;
+    server_name _;
+    return 404;
+}
+server {
+    listen 80;
+    server_name ${ADMIN_HOST};
+    root /usr/share/nginx/html;
+    client_max_body_size 11m;
+    add_header X-Robots-Tag "noindex, nofollow, noarchive" always;
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy no-referrer always;
+    add_header Cache-Control "no-store" always;
+
+    # Covers the HTML, bundles, preview frames and API, before ARPC sign-in.
+    auth_request /_access_check;
+    location = /_access_check {
+        internal;
+        auth_request off;
+        proxy_pass http://arpc_api/api/access/check;
+        proxy_pass_request_body off;
+        proxy_set_header Content-Length "";
+        proxy_set_header Host $http_host;
+        proxy_set_header Origin $http_origin;
+        proxy_set_header Cf-Access-Jwt-Assertion $http_cf_access_jwt_assertion;
+        proxy_intercept_errors on;
+        error_page 404 =403 /_access_denied;
+    }
+    location = /_access_denied {
+        internal;
+        auth_request off;
+        return 403;
+    }
+    location /api/ {
+        proxy_pass http://arpc_api;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header Cf-Access-Jwt-Assertion $http_cf_access_jwt_assertion;
+        proxy_connect_timeout 3s;
+        proxy_read_timeout 30s;
+        proxy_send_timeout 30s;
+        proxy_cache off;
+    }
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}

@@ -1,9 +1,62 @@
 @import "tailwindcss";
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/* Semantic colors keep every page on the same palette. Image artwork stays intact. */
+@theme {
+  --color-page: #ffffff;
+  --color-surface: #ffffff;
+  --color-soft: #eef4ef;
+  --color-field: #f6f8f5;
+  --color-raised: #e3ebe4;
+  --color-ink: #173d2e;
+  --color-muted: #547366;
+  --color-copy: #426454;
+  --color-action: #173d2e;
+  --color-on-action: #ffffff;
+  --color-brand: #173d2e;
+  --color-brand-deep: #0e291e;
+  --color-brand-panel: #102c21;
+  --color-brand-forest: #28523e;
+  --color-brand-sage: #708775;
+  --color-brand-muted: #577262;
+  --color-brand-leaf: #2d5644;
+  --color-brand-leaf-light: #406552;
+  --color-book-sage-ink: #102c21;
+  --color-device-frame: #20392d;
+  --color-device-edge: #304c3d;
+  --color-device-stand: #758b7e;
+  --color-device-indicator: #6f9e80;
+  --color-device-base: #c3cec7;
+  --color-device-notch: #91a69a;
+  --color-gold: #e9ad5e;
+  --color-danger: #862f29;
+  --color-danger-soft: #fff6f5;
+  --color-warning: #855d27;
+  --color-warning-soft: #f8eedc;
+  --color-success: #326447;
+  --color-chart: #173d2e;
+  --color-chart-area: #e3eee6;
+  --color-chart-line: #e3ebe4;
+}
 
 /* Global document behavior; component styling lives in Tailwind utilities. */
 @layer base {
   html {
-    @apply [scrollbar-gutter:stable];
+    @apply bg-page text-ink scheme-light dark:scheme-dark [scrollbar-gutter:stable] has-[[data-account-access]]:[scrollbar-gutter:auto]
+      dark:[--color-page:#0a0a0a] dark:[--color-surface:#141414] dark:[--color-soft:#101010]
+      dark:[--color-field:#1b1b1b] dark:[--color-raised:#262626] dark:[--color-ink:#eeeeee]
+      dark:[--color-muted:#b6b6b6] dark:[--color-copy:#cccccc]
+      dark:[--color-brand:#123125] dark:[--color-action:#123125]
+      dark:[--color-brand-deep:#0b2118] dark:[--color-brand-panel:#0d231a]
+      dark:[--color-brand-forest:#204232] dark:[--color-brand-sage:#5a6c5e] dark:[--color-brand-muted:#465b4e]
+      dark:[--color-brand-leaf:#244536] dark:[--color-brand-leaf-light:#335142] dark:[--color-book-sage-ink:#eef4ef]
+      dark:[--color-device-frame:#1a2e24] dark:[--color-device-edge:#263d31] dark:[--color-device-stand:#5e6f65]
+      dark:[--color-device-indicator:#597e66] dark:[--color-device-base:#9ca59f] dark:[--color-device-notch:#74857b]
+      dark:[--color-danger:#ffb1a5] dark:[--color-danger-soft:#242424]
+      dark:[--color-warning:#efc080] dark:[--color-warning-soft:#242424] dark:[--color-success:#8acba1]
+      dark:[--color-chart:#d0d0d0] dark:[--color-chart-area:#2a2a2a] dark:[--color-chart-line:#373737]
+      selection:bg-gold/35 selection:text-ink
+      [&_input:autofill]:[-webkit-text-fill-color:var(--color-ink)] [&_input:autofill]:shadow-[inset_0_0_0_1000px_var(--color-field)];
   }
 }
 

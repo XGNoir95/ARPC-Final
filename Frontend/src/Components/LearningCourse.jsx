@@ -1,0 +1,17 @@
+import { API_BASE } from '../utils/api';
+import StateView, { statePrimary, stateFocus } from './StateView';
+
+// Shared by the learner page and its isolated administrator draft preview.
+export default function LearningCourse({ course, content, lesson, onSelect, onComplete, onDownload, busy = false, preview = false }) {
+  const current = content.lessons.find(item => item._id === lesson);
+  const completed = content.completed.includes(lesson);
+  const total = content.lessons.length;
+  const done = content.lessons.filter(item => content.completed.includes(item._id)).length;
+  const download = onDownload;
+  const complete = onComplete;
+  const setLesson = onSelect;
+  return <div className={`grid items-start gap-6 lg:grid-cols-[18rem_minmax(0,1fr)] ${preview ? 'max-lg:flex max-lg:flex-1 max-lg:flex-col max-lg:items-stretch max-lg:[&>aside]:shrink-0 max-lg:[&>article]:flex max-lg:[&>article]:flex-1 max-lg:[&>article]:flex-col max-lg:[&>article>p:first-of-type]:flex-1 max-lg:[&>article>button]:self-start' : ''}`}>
+    <aside className="rounded-2xl border border-ink/20 bg-surface p-5"><h2 className="font-garamond text-2xl font-semibold">Your progress</h2><p className="mt-3 text-sm">{done} of {total} lessons complete</p><progress value={done} max={total||1} aria-label="Course progress" className="mt-3 h-2 w-full accent-action"/><nav aria-label="Course lessons" className="mt-5 space-y-2">{content.lessons.map(item=><button key={item._id} onClick={()=>setLesson(item._id)} aria-current={lesson===item._id?'step':undefined} className={`block min-h-11 w-full cursor-pointer rounded-lg p-3 text-left text-sm ${stateFocus} ${lesson===item._id?'bg-soft font-semibold':'hover:bg-field'}`}>{content.completed.includes(item._id)?'Completed: ':''}{item.title}</button>)}</nav>{total>0&&done===total&&<a className={`${statePrimary} mt-6 w-full`} href={`${API_BASE}/learning/${encodeURIComponent(course)}/certificate`} onClick={event=>download(event,`/learning/${encodeURIComponent(course)}/certificate`)}>Download certificate</a>}</aside>
+    <article className="min-w-0 rounded-2xl border border-ink/20 bg-surface p-6 sm:p-10">{current?<><h2 className="font-garamond text-3xl font-semibold sm:text-4xl">{current.title}</h2><p className="mt-6 whitespace-pre-wrap [overflow-wrap:anywhere] text-base leading-[1.9]">{current.body||'The content for this lesson is being prepared.'}</p>{current.videoUrl&&<a href={current.videoUrl} target="_blank" rel="noreferrer" className={`mt-6 inline-flex min-h-11 items-center rounded font-semibold underline ${stateFocus}`}>Watch lesson video</a>}{current.materials?.length>0&&<div className="mt-7 border-t border-ink/15 pt-5"><h3 className="font-garamond text-2xl font-semibold">Learning materials</h3>{current.materials.map((id,index)=><a key={id} href={`${API_BASE}/learning/${encodeURIComponent(course)}/materials/${id}`} onClick={event=>download(event,`/learning/${encodeURIComponent(course)}/materials/${id}`)} className={`mr-4 inline-flex min-h-11 items-center rounded text-sm font-semibold underline ${stateFocus}`}>Download resource {index+1}</a>)}</div>}<button disabled={busy || preview} className={`${statePrimary} mt-8`} onClick={complete}>{completed?'Mark incomplete':'Mark lesson complete'}</button><p className="mt-3 text-sm text-muted">Progress records lessons you mark complete.</p></>:<StateView compact kind="learning" title="Choose a lesson." description="Select a lesson from the course menu to start reading."/>}</article>
+  </div>;
+}

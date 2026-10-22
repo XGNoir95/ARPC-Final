@@ -6,21 +6,20 @@ import { ROUTE_FADE_SECONDS } from "../utils/prepareRoute";
 
 const AnimatedPage = ({ children, pathname, loading = false, focusOnEntry = false }) => {
   const pageRef = useRef(null);
-  const entryFocus = useRef(focusOnEntry);
   const reducedMotion = useReducedMotion();
   const transition = { duration: reducedMotion ? 0 : ROUTE_FADE_SECONDS, ease: [0.22, 1, 0.36, 1] };
 
   useLayoutEffect(() => {
     // Show the destination skeleton at the top immediately; never fade to a blank canvas.
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-  }, []);
+  }, [pathname]);
 
   useLayoutEffect(() => {
-    if (!loading && entryFocus.current) pageRef.current?.focus({ preventScroll: true });
-  }, [loading]);
+    if (!loading && focusOnEntry) pageRef.current?.focus({ preventScroll: true });
+  }, [loading, pathname, focusOnEntry]);
 
   return (
-    <main ref={pageRef} tabIndex={-1} aria-busy={loading} className="relative isolate grid flex-1 bg-white outline-none">
+    <main ref={pageRef} tabIndex={-1} aria-busy={loading} className="relative isolate grid flex-1 bg-surface outline-none">
       <Motion.div
         inert={loading ? true : undefined}
         aria-hidden={loading ? true : undefined}
@@ -35,7 +34,7 @@ const AnimatedPage = ({ children, pathname, loading = false, focusOnEntry = fals
         {loading && <Motion.div
           key="skeleton"
           aria-hidden="true"
-          className="pointer-events-none relative z-10 min-w-0 bg-white [grid-area:1/1]"
+          className="pointer-events-none relative z-10 min-w-0 bg-surface [grid-area:1/1]"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={transition}

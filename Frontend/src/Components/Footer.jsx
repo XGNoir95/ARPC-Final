@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Quote from "./Home/Quote";
 import { publicAsset } from "../utils/publicAsset";
 import { FooterSkeleton } from "./SkeletonParts";
+import { publicPageFrame } from "./PublicLayout.styles";
 
 const campusMapLink =
   "https://www.google.com/maps/dir/?api=1&destination=Ahsanullah+University+of+Science+and+Technology";
@@ -14,14 +15,14 @@ const Footer = ({ loading = false }) => {
   const [reflectionOpen, setReflectionOpen] = useState(false);
 
   return (
-  <footer aria-busy={loading} className="relative grid bg-[#0e291e] text-white">
+  <footer aria-busy={loading} className="relative grid bg-brand-deep text-white">
     <div inert={loading ? true : undefined} aria-hidden={loading ? true : undefined} className={`min-w-0 [grid-area:1/1] ${loading ? "invisible" : "visible"}`}>
       <div className="grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
         <Quote onReflectionToggle={setReflectionOpen} />
 
         {/* The open reflection sets the desktop row height; this panel fills it. */}
         <div
-          className={`@container flex min-w-0 flex-col bg-[#0e291e] px-6 py-12 sm:py-14 lg:py-16 lg:pr-26 lg:pl-12 2xl:pr-44 2xl:pl-16 ${reflectionOpen ? "lg:min-h-0 lg:[contain:size]" : ""}`}
+          className={`@container flex min-w-0 flex-col bg-brand-deep px-6 py-12 sm:py-14 lg:py-16 lg:pr-26 lg:pl-12 2xl:pr-44 2xl:pl-16 ${reflectionOpen ? "lg:min-h-0 lg:[contain:size]" : ""}`}
         >
           <Link
             to="/"
@@ -86,7 +87,7 @@ const Footer = ({ loading = false }) => {
               href={campusMapLink}
               target="_blank"
               rel="noopener noreferrer"
-              className={`group inline-flex min-h-12 items-center gap-3 rounded-full border border-white/25 px-4 py-2.5 text-sm font-medium text-white/90 transition-colors hover:border-[#eef4ef] hover:bg-[#eef4ef] hover:text-[#0e291e] motion-reduce:transition-none ${focusStyle}`}
+              className={`group inline-flex min-h-12 items-center gap-3 rounded-full border border-white/25 px-4 py-2.5 text-sm font-medium text-white/90 transition-colors hover:border-[#eef4ef] hover:bg-soft hover:text-ink motion-reduce:transition-none ${focusStyle}`}
             >
               <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="size-5 shrink-0">
                 <path d="m21 3-6 18-4-8-8-4 18-6Z" />
@@ -145,7 +146,7 @@ const Footer = ({ loading = false }) => {
           <div className="mt-auto pt-7">
             <Link
               to="/join"
-              className={`group flex min-h-14 items-center justify-between gap-4 rounded-xl bg-[#eef4ef] px-5 py-3 text-base font-semibold text-[#0e291e] transition-colors hover:bg-[#E9AD5E] motion-reduce:transition-none ${focusStyle}`}
+              className={`group flex min-h-14 items-center justify-between gap-4 rounded-xl bg-soft px-5 py-3 text-base font-semibold text-ink transition-colors hover:bg-[#E9AD5E] hover:text-brand motion-reduce:transition-none ${focusStyle}`}
             >
               Join ARPC
               <svg
@@ -166,7 +167,7 @@ const Footer = ({ loading = false }) => {
       </div>
 
       <div className="border-t border-white/15">
-        <div className="flex max-w-8xl flex-col gap-4 px-6 pt-6 pb-20 md:flex-row md:items-center md:justify-between md:gap-8 lg:mx-20 lg:pb-6 2xl:px-24">
+        <div className={`${publicPageFrame} flex flex-col gap-4 py-6 md:flex-row md:items-center md:justify-between md:gap-8`}>
           <p className="flex flex-wrap items-center gap-x-3 gap-y-2 sm:gap-x-4">
             <span className="text-xs text-white/55 sm:text-sm">© {new Date().getFullYear()}</span>
             <span className="font-garamond text-lg leading-none text-[#eef4ef] sm:border-l sm:border-white/20 sm:pl-4 sm:text-xl">

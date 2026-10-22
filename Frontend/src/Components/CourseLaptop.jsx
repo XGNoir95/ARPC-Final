@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import ApplicationLink from "../Components/ApplicationLink";
 import { enrollmentPath } from "../utils/enrollment";
 import { useLayoutEffect, useRef, useState } from "react";
 import { FiArrowLeft, FiArrowUpRight, FiBookOpen, FiCheck, FiClock, FiCompass, FiGrid, FiList, FiMapPin } from "react-icons/fi";
@@ -19,8 +19,8 @@ function FolderArtwork({ cover, fallbackCover }) {
   </span>;
 }
 
-export default function CourseLaptop({ items }) {
-  const [selectedId, setSelectedId] = useState(null);
+export default function CourseLaptop({ items, initialId, preview = false }) {
+  const [selectedId, setSelectedId] = useState(initialId || null);
   const [view, setView] = useState("grid");
   const selected = items.find((item) => item.id === selectedId);
   const panelRef = useRef(null);
@@ -72,18 +72,19 @@ export default function CourseLaptop({ items }) {
 
   useLayoutEffect(() => {
     const compact = window.matchMedia?.("(max-width: 1023px)")?.matches;
-    if (selected) {
+    // Preview updates must not move focus into an iframe or scroll its parent page.
+    if (selected && !preview) {
       panelRef.current?.focus({ preventScroll: true });
       if (compact) panelRef.current?.scrollIntoView?.({
         block: "start",
         behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ? "auto" : "smooth",
       });
-    } else if (wasOpen.current) {
+    } else if (!selected && wasOpen.current) {
       const trigger = returnFocus.current?.isConnected ? returnFocus.current : dockRef.current;
-      trigger?.focus({ preventScroll: !compact });
+      trigger?.focus({ preventScroll: preview || !compact });
     }
     wasOpen.current = Boolean(selected);
-  }, [selected]);
+  }, [selected, preview]);
 
   function openCourse(item, trigger) {
     if (selectedId === item.id) return;
@@ -153,7 +154,7 @@ export default function CourseLaptop({ items }) {
             </div>
             <div className={courseStyles["course-detail-intro"]}>
               <h3 id={`${selected.id}-screen-title`}>{selected.title}</h3>
-              <img src={publicAsset(selected.image)} alt={selected.imageAlt} width="800" height="600" loading="lazy" />
+              {selected.image && <img src={publicAsset(selected.image)} alt={selected.imageAlt} width="800" height="600" loading="lazy" />}
             </div>
             <dl className={courseStyles["course-detail-metadata"]}>
               <div><dt><FiBookOpen aria-hidden="true" />Course fee</dt><dd>{courseFee(selected)}</dd></div>
@@ -166,7 +167,7 @@ export default function CourseLaptop({ items }) {
             <ul className={courseStyles["course-detail-takeaways"]}>{selected.takeaways.map((point) => <li key={point}><FiCheck aria-hidden="true" />{point}</li>)}</ul>
             <div className={courseStyles["course-detail-actions"]}>
               <p>Sample course. Fees, syllabus and availability will be confirmed before enrolment opens.</p>
-              <Link to={enrollmentPath("courses", selected.id)} className="inline-flex min-h-12 shrink-0 items-center justify-center gap-3 rounded-full bg-[#173d2e] px-5 py-3 font-semibold text-white transition-colors duration-200 hover:bg-[#E9AD5E] hover:text-[#173d2e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#173d2e] motion-reduce:transition-none">Enroll in course <FiArrowUpRight aria-hidden="true" /></Link>
+              <ApplicationLink to={enrollmentPath("courses", selected.id)} className="inline-flex min-h-12 shrink-0 items-center justify-center gap-3 rounded-full bg-action px-5 py-3 font-semibold text-on-action transition-colors duration-200 hover:bg-[#E9AD5E] hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink motion-reduce:transition-none">Enroll in course <FiArrowUpRight aria-hidden="true" /></ApplicationLink>
             </div>
           </section>
           <div ref={transitionLayerRef} className={courseStyles["course-detail-transition-layer"]} aria-hidden="true" inert />

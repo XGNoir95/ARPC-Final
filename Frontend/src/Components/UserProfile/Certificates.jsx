@@ -3,13 +3,13 @@ import React from "react";
 
 const Certificates = ({ certificates }) => {
   return (
-    <div className="bg-white rounded-2xl shadow-2xl px-6 sm:px-10 py-7">
+    <div className="bg-surface rounded-2xl shadow-2xl px-6 sm:px-10 py-7">
       <h2 className="text-[2.2rem] md:text-[2.5rem] font-garamond font-bold bg-gradient-to-r from-[#133729] to-green-700 bg-clip-text text-transparent inline-block mb-4">
         Certificates
       </h2>
 
       {(!certificates || certificates.length === 0) ? (
-        <p className="text-[1.1rem] text-gray-600 font-garamond">
+        <p className="text-[1.1rem] text-muted font-garamond">
           You don&apos;t have any certificate-eligible events yet.
         </p>
       ) : (
@@ -17,19 +17,19 @@ const Certificates = ({ certificates }) => {
           {certificates.map((cert) => (
             <li
               key={cert.id}
-              className="border border-gray-300 rounded-xl px-4 sm:px-6 py-8
+              className="border border-ink/20 rounded-xl px-4 sm:px-6 py-8
                          flex flex-col lg:flex-row
                          items-center lg:items-center
-                         lg:justify-between gap-3 bg-[#fdfefe]"
+                         lg:justify-between gap-3 bg-surface"
             >
               <div className="min-w-0 max-w-full [overflow-wrap:anywhere] text-center lg:text-left">
-                <p className="text-[1.6rem] font-garamond font-semibold text-green-900">
+                <p className="text-[1.6rem] font-garamond font-semibold text-ink">
                   {cert.title}
                 </p>
-                <p className="text-[0.95rem] md:text-[1.2rem] text-gray-600">
+                <p className="text-[0.95rem] md:text-[1.2rem] text-muted">
                   Event Date: {cert.eventDate}
                 </p>
-                <p className="text-[0.98rem] md:text-[1.03rem] text-green-700 mt-2">
+                <p className="text-[0.98rem] md:text-[1.03rem] text-muted mt-2">
                   Status: {cert.status}
                 </p>
               </div>

@@ -7,6 +7,8 @@ const heroImages = {
   "/catalogue": ["/images/team/meeting-discussion.jpg"],
   "/gallery": ["/heroBanner.jpg"],
   "/join": ["/images/about/community.jpg"],
+  "/login": ["/heroBanner.jpg"],
+  "/register": ["/heroBanner.jpg"],
 };
 
 // Budget the fade-out as part of the two-second maximum, even for stalled images.
@@ -15,6 +17,8 @@ const MIN_SKELETON_MS = 1600;
 const MAX_PREPARATION_MS = 2000 - ROUTE_FADE_SECONDS * 1000;
 
 export function prepareRoute(pathname, { signal }) {
+  // Workspace navigation has no public hero to preload or skeleton to hold.
+  if (/^\/admin(?:\/|$)/.test(pathname)) return Promise.resolve();
   return new Promise((resolve) => {
     if (signal.aborted) { resolve(); return; }
     const images = [];

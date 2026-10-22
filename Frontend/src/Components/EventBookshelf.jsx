@@ -1,17 +1,18 @@
+import SafeImage from './SafeImage';
+import ApplicationLink from "../Components/ApplicationLink";
 import { enrollmentPath } from "../utils/enrollment";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion as Motion, useReducedMotion } from "framer-motion";
-import { Link } from "react-router-dom";
 import { FiArrowUpRight, FiBookOpen, FiCalendar, FiCheck, FiClock, FiMapPin, FiX } from "react-icons/fi";
 import { formatCatalogueDate, isFinished } from "../data/catalogue";
 import { publicAsset } from "../utils/publicAsset";
 import { bookStyles, bookStylesClasses } from "./EventBookshelf.styles";
 
 const bindings = [
-  { cloth: "#28523e", ink: "#eef4ef", height: 0.92 },
-  { cloth: "#e5eadb", ink: "#173d2e", height: 1 },
-  { cloth: "#E9AD5E", ink: "#102c21", height: 0.94 },
-  { cloth: "#708775", ink: "#102c21", height: 0.97 },
+  { cloth: "var(--color-brand-forest)", ink: "#eef4ef", height: 0.92 },
+  { cloth: "#e5eadb", ink: "var(--color-brand)", height: 1 },
+  { cloth: "#E9AD5E", ink: "var(--color-brand-panel)", height: 0.94 },
+  { cloth: "var(--color-brand-sage)", ink: "var(--color-book-sage-ink)", height: 0.97 },
 ];
 const boundEvents = ["reflection-evening", "books-conversations", "seerah-evening", "community-morning"];
 function bindingFor(item) {
@@ -26,14 +27,14 @@ const shortDate = (date) => new Intl.DateTimeFormat("en-GB", {
 const bookTiming = { expanding: 420, opening: 680, closing: 520, collapsing: 420 };
 const bookEase = [0.45, 0, 0.2, 1];
 
-export default function EventBookshelf({ items, today }) {
+export default function EventBookshelf({ items, today, initialId, preview = false }) {
   const shelfRef = useRef(null);
   const triggerRef = useRef(null);
   const activeArticleRef = useRef(null);
   const queuedBook = useRef(null);
   const openingCount = useRef(0);
   const previouslyOpen = useRef(false);
-  const [book, setBook] = useState(null);
+  const [book, setBook] = useState(() => items.some(item => item.id === initialId) ? { id: initialId, phase: 'open' } : null);
   const reducedMotion = useReducedMotion();
   const activeId = book?.id;
   const phase = book?.phase;
@@ -103,8 +104,8 @@ export default function EventBookshelf({ items, today }) {
     buttons[target].scrollIntoView?.({ block: "nearest", inline: "nearest", behavior: "auto" });
   };
 
-  return <div className={bookStylesClasses(`event-shelf ${activeId ? "event-shelf--reading" : ""}`)}>
-    <div className={bookStyles["event-shelf__scroll"]}>
+  return <div className={`${bookStylesClasses(`event-shelf ${activeId ? "event-shelf--reading" : ""}`)} ${preview && !activeId ? 'max-lg:flex max-lg:flex-1 max-lg:flex-col' : ''}`}>
+    <div className={`${bookStyles["event-shelf__scroll"]} ${preview && !activeId ? 'max-lg:flex max-lg:flex-1 max-lg:flex-col max-lg:justify-center' : ''}`}>
       <div ref={shelfRef} className={bookStyles["event-shelf__row"]}>
         {items.map((item) => {
           const expanded = activeId === item.id;
@@ -128,10 +129,10 @@ export default function EventBookshelf({ items, today }) {
             <span className={bookStyles["event-spine__status"]} data-status={finished ? "finished" : "upcoming"}><span aria-hidden="true" />{finished ? "Finished" : "Upcoming"}</span>
             <span className={bookStyles["event-spine__publisher"]} aria-hidden="true">
               <span className={bookStyles["event-spine__wordmark"]}>
-                <img src={publicAsset("/logo1.png")} alt="" width="8000" height="4500" />
-                <img className="event-spine__wordmark-letters" src={publicAsset("/logo1.png")} alt="" width="8000" height="4500" />
+                <SafeImage src={publicAsset("/logo1.png")} alt="" width="8000" height="4500" />
+                <SafeImage className="event-spine__wordmark-letters" src={publicAsset("/logo1.png")} alt="" width="8000" height="4500" />
               </span>
-              <img className={bookStyles["event-spine__round-logo"]} src={publicAsset("/newLogo.png")} alt="" width="36" height="36" />
+              <SafeImage className={bookStyles["event-spine__round-logo"]} src={publicAsset("/newLogo.png")} alt="" width="36" height="36" />
             </span>
           </button>
           </h3>
@@ -140,7 +141,7 @@ export default function EventBookshelf({ items, today }) {
             animate={{ height: phase === "collapsing" ? book.entryHeight : "auto", opacity: phase === "collapsing" ? 0 : 1 }}
             transition={{ duration: reducedMotion ? 0 : bookTiming.expanding / 1000, ease: bookEase, opacity: { duration: reducedMotion ? 0 : 0.18 } }}
             inert={closing ? true : undefined} aria-hidden={closing ? true : undefined}>
-            <EventBookPages item={item} today={today} phase={phase} reducedMotion={reducedMotion} onClose={closeBook} />
+            <EventBookPages item={item} today={today} phase={phase} reducedMotion={reducedMotion} onClose={closeBook} preview={preview}/>
           </Motion.div>}
         </article>;
         })}
@@ -150,7 +151,7 @@ export default function EventBookshelf({ items, today }) {
   </div>;
 }
 
-function EventBookPages({ item, today, onClose, phase, reducedMotion }) {
+function EventBookPages({ item, today, onClose, phase, reducedMotion, preview }) {
   const pagesRef = useRef(null);
   const finished = isFinished(item, today);
   const dateLabel = formatCatalogueDate(item.date);
@@ -158,8 +159,8 @@ function EventBookPages({ item, today, onClose, phase, reducedMotion }) {
   const dayAndMonth = dateLabel.slice(0, -(year.length + 1));
 
   useEffect(() => {
-    pagesRef.current?.focus({ preventScroll: true });
-  }, []);
+    if (!preview) pagesRef.current?.focus({ preventScroll: true });
+  }, [preview]);
 
   return <section
     ref={pagesRef}
@@ -173,7 +174,7 @@ function EventBookPages({ item, today, onClose, phase, reducedMotion }) {
       <div className={bookStyles["event-book-spread"]}>
         <div className={bookStyles["event-book-left"]}>
           <p className={bookStyles["event-book-format"]}>{item.format}</p>
-          <img src={publicAsset(item.image)} alt={item.imageAlt} width="800" height="600" className={bookStyles["event-book-image"]} />
+          <SafeImage src={publicAsset(item.image)} alt={item.imageAlt} width="800" height="600" className={bookStyles["event-book-image"]} />
           <p className={bookStyles["event-book-introduction"]}>{item.description}</p>
           <span className={bookStyles["event-book-imprint"]}>Ahsanullah Roh. Peace Club</span>
         </div>
@@ -190,7 +191,7 @@ function EventBookPages({ item, today, onClose, phase, reducedMotion }) {
           <p className={bookStyles["event-book-preview"]}>Sample programme. Dates and availability are illustrative.</p>
           <div className={bookStyles["event-book-actions"]}>
             {finished ? <button type="button" disabled className={bookStyles["event-book-register"]}>Registration closed</button>
-              : <Link to={enrollmentPath("events", item.id)} className={bookStyles["event-book-register"]}>Register <span className={bookStyles["event-book-register__arrow"]}><FiArrowUpRight aria-hidden="true" /></span></Link>}
+              : <ApplicationLink to={enrollmentPath("events", item.id)} className={bookStyles["event-book-register"]}>Register <span className={bookStyles["event-book-register__arrow"]}><FiArrowUpRight aria-hidden="true" /></span></ApplicationLink>}
           </div>
         </div>
         {!reducedMotion && <Motion.div
@@ -206,7 +207,7 @@ function EventBookPages({ item, today, onClose, phase, reducedMotion }) {
           <span className={bookStyles["event-book-cover__date"]}>{formatCatalogueDate(item.date)}</span>
           </div>
           <div className={bookStyles["event-book-cover__back"]}>
-            <img src={publicAsset("/newLogo.png")} alt="" width="96" height="96" />
+            <SafeImage src={publicAsset("/newLogo.png")} alt="" width="96" height="96" />
             <span>Ahsanullah Roh. Peace Club</span>
           </div>
         </Motion.div>}

@@ -3,13 +3,13 @@ import React from "react";
 
 const UserEvents = ({ events }) => {
   return (
-    <div className="bg-white rounded-2xl shadow-2xl px-6 sm:px-10 py-7">
+    <div className="bg-surface rounded-2xl shadow-2xl px-6 sm:px-10 py-7">
       <h2 className="text-[2.2rem] md:text-[2.5rem] font-garamond font-bold bg-gradient-to-r from-[#133729] to-green-700 bg-clip-text text-transparent inline-block mb-5">
         Participated Events
       </h2>
 
       {(!events || events.length === 0) ? (
-        <p className="text-[1.1rem] text-gray-600 font-garamond">
+        <p className="text-[1.1rem] text-muted font-garamond">
           You haven&apos;t participated in any events yet.
         </p>
       ) : (
@@ -17,16 +17,16 @@ const UserEvents = ({ events }) => {
           {events.map((ev) => (
             <div
               key={ev.id}
-              className="border border-gray-300 rounded-xl px-4 sm:px-6 py-10 bg-[#fdfefe]
+              className="border border-ink/20 rounded-xl px-4 sm:px-6 py-10 bg-surface
                          flex flex-col lg:flex-row
                          items-center lg:items-center
                          lg:justify-between gap-2"
             >
               <div className="min-w-0 max-w-full [overflow-wrap:anywhere] text-center lg:text-left">
-                <p className="text-[1.6rem] font-garamond font-semibold text-green-900">
+                <p className="text-[1.6rem] font-garamond font-semibold text-ink">
                   {ev.title}
                 </p>
-                <p className="text-[1.1rem] md:text-[1.2rem] text-gray-600">
+                <p className="text-[1.1rem] md:text-[1.2rem] text-muted">
                   {ev.date}
                 </p>
               </div>

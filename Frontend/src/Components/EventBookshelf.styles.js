@@ -6,7 +6,7 @@ export const bookStyles = {
     "event-shelf",
     "[--shelf-height:clamp(24rem,_40vw,_34rem)] [--reader-width:clamp(40rem,_calc(100vw_-_24rem),_58rem)]",
     "[--spine-width:clamp(5.3rem,_15vw,_13rem)] [--spine-title-size:clamp(1.7rem,_3.3vw,_3.1rem)] [--neighbor-title-size:1.35rem]",
-    "[--open-title-size:clamp(2.25rem,_3.7vw,_3.4rem)] [border-radius:1.25rem] [background:#eef4ef] overflow-hidden",
+    "[--open-title-size:clamp(2.25rem,_3.7vw,_3.4rem)] [border-radius:1.25rem] [background:var(--color-soft)] overflow-hidden",
     // @media (width<=639px) .event-shelf
     "[@media(width<=639px)]:[--shelf-height:23rem] [@media(width<=639px)]:[--reader-width:calc(100vw_-_5rem)]",
     "[@media(width<=639px)]:[--spine-title-size:clamp(1.25rem,_4.5vw,_1.5rem)] [@media(width<=639px)]:[--neighbor-title-size:1.1rem]",
@@ -23,7 +23,7 @@ export const bookStyles = {
   ].join(" "),
   "event-shelf__scroll": [
     "event-shelf__scroll",
-    "overflow-x-auto [padding:2.5rem_1.5rem_1.75rem] [scrollbar-width:thin] [scrollbar-color:#577262_#eef4ef]",
+    "overflow-x-auto [padding:2.5rem_1.5rem_1.75rem] [scrollbar-width:thin] [scrollbar-color:var(--color-muted)_var(--color-soft)]",
     // @media (width<=639px) .event-shelf__scroll
     "[@media(width<=639px)]:[padding:1.75rem_1rem_1.25rem] [@media(width<=639px)]:[scroll-snap-type:x_proximity]",
   ].join(" "),
@@ -34,7 +34,7 @@ export const bookStyles = {
     "[@media(width<=639px)]:[justify-content:flex-start]",
     //  .event-shelf__row::after
     "[&::after]:content-[''] [&::after]:absolute [&::after]:[inset:auto_0_0] [&::after]:h-[0.65rem] [&::after]:[border-top:2px_solid_#E9AD5E]",
-    "[&::after]:[border-radius:0_0_3px_3px] [&::after]:[background:#fff] [&::after]:[box-shadow:0_6px_12px_rgb(23_61_46_/_12%)]",
+    "[&::after]:[border-radius:0_0_3px_3px] [&::after]:[background:var(--color-surface)] [&::after]:[box-shadow:0_6px_12px_rgb(23_61_46_/_12%)]",
     "[&::after]:pointer-events-none",
   ].join(" "),
   "event-volume": [
@@ -82,7 +82,7 @@ export const bookStyles = {
   ].join(" "),
   "event-book-pages": [
     "event-book-pages",
-    "relative isolate [width:calc(var(--reader-width)_-_0.8rem)] [perspective:1800px] [outline:none] text-[#173d2e]",
+    "relative isolate [width:calc(var(--reader-width)_-_0.8rem)] [perspective:1800px] [outline:none] text-ink",
   ].join(" "),
   "event-spine": [
     "event-spine",
@@ -127,14 +127,14 @@ export const bookStyles = {
     //  .event-spine__status > span
     "[&_>_span]:flex-none [&_>_span]:w-[6px] [&_>_span]:h-[6px] [&_>_span]:rounded-[50%] [&_>_span]:[box-shadow:0_0_0_1px_rgb(255_255_255_/_60%)]",
     //  .event-spine__status[data-status="upcoming"] > span
-    "[&[data-status=upcoming]_>_span]:[background:#E9AD5E]",
+    "[&[data-status=upcoming]_>_span]:[background:#E9AD5E] [&[data-status=upcoming]_>_span]:text-brand",
     //  .event-spine__status[data-status="finished"] > span
     "[&[data-status=finished]_>_span]:[background:#64748b]",
   ].join(" "),
   "event-book-status": [
     "event-book-status",
     //  .event-book-status[data-status="upcoming"] > span
-    "[&[data-status=upcoming]_>_span]:[background:#E9AD5E]",
+    "[&[data-status=upcoming]_>_span]:[background:#E9AD5E] [&[data-status=upcoming]_>_span]:text-brand",
     //  .event-book-status[data-status="finished"] > span
     "[&[data-status=finished]_>_span]:[background:#64748b]",
     "inline-flex items-center gap-2 [font-size:0.8rem] font-semibold",
@@ -165,19 +165,19 @@ export const bookStyles = {
   ].join(" "),
   "event-shelf__hint": [
     "event-shelf__hint",
-    "flex items-center justify-center gap-[0.65rem] m-0 [padding:1rem_1.5rem_1.5rem] text-[#173d2e] text-center [font-size:0.875rem]",
+    "flex items-center justify-center gap-[0.65rem] m-0 [padding:1rem_1.5rem_1.5rem] text-ink text-center [font-size:0.875rem]",
     "[line-height:1.5]",
     // @media (width<=639px) .event-shelf__hint
     "[@media(width<=639px)]:gap-2 [@media(width<=639px)]:[font-size:0.8125rem] [@media(width<=639px)]:px-5",
     //  .event-shelf__hint > span
     "[&_>_span]:min-w-0",
     //  .event-shelf__hint svg
-    "[&_svg]:flex-none [&_svg]:w-[1.1rem] [&_svg]:h-[1.1rem] [&_svg]:text-[#577262]",
+    "[&_svg]:flex-none [&_svg]:w-[1.1rem] [&_svg]:h-[1.1rem] [&_svg]:text-muted",
   ].join(" "),
   "event-book-spread": [
     "event-book-spread",
-    "relative grid [grid-template-columns:repeat(2,_minmax(0,_1fr))] [border:1px_solid_#577262] [border-radius:4px_10px_10px_4px]",
-    "[background:#fff] [box-shadow:0_2px_0_#dbe6de,_0_4px_0_#577262,_0_5px_0_rgb(23_61_46_/_25%)] [transform-style:preserve-3d]",
+    "relative grid [grid-template-columns:repeat(2,_minmax(0,_1fr))] [border:1px_solid_var(--color-muted)] [border-radius:4px_10px_10px_4px]",
+    "[background:var(--color-surface)] [box-shadow:0_2px_0_var(--color-raised),_0_4px_0_var(--color-muted),_0_5px_0_rgb(23_61_46_/_25%)] [transform-style:preserve-3d]",
     // @media (width<=767px) .event-book-spread
     "[@media(width<=767px)]:flex [@media(width<=767px)]:flex-col",
     //  .event-book-spread::after
@@ -189,7 +189,7 @@ export const bookStyles = {
   ].join(" "),
   "event-book-left": [
     "event-book-left",
-    "flex flex-col gap-6 min-w-0 [padding:clamp(1.5rem,_3vw,_3rem)] [border-radius:4px_0_0_4px] [background:#f7faf5]",
+    "flex flex-col gap-6 min-w-0 [padding:clamp(1.5rem,_3vw,_3rem)] [border-radius:4px_0_0_4px] [background:var(--color-field)]",
     // @media (width<=639px) .event-book-left
     "[@media(width<=639px)]:gap-4 [@media(width<=639px)]:p-6 [@media(width<=639px)]:pt-17 [@media(width<=639px)]:[border-radius:4px_4px_0_0]",
     //  .event-book-left > *
@@ -261,14 +261,14 @@ export const bookStyles = {
   ].join(" "),
   "event-book-close": [
     "event-book-close",
-    "absolute top-7 right-7 [z-index:2] grid place-items-center w-11 h-11 [border:0] rounded-[50%] [background:#eef4ef] text-[#173d2e]",
+    "absolute top-7 right-7 [z-index:2] grid place-items-center w-11 h-11 [border:0] rounded-[50%] [background:var(--color-soft)] text-ink",
     "cursor-pointer [transition:background-color_180ms_ease]",
     // @media (width<=639px) .event-book-close
     "[@media(width<=639px)]:top-4 [@media(width<=639px)]:right-4 [@media(width<=639px)]:[box-shadow:0_2px_8px_rgb(16_44_33_/_12%)]",
     //  .event-book-close svg
     "[&_svg]:w-5 [&_svg]:h-5",
     //  .event-book-close:hover
-    "[&:hover]:[background:#E9AD5E]",
+    "[&:hover]:[background:#E9AD5E] [&:hover]:text-brand",
     //  .event-book-close:focus-visible
     "[&:focus-visible]:[outline:2px_solid_#E9AD5E] [&:focus-visible]:[outline-offset:4px]",
     // @media (prefers-reduced-motion: reduce) .event-book-close
@@ -287,7 +287,7 @@ export const bookStyles = {
     "[&_>_div]:min-w-0",
     //  .event-book-metadata dt
     "[&_dt]:flex [&_dt]:items-center [&_dt]:justify-center [&_dt]:gap-[0.45rem] [&_dt]:min-h-6 [&_dt]:whitespace-nowrap",
-    "[&_dt]:[font-size:0.85rem] [&_dt]:[line-height:1.5] [&_dt]:text-[#577262]",
+    "[&_dt]:[font-size:0.85rem] [&_dt]:[line-height:1.5] [&_dt]:text-muted",
     //  .event-book-metadata dt svg
     "[&_dt_svg]:flex-none [&_dt_svg]:w-[1.1rem] [&_dt_svg]:h-[1.1rem]",
     //  .event-book-metadata dd
@@ -299,7 +299,7 @@ export const bookStyles = {
   ].join(" "),
   "event-book-metadata__year": [
     "event-book-metadata__year",
-    "block mt-[0.15rem] text-[#577262] [font-size:0.85rem] font-normal",
+    "block mt-[0.15rem] text-muted [font-size:0.85rem] font-normal",
   ].join(" "),
   "event-book-description": [
     "event-book-description",
@@ -315,7 +315,7 @@ export const bookStyles = {
   ].join(" "),
   "event-book-preview": [
     "event-book-preview",
-    "mt-5 text-[#577262] [font-size:0.8rem] [line-height:1.6]",
+    "mt-5 text-muted [font-size:0.8rem] [line-height:1.6]",
   ].join(" "),
   "event-book-actions": [
     "event-book-actions",
@@ -324,16 +324,16 @@ export const bookStyles = {
   "event-book-register": [
     "event-book-register",
     "inline-flex items-center justify-center gap-5 min-h-13 [padding:0.6rem_0.65rem_0.6rem_1.5rem] [border:0] rounded-[999px]",
-    "[background:#173d2e] text-[#fff] no-underline [font-size:1.05rem] font-semibold [line-height:1.25] cursor-pointer",
+    "bg-action text-on-action no-underline [font-size:1.05rem] font-semibold [line-height:1.25] cursor-pointer",
     "[transition:background-color_180ms_ease,_color_180ms_ease]",
     //  .event-book-register svg
     "[&_svg]:w-[1.1rem] [&_svg]:h-[1.1rem]",
     //  .event-book-register:hover
-    "[&:hover:not(:disabled)]:[background:#E9AD5E] [&:hover:not(:disabled)]:text-[#102c21]",
+    "[&:hover:not(:disabled)]:[background:#E9AD5E] [&:hover:not(:disabled)]:text-brand",
     //  .event-book-register:hover .event-book-register__arrow
     String.raw`[&:hover_.event-book-register\_\_arrow]:[border-color:rgb(16_44_33_/_30%)]`,
     //  .event-book-register:disabled
-    "[&:disabled]:px-5 [&:disabled]:[background:#eef4ef] [&:disabled]:text-[#577262] [&:disabled]:cursor-default",
+    "[&:disabled]:px-5 [&:disabled]:[background:var(--color-soft)] [&:disabled]:text-muted [&:disabled]:cursor-default",
     //  .event-book-register:focus-visible
     "[&:focus-visible]:[outline:2px_solid_#E9AD5E] [&:focus-visible]:[outline-offset:4px]",
     // @media (prefers-reduced-motion: reduce) .event-book-register
@@ -363,7 +363,7 @@ export const bookStyles = {
   "event-book-cover__back": [
     "event-book-cover__back",
     "absolute [inset:0] flex flex-col justify-center gap-4 [padding:clamp(1.5rem,_3vw,_3rem)] [border:1px_solid_rgb(16_44_33_/_28%)]",
-    "[border-radius:0_9px_9px_0] backface-hidden overflow-hidden items-center [background:#f7faf5] text-[#577262]",
+    "[border-radius:0_9px_9px_0] backface-hidden overflow-hidden items-center [background:var(--color-field)] text-muted",
     "[transform:rotateY(180deg)_translateZ(1px)] [box-shadow:inset_10px_0_20px_-10px_rgb(23_61_46_/_20%)]",
     // @media (width<=639px) .event-book-cover__back
     "[@media(width<=639px)]:p-8",

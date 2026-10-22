@@ -50,6 +50,7 @@ function blocks(source) {
 }
 for (const { header, body } of blocks(css)) {
   if (/^@import\s+["']tailwindcss["'];$/.test(header)) continue;
+  if (header === '@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));') continue;
   if (header === '@font-face' || header === '@theme' || /^@keyframes\s+[\w-]+$/.test(header)) continue;
   if (header === '@layer base') {
     for (const block of blocks(body)) {

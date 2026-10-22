@@ -33,11 +33,14 @@ ARPC's website introduces the club, its people, events and affiliations. The int
 | Panel | Executive committee and team profiles with local portrait placeholders. |
 | Gallery | A photo album with page-fold transitions, timed playback, a single compact control bar and a full-image viewer; illustrative photos are clearly labelled. |
 | Club reflection | A founder's quotation, expandable reflection and club contact links. |
-| Membership | Public Join Us form with validation, application review, an email draft and a downloadable copy. |
-| Enrollment | Individual event, webinar and course enrollment pages with programme details, validated student fields, review, email drafts and text downloads. |
-| Admin interface prototypes | Unlisted login and registration routes, plus a sample profile with event and certificate tabs. |
+| Membership | Public Join Us form with validation, application review, database submission, queued confirmation and a downloadable copy. |
+| Enrollment | Individual event, webinar and course enrollment pages with programme details, validated student fields, review, database submission, queued receipts and text downloads. |
+| Admin workspace | Approved admins manage content, applications, lessons and materials with CRUD, draft publishing and analytics. A superadmin controls access. |
+| Learning | Approved course enrollees receive email access links, track lesson progress and download completion certificates. |
 
-**Current scope:** this repository is a frontend application. Membership applications are sent by the applicant through their email app; no application database is connected. Account interfaces use placeholder data and behavior; admin authorization, account creation, certificate generation and a backend service are not implemented. Unlisted account routes remain directly reachable.
+**Current scope:** MERN backend for local development, with real admin sessions, superadmin approval, content drafts/publication, database-backed applications, queued confirmation/reset emails, course lessons/materials/progress and PDF certificates. See [Backend setup](Backend/README.md) for first-superadmin, Google OAuth and SMTP configuration. Credentials are blank by default; external email delivery and Google sign-in require your configuration.
+
+Start the API in `Backend` with `npm ci` and `npm run dev:local`; seed drafts with `npm run seed`. Start the frontend separately using the commands below. The backend database persists outside the repository in `~/.arpc/dev-db`.
 
 ## Run locally
 
