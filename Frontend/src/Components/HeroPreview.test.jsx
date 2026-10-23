@@ -1,8 +1,8 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
-import AdminHeroPreview from './AdminHeroPreview';
+import AdminHeroPreview from './Admin/AdminHeroPreview';
 import HeroPreviewPage from './HeroPreviewPage';
-import { ThemeContext } from '../ThemeContext';
+import { ThemeContext } from '../contexts/ThemeContext';
 import { heroPreviewMessages as messages } from '../utils/heroPreview';
 
 const hero = { id: 'hero', title: 'Default welcome', description: 'Default introduction', arabicGreeting: 'السلام عليكم', slides: [

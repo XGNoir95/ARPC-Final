@@ -4,7 +4,7 @@ import { FiArrowLeft, FiEye, FiEyeOff } from "react-icons/fi";
 import { publicAsset } from "../utils/publicAsset";
 import { studentFields } from "../utils/studentDetails";
 import { post } from "../utils/api";
-import { useAuth } from '../AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import GoogleSignIn from "./GoogleSignIn";
 import HeroShade from './HeroShade';
 import { Notice } from './StateView';

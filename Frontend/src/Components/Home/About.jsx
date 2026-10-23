@@ -1,5 +1,5 @@
 import { aboutCards as sampleCards } from "../../data/about";
-import { useContent } from "../../ContentContext";
+import { useContent } from "../../contexts/ContentContext";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { publicAsset } from "../../utils/publicAsset";

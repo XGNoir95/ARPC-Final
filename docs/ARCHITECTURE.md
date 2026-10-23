@@ -6,6 +6,7 @@ The React/Vite frontend uses Tailwind, EB Garamond, local static assets and the 
 flowchart LR
   browser[React frontend] --> api[Express API]
   api --> db[(MongoDB)]
+  api --> redis[(Redis: rate limits and public cache)]
   api --> media[Private local media storage]
   api --> identity[Google ID-token verification]
   db --> mail[SMTP outbox worker]
@@ -30,13 +31,15 @@ flowchart LR
 | `/`, `/catalogue`, `/gallery`, `/team` | Existing public layouts with published API content |
 | `/join` | Public membership application and manual payment information |
 | `/enroll/:kind/:id` | Enrollment form for a published programme |
-| `/login`, `/register` | Unlisted admin authentication/request pages, Google or password |
-| `/forgot-password`, `/reset-password`, `/verify-email` | Email account recovery and verification |
-| `/admin/*` | Server-approved admin workspace or pending-access state |
+| `/login`, `/register` | Admin-origin-only authentication/request pages, Google or password |
+| `/forgot-password`, `/reset-password`, `/verify-email` | Admin-origin-only email recovery and verification |
+| `/admin/*` | Admin-origin-only, server-approved workspace or pending-access state |
 | `/learn` | Email-link learning area for approved enrollees |
 | `/profile` | Legacy illustrative profile component; not an authentication boundary |
 
 Account/admin/learning pages use standalone layouts without public navigation or footer. BrowserRouter and HashRouter are supported; set the backend FRONTEND_URL to include `/#` when using hash links in emails. Route skeleton timing remains capped at two seconds; data requests have explicit loading/error states.
+
+The public site does not expose administrator authentication or workspace routes. Production administrator access requires a separate HTTPS origin protected by the configured identity gateway, plus the application's own session and approval checks. See [admin hosting](admin-hosting.md).
 
 ## Local runtime and validation
 

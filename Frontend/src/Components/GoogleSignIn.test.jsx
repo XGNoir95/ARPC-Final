@@ -2,7 +2,7 @@ import { act,cleanup,fireEvent,render,screen,waitFor } from '@testing-library/re
 import { beforeEach,afterEach,it,expect,vi } from 'vitest';
 import GoogleSignIn from './GoogleSignIn';
 import { api } from '../utils/api';
-import { ThemeContext } from '../ThemeContext';
+import { ThemeContext } from '../contexts/ThemeContext';
 vi.mock('../utils/api',()=>({api:vi.fn()}));
 beforeEach(()=>{vi.stubGlobal('google',{accounts:{id:{initialize:vi.fn(),renderButton:vi.fn(el=>{const b=document.createElement('button');b.textContent='Official Google button';el.append(b);})}}});api.mockImplementation(async path=>path==='/config'?{googleClientId:'test-client'}:{nonce:'browser-challenge'});});
 afterEach(()=>{cleanup();vi.restoreAllMocks();vi.unstubAllGlobals();});

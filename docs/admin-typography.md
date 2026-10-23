@@ -13,7 +13,7 @@ The admin workspace retains ARPC's green and gold palette, the existing dark the
 | Sidebar logo | 56px on phones, 64px from the small breakpoint | Fixed square, no shrinking |
 | Sidebar wordmark | 36px on phones, 40px from the small breakpoint | Garamond semibold |
 
-The shared rules are in `Frontend/src/Components/AdminUI.styles.js`. The larger type replaces the former 12px supporting copy and 14px primary copy. Forms retain 16px inputs, and explanations stay within 65–70 characters per line. Colors and decorative treatments are retained rather than introducing a second visual identity.
+The shared rules are in `Frontend/src/Components/Admin/AdminUI.styles.js`. The larger type replaces the former 12px supporting copy and 14px primary copy. Forms retain 16px inputs, and explanations stay within 65–70 characters per line. Colors and decorative treatments are retained rather than introducing a second visual identity.
 
 ## Layout
 

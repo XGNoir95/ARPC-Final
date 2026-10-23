@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { FiX } from 'react-icons/fi';
 import { api } from '../utils/api';
-import { useTheme } from '../ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 let scriptPromise;
 const loadGoogle=()=>{
  if(window.google?.accounts?.id)return Promise.resolve();

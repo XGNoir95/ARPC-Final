@@ -6,7 +6,7 @@ import { enrollmentFields, enrollmentFromPath } from "../utils/enrollment";
 import { studentFields as membershipFields } from "../utils/studentDetails";
 import { galleryPhotos, journalOffset, journalPosition } from "../data/gallery";
 import { publicPageFrame as frame } from "./PublicLayout.styles";
-import { adminLayout, adminPreviewCardGrid } from "./AdminUI.styles";
+import { adminLayout, adminPreviewCardGrid } from "./Admin/AdminUI.styles.js";
 
 function HomeHeroSkeleton() {
   return <div data-skeleton-section="hero" className="flex min-h-[100svh] bg-soft lg:min-h-[min(60rem,100svh)]">

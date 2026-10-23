@@ -38,6 +38,17 @@ Vite waits up to 30 seconds for `/api/health/ready` before listening. During bac
 
 Run `npm run validate` before pushing. It mirrors CI's validation steps; the workflow supplies the Pages environment described below.
 
+## Source organization
+
+- `Frontend/src/Pages` contains route-level views. The administrator workspace lives in `Pages/Admin/Workspace.jsx`.
+- `Frontend/src/Components/Admin` groups administrator editors, preview components and workspace controls. Other shared and public components remain under `Components`.
+- `Frontend/src/contexts` contains shared context definitions and their providers for authentication, content, theme and route transitions.
+- Keep component tests and `*.styles.js` modules beside the code they exercise. Shared test setup belongs in `src/test`.
+- Keep API, asset and interaction helpers under `src/utils`. Avoid compatibility re-exports when callers can import the implementation directly.
+- `Frontend/src/data` includes bundled sample content and presets. The backend seed script also imports these modules, so check both applications before removing them.
+- Backend runtime code belongs in `Backend/src`, operational commands in `Backend/scripts`, and integration tests in `Backend/test`.
+- Keep local configuration, uploads, databases and generated artifacts outside tracked source. The root `.gitignore` defines these exclusions.
+
 ## Styling
 
 Use Tailwind v4 utilities throughout the website. For complex book, folder and laptop states, complete utility strings live beside the component in `*.styles.js` modules. Semantic class names remain as interaction and test hooks; they do not define separate CSS rules.
@@ -96,17 +107,32 @@ coverImage: "/images/courses/my-course.jpg",
 `courseCoverPresets` exported from `Frontend/src/utils/courseCovers.js` provides
 each preset's stable `id`, readable `label`, preview `cover`, folder `color` and
 `ink`. The admin programme editor displays these previews and saves the chosen
-`id` as `coverTheme` in its course record. No admin or backend is implemented yet.
+`id` as `coverTheme` in its course record. Draft and published course content are
+stored by the backend; bundled records also provide the seed script's sample data.
 
 Without an explicit theme, the title and format select a subject illustration;
 unmatched subjects use the general learning cover. A custom image takes precedence
 and falls back to the selected illustration if it fails to load. Custom images may
-also use an HTTPS URL supplied by a future upload service. Bundled preset assets
+also use an HTTPS URL entered in the image field. Bundled preset assets
 use Vite imports, so their URLs work under the GitHub Pages deployment base.
 
 ## CI and deployment
 
-The workflows live in [`.github/workflows/`](../.github/workflows/). `Validate frontend` must pass before a `main` build can deploy. CodeQL performs a separate JavaScript analysis.
+The workflows live in [`.github/workflows/`](../.github/workflows/). Both frontend and backend validation must pass before an eligible `main` build can deploy the public site to Pages. Deployment is disabled until the repository variable `VITE_API_URL` is configured. CodeQL performs a separate JavaScript analysis. The workflow does not deploy the protected administrator artifact or provision backend services.
+
+Build the administrator artifact separately, with the exact protected HTTPS origin. In PowerShell, from `Frontend`:
+
+```powershell
+$env:VITE_ADMIN_ORIGIN = 'https://admin.example.com'
+$env:VITE_API_URL = '/api'
+npm run build:admin
+$env:BUILD_DIR = 'dist-admin'
+$env:VITE_BASE_PATH = '/'
+npm run verify:build
+Remove-Item Env:BUILD_DIR
+```
+
+Replace the example origin with your deployment's origin. These environment values affect subsequent commands in the same terminal; restore your public build values before building the public site. The admin artifact still requires the gateway described in [admin hosting](admin-hosting.md).
 
 GitHub Pages must use **GitHub Actions** as its publishing source. Production deployments use the `github-pages` environment and short-lived GitHub credentials. Pull requests validate without production deployment permissions.
 

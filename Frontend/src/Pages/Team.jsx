@@ -1,4 +1,4 @@
-import { useContent } from "../ContentContext";
+import { useContent } from "../contexts/ContentContext";
 import StateView from "../Components/StateView";
 import { ContentNotice, ContentUnavailable } from "../Components/ContentFeedback";
 import { teams as sampleTeams } from "../data/teams";

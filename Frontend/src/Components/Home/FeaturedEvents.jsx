@@ -1,6 +1,6 @@
 import SafeImage from '../SafeImage';
 import ApplicationLink from "../../Components/ApplicationLink";
-import { useContent } from "../../ContentContext";
+import { useContent } from "../../contexts/ContentContext";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { featuredEvents as sampleEvents } from "../../data/featuredEvents";
 import { enrollmentPath } from "../../utils/enrollment";

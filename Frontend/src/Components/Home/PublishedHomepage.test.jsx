@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { expect, it } from 'vitest';
-import { ContentContext } from '../../ContentContext';
+import { ContentContext } from '../../contexts/ContentContext';
 import Hero from './Hero';
 import About from './About';
 import FeaturedEvents from './FeaturedEvents';

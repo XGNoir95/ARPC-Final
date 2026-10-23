@@ -1,4 +1,4 @@
-import { useContent } from "../ContentContext";
+import { useContent } from "../contexts/ContentContext";
 import { useEffect, useState } from "react";
 import { FiArrowDown, FiSearch } from "react-icons/fi";
 import { publicAsset } from "../utils/publicAsset";

@@ -8,10 +8,10 @@ import {
   useLocation,
 } from "react-router-dom";
 
-import { useAuth } from './AuthContext';
-import { useContent } from './ContentContext';
-import AuthProvider from './Components/AuthProvider';
-import ThemeProvider from './Components/ThemeProvider';
+import { useAuth } from './contexts/AuthContext';
+import { useContent } from './contexts/ContentContext';
+import AuthProvider from './contexts/AuthProvider';
+import ThemeProvider from './contexts/ThemeProvider';
 import FloatingControls from './Components/FloatingControls';
 import SessionGate from './Components/SessionGate';
 import Navbar from "./Components/Navbar";
@@ -19,10 +19,10 @@ import Footer from "./Components/Footer";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
-import ContentProvider from "./Components/ContentProvider";
+import ContentProvider from "./contexts/ContentProvider";
 import AccountRecovery from "./Pages/AccountRecovery";
 import Learning from "./Pages/Learning";
-import AdminDashboard from "./Pages/AdminDashboard";
+import AdminWorkspace from "./Pages/Admin/Workspace";
 import TeamPage from "./Pages/Team";
 import Catalogue from "./Pages/Catalogue";
 import Gallery from "./Pages/Gallery";
@@ -30,7 +30,7 @@ import Profile from "./Pages/Profile";
 import Join from "./Pages/Join";
 import Enrollment from "./Pages/Enrollment";
 import { enrollmentFromPath } from "./utils/enrollment";
-import { RouteTransitionProvider } from "./RouteTransitionContext";
+import { RouteTransitionProvider } from "./contexts/RouteTransitionProvider";
 import AnimatedPage from "./Components/AnimatedPage";
 import { prepareRoute } from "./utils/prepareRoute";
 import PageErrorBoundary from './Components/PageErrorBoundary';
@@ -124,7 +124,7 @@ function AppContent() {
             <Route path="/forgot-password" element={<AccountRecovery key={location.search} />} />
             <Route path="/reset-password" element={<AccountRecovery key={location.search} />} />
             <Route path="/verify-email" element={<AccountRecovery key={location.search} verify />} />
-            <Route path="/admin/*" element={<AdminDashboard />} /></>}
+            <Route path="/admin/*" element={<AdminWorkspace />} /></>}
             <Route path="/learn" element={<SessionGate mode="applicant"><Learning /></SessionGate>} />
             <Route path="*" element={<StatePage kind="missing" title="We can’t find that page." description="The link may have changed, or the page is no longer available. You can return home or explore the club’s programmes." actions={[{label:'Go to home',to:'/'}, {label:'Browse programmes',to:'/catalogue',secondary:true}]}/>} />
           </Routes>

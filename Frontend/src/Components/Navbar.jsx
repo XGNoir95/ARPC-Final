@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from '../AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { publicAsset } from "../utils/publicAsset";
 import { userMessage } from '../utils/userMessages';
 import { publicPageFrame } from './PublicLayout.styles';

@@ -1,8 +1,8 @@
 import { cleanup,fireEvent,render,screen,waitFor,within } from '@testing-library/react';
 import { afterEach,beforeEach,expect,it,vi } from 'vitest';
 import App from './App';
-import AuthProvider from './Components/AuthProvider';
-import { useAuth } from './AuthContext';
+import AuthProvider from './contexts/AuthProvider';
+import { useAuth } from './contexts/AuthContext';
 import { api,post } from './utils/api';
 vi.mock('./utils/api',()=>({api:vi.fn(),post:vi.fn(),API_BASE:'/api'}));
 const profile={id:'admin',fullName:'Test Administrator',email:'admin@example.test',status:'active',emailVerified:true,role:'admin'};let signedIn;

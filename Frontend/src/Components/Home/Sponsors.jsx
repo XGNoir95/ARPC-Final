@@ -1,5 +1,5 @@
 import { affiliations as sampleAffiliations } from "../../data/sponsors";
-import { useContent } from "../../ContentContext";
+import { useContent } from "../../contexts/ContentContext";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { publicAsset } from "../../utils/publicAsset";
 import { publicPageFrame } from "../PublicLayout.styles";

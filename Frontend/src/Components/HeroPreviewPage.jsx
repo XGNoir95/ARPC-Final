@@ -1,8 +1,8 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { AuthContext } from '../AuthContext';
-import { ContentContext } from '../ContentContext';
-import { ThemeContext } from '../ThemeContext';
+import { AuthContext } from '../contexts/AuthContext';
+import { ContentContext } from '../contexts/ContentContext';
+import { ThemeContext } from '../contexts/ThemeContext';
 import { applyTheme, normalizeTheme } from '../utils/theme';
 import { heroPreviewMessages as messages } from '../utils/heroPreview';
 import usePreviewDocument from '../utils/usePreviewDocument';

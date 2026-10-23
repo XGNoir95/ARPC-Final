@@ -1,4 +1,4 @@
-import { useContent } from "../../ContentContext";
+import { useContent } from "../../contexts/ContentContext";
 import { useEffect, useRef, useState } from "react";
 import { publicAsset } from "../../utils/publicAsset";
 import HijriDate from "./HijriDate";

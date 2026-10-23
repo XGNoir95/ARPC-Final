@@ -1,8 +1,8 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import { ContentContext, useContent } from '../ContentContext';
-import ContentProvider from '../Components/ContentProvider';
+import { ContentContext, useContent } from '../contexts/ContentContext';
+import ContentProvider from '../contexts/ContentProvider';
 import { ContentNotice } from '../Components/ContentFeedback';
 import Catalogue from './Catalogue';
 import Gallery from './Gallery';

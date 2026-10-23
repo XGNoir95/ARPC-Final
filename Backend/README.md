@@ -1,4 +1,4 @@
-# ARPC backend (local MERN)
+# ARPC backend
 
 Express, MongoDB/Mongoose, React and Node. The API stores real accounts, content, membership/enrollment applications and learning progress. No payment gateway is used.
 
@@ -46,7 +46,7 @@ Start the frontend separately in `Frontend` with `npm run dev`. Vite waits up to
 
 ## Email and Google setup
 
-SMTP credentials are intentionally **blank** in `.env` and `.env.example`. `SMTP_HOST` defaults to `smtp.gmail.com`, port 587. Set `SMTP_USER` and `SMTP_PASS` to your test mailbox credentials; `MAIL_FROM` defaults to `SMTP_USER` if left blank. Gmail requires an **app password**, not the usual account password ([Google instructions](https://support.google.com/accounts/answer/185833)). For another provider, change host/port/security as appropriate.
+SMTP credentials are intentionally **blank** in `.env.example`. `SMTP_HOST` defaults to `smtp.gmail.com`, port 587. Set `SMTP_USER` and `SMTP_PASS` in your private environment to your test mailbox credentials; `MAIL_FROM` defaults to `SMTP_USER` if left blank. Gmail requires an **app password**, not the usual account password ([Google instructions](https://support.google.com/accounts/answer/185833)). For another provider, change host/port/security as appropriate.
 
 Without credentials, emails stay in a database outbox; the UI reports queued, not delivered. Once configured and restarted, the worker sends every 30 seconds with bounded retries. Failed deliveries can be retried by the superadmin. For local development only, `npm run mail:inspect` displays queued email messages, including private verification codes and reset/learner links: never share this output. Email verification codes last 10 minutes and work once. Resends wait 60 seconds, with five code emails per hour and five guesses per 15 minutes across resends. Reset/learner links last one hour and invitations last 72 hours. Expired codes/links need a fresh request. Never enter real passwords or secrets in committed files.
 
@@ -54,7 +54,7 @@ All outgoing emails have an ARPC-branded HTML design and a plain-text alternativ
 
 Run `npm run mail:preview` in `Backend` to generate a local preview gallery at `.cache/mail-preview/index.html`, with desktop/mobile views and plain-text examples. It uses fictional content and does not load `.env`, connect to the database or send email. Edit shared branding and wording in `src/emailTemplates.js`. See [the email design notes](../docs/email-design.md) for coverage and validation details.
 
-Google sign-in uses Google Identity Services and server-side ID-token verification. Create an OAuth **Web application** client, configure the authorized JavaScript origin `http://localhost:5173`, and set `GOOGLE_CLIENT_ID` in `Backend/.env`. Restart the API. No frontend secret is required. Both Google and password signup require superadmin approval. To add Google to an existing password account, sign in first and use **Account → Link Google sign-in** with the same email. [Google setup](https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid).
+Google sign-in uses Google Identity Services and server-side ID-token verification. Create an OAuth **Web application** client, configure the authorized JavaScript origin `http://admin.localhost:5174` for local administrator access (and the protected HTTPS admin origin when deploying), and set `GOOGLE_CLIENT_ID` in `Backend/.env`. Restart the API. No frontend secret is required. Both Google and password signup require superadmin approval. To add Google to an existing password account, sign in first and use **Account → Link Google sign-in** with the same email. [Google setup](https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid).
 
 ## Workflows
 
@@ -62,7 +62,7 @@ Google sign-in uses Google Identity Services and server-side ID-token verificati
 - **Applications:** The public forms review then submit to MongoDB, with duplicate detection and email receipts. Admins review, approve, reject and delete applications. Membership approval requires manually verified payment; the fee is always set server-side to BDT 100. Review notes are internal.
 - **Courses:** Admins create/edit/reorder lesson drafts, separately publish/withdraw them, and upload images or PDFs. Approved course enrollees receive private email access links to `/learn`. Learners cannot access admin APIs. They read lessons, open HTTPS video links, download private materials, mark progress and download a generated PDF certificate after completing all published lessons. Completion is self-reported, not video attendance verification. Rejected/deleted enrollments revoke access to the affected course.
 - **Media:** PNG/JPEG/WebP images and PDF materials, max 10 MB; SVG/HTML uploads are rejected. Materials require approved enrollment; images require a published content reference or an admin session. Referenced files cannot be deleted.
-- **Analytics:** Aggregate page views by date/page, monthly membership applications, enrollments by programme, application outcomes and manually verified membership fees. Counts include repeated visits and are not unique visitors. No IP or visitor identifier is stored. Security rate limiting temporarily uses client IP in memory. No historical traffic is fabricated.
+- **Analytics:** Aggregate page views by date/page, monthly membership applications, enrollments by programme, application outcomes and manually verified membership fees. Counts include repeated visits and are not unique visitors. No IP or visitor identifier is stored in analytics. Security rate limiting uses separate short-lived counters in Redis when configured, with an in-memory development fallback. No historical traffic is fabricated.
 
 ## API boundaries
 

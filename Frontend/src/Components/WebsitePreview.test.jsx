@@ -1,10 +1,10 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
-import AdminContentEditor from './AdminContentEditor';
-import AdminWebsitePreview from './AdminWebsitePreview';
+import AdminContentEditor from './Admin/AdminContentEditor';
+import AdminWebsitePreview from './Admin/AdminWebsitePreview';
 import WebsitePreviewPage from './WebsitePreviewPage';
-import { ThemeContext } from '../ThemeContext';
+import { ThemeContext } from '../contexts/ThemeContext';
 import { contentWithDraft, previewContent, websitePreviewMessages as messages } from '../utils/websitePreview';
 
 const featured = { id: 'featured', title: 'Featured at ARPC', selections: [{ id: 'membership', kind: 'membership' }], membership: { title: 'Join the club', description: 'Find friendship through learning and service.', image: '/logo.jpg' } };

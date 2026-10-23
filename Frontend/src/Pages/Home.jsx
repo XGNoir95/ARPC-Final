@@ -3,7 +3,7 @@ import Hero from '../Components/Home/Hero'
 import About from '../Components/Home/About'
 import FeaturedEvents from '../Components/Home/FeaturedEvents'
 import Sponsors from '../Components/Home/Sponsors'
-import { useContent } from '../ContentContext'
+import { useContent } from '../contexts/ContentContext'
 import { ContentNotice } from '../Components/ContentFeedback'
 import { publicPageFrame } from '../Components/PublicLayout.styles'
 const Home = () => {

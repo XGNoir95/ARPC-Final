@@ -1,8 +1,8 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { createPath, Router, Route, Routes } from 'react-router-dom';
-import { AuthContext } from '../AuthContext';
-import { ContentContext, useContent } from '../ContentContext';
-import { ThemeContext } from '../ThemeContext';
+import { AuthContext } from '../contexts/AuthContext';
+import { ContentContext, useContent } from '../contexts/ContentContext';
+import { ThemeContext } from '../contexts/ThemeContext';
 import { applyTheme, normalizeTheme } from '../utils/theme';
 import { contentWithDraft, websitePreviewMessages as messages, websitePreviewResources } from '../utils/websitePreview';
 import usePreviewDocument from '../utils/usePreviewDocument';

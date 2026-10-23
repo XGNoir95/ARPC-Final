@@ -1,5 +1,5 @@
 import SafeImage from '../Components/SafeImage';
-import { useContent } from "../ContentContext";
+import { useContent } from "../contexts/ContentContext";
 import { post } from "../utils/api";
 import { studentPayload } from "../utils/applicationPayload";
 import { useEffect, useRef, useState } from "react";

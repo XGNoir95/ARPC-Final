@@ -1,5 +1,5 @@
 import { FiMoon, FiSun } from 'react-icons/fi';
-import { useTheme } from '../ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { floatingControlStyles as styles } from './FloatingControls.styles';
 
 export default function ThemeToggle() {

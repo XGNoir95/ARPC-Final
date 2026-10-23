@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import PageSkeleton from './PageSkeleton';
 import { useLocation } from 'react-router-dom';
 import { StatePage } from './StateView';
